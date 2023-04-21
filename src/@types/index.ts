@@ -18,3 +18,13 @@ export type EVENT_REQUEST = Omit<UPDATE_EVENT_REQUEST, "id">;
 export interface REACT_EVENT {
   data: EVENT;
 }
+
+export interface ADMIN_USER {
+  username: string;
+  password: string;
+}
+
+export enum SNACKBAR_STATUSES {
+  "SUCCESS" = "success",
+  "ERROR" = "error",
+}
