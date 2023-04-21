@@ -1,5 +1,7 @@
 import blackLogo from "../../assets/images/RCTVBlackLogo.png";
 
+import "./styles.scss";
+
 function AdminPage() {
   return (
     <div id="admin-page__container">
