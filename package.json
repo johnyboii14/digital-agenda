@@ -7,10 +7,7 @@
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.1",
-<<<<<<< HEAD
-=======
     "@react-pdf-viewer/core": "^3.12.0",
->>>>>>> 121306aca87a4cd1bd98985c44578ca35da35139
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -23,21 +20,13 @@
     "buffer": "^6.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-<<<<<<< HEAD
-    "react-redux": "^8.0.5",
-    "react-router": "^6.10.0",
-=======
     "react-icons": "^4.8.0",
     "react-redux": "^8.0.5",
->>>>>>> 121306aca87a4cd1bd98985c44578ca35da35139
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
     "sass": "^1.62.0",
-<<<<<<< HEAD
-=======
     "scss": "^0.2.4",
->>>>>>> 121306aca87a4cd1bd98985c44578ca35da35139
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },

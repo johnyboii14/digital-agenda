@@ -37,3 +37,23 @@ export type SortKey = "date" | "boolean" | "string" | "numeric" | "";
 export interface HeaderHash {
   [key: string]: SortKey;
 }
+
+export interface Airing {
+  ID: string;
+  airing_id: string;
+  type: string;
+  station: string;
+  airing_time: string;
+  show: string;
+  item_number: string;
+  item_name: string;
+  price: number;
+  CreatedAt: string;
+  UpdatedAt: string;
+  DeletedAt: string;
+}
+
+export type CreateAiringBody = Omit<
+  Airing,
+  "ID" | "CreatedAt" | "DeletedAt" | "UpdatedAt"
+>;
