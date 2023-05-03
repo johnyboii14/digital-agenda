@@ -8,6 +8,8 @@ import {
 } from "../actions/events";
 import { EVENT } from "../@types";
 
+export type ArrayofProducts = Array<EVENT>;
+
 interface EVENTS_INITIAL_STATE {
   events: Array<EVENT>;
   status: "idle" | "pending" | "succeeded" | "failed";
@@ -31,5 +33,35 @@ const eventsSlice = createSlice({
       status: "failed",
       error: action,
     }));
+    builder.addCase(getEvents.fulfilled, (_state, action) => ({
+      status: "succeeded",
+      events: action.payload.data,
+      error: null,
+    }));
+    builder.addCase(createEvents.fulfilled, (state, action) => {
+      const { event } = action.payload;
+      const newArr = JSON.parse(JSON.stringify(state.events));
+      newArr.push(event);
+      state.events = newArr;
+    });
+    builder.addCase(deleteEvent.fulfilled, (state, action) => {
+      const eventId = action.payload;
+      const newArr = JSON.parse(JSON.stringify(state.events));
+      const eventIdx = state.events.find((p) => p.id === eventId);
+      newArr.splice(eventIdx, 1);
+      state.events = newArr;
+    });
+    builder.addCase(clearEvents.fulfilled, (state) => ({ ...initialState }));
+    builder.addCase(editEvent.fulfilled, (state, action) => {
+      const eventToEdit: EVENT = action.payload as unknown as EVENT;
+      const newArr = JSON.parse(
+        JSON.stringify(state.events)
+      ) as unknown as Array<EVENT>;
+      const eventIdx = state.events.findIndex((p) => p.id === eventToEdit.id);
+      newArr[eventIdx] = eventToEdit;
+      state.events = newArr;
+    });
   },
 });
+
+export default eventsSlice.reducer;
