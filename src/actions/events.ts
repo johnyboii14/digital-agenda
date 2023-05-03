@@ -4,12 +4,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiUrl from "../constants/apiUrl";
 import { EVENT, EVENT_REQUEST } from "../@types";
 
-const baseApiUrl = "";
-const getEventUrl = "";
+// const baseApiUrl = "";
+// const getEventUrl = "";
+
+const url = `${apiUrl}/events`;
 
 export const GET_EVENTS = "GET_EVENTS";
 export const getEvents = createAsyncThunk(GET_EVENTS, async () => {
-  const res: AxiosResponse = await axios.get(baseApiUrl);
+  const res: AxiosResponse = await axios.get(url);
   return res.data;
 });
 
@@ -17,7 +19,7 @@ export const CREATE_EVENT = "CREATE_EVENT";
 export const createEvents = createAsyncThunk(
   CREATE_EVENT,
   async (eventData: EVENT_REQUEST) => {
-    const res: AxiosResponse = await axios.post(baseApiUrl, eventData);
+    const res: AxiosResponse = await axios.post(url, eventData);
     return res.data;
   }
 );
@@ -26,7 +28,7 @@ export const deleteEvent = createAsyncThunk(
   DELETE_EVENT,
   async (eventId: number | string) => {
     try {
-      await axios.delete(`${baseApiUrl}/${eventId}`);
+      await axios.delete(`${url}/${eventId}`);
       return eventId;
     } catch (err) {
       return false;
@@ -40,7 +42,7 @@ export const GET_EVENT = "GET_EVENT";
 export const getEvent = createAsyncThunk(
   GET_EVENT,
   async (id: string | number) => {
-    const res: AxiosResponse = await axios.get(`${getEventUrl}/${id}`);
+    const res: AxiosResponse = await axios.get(`${url}/${id}`);
     return res.data;
   }
 );
@@ -51,7 +53,7 @@ export const editEvent = createAsyncThunk(
   async (eventToEdit: EVENT) => {
     try {
       const { id: eventId, ...eventBody } = eventToEdit;
-      await axios.put(`${baseApiUrl}/${eventId}`, eventBody);
+      await axios.put(`${url}/${eventId}`, eventBody);
       return eventBody;
     } catch (err) {
       return null;
