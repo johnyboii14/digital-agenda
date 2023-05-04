@@ -7,6 +7,11 @@ import AddIcon from "@mui/icons-material/Add";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
+import AdminAiringTable from "../../components/AdminAiringTable";
+
+import { useAppDispatch, useAppSelector } from "../../config/hooks";
+
+import { getAirings } from "../../actions/airings";
 import { signOut } from "../../actions/auth";
 
 import blackLogo from "../../assets/images/RCTVBlackLogo.png";
@@ -15,12 +20,17 @@ import "./styles.scss";
 
 function AdminPage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch()
+  const airingsStatus = useAppSelector(state => state.airings.status)
   useEffect(() => {
     const rawUsername = localStorage.getItem("username");
     if (!rawUsername || rawUsername === undefined || rawUsername === "") {
       navigate("/signin");
     }
-  }, [navigate]);
+    if (airingsStatus === "idle") {
+      dispatch(getAirings()) 
+    }
+  }, [airingsStatus, dispatch, navigate]);
   const handleSignOutClick = (): void => {
     signOut();
     navigate("/signin");
@@ -60,9 +70,7 @@ function AdminPage() {
             Sign Out
           </Button>
         </header>
-        <section className="admin-data__container">
-          <header>Overview</header>
-        </section>
+        <AdminAiringTable />
         <div className="admin-vignette" />
       </main>
     </div>

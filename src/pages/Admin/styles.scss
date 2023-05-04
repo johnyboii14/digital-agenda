@@ -595,3 +595,35 @@
     color: #000000;
   }
 }
+
+.data-overview__container {
+  display: flex;
+}
+
+.data-header__container {
+  display: flex;
+  flex-direction: column;
+  background: #fbf7f4;
+  border-radius: 31px;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  padding: 3%;
+  padding-right: 5%;
+  margin-right: 3%;
+  h4 {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 81px;
+    color: #3d4047;
+    margin: 0;
+  }
+  h6 {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #3d4047;
+    margin: 0;
+  }
+}

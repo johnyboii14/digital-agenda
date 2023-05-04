@@ -38,10 +38,12 @@ export interface HeaderHash {
   [key: string]: SortKey;
 }
 
+export type AiringType = "Infomercial" | "ShoppingBlock"
+
 export interface Airing {
   ID: string;
   airing_id: string;
-  type: string;
+  type: AiringType;
   station: string;
   airing_time: string;
   show: string;

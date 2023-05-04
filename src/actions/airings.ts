@@ -4,7 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiUrl from "../constants/apiUrl";
 import { Airing, CreateAiringBody } from "../@types";
 
-const url = `${apiUrl}/airings`;
+const url = `${apiUrl}/airings/`;
 
 export const GET_AIRINGS = "GET_AIRINGS";
 export const getAirings = createAsyncThunk(GET_AIRINGS, async () => {
