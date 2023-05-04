@@ -1,5 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import Button from "@mui/material/Button";
+
+import AddIcon from "@mui/icons-material/Add";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+
 import { signOut } from "../../actions/auth";
 
 import blackLogo from "../../assets/images/RCTVBlackLogo.png";
@@ -7,16 +14,16 @@ import blackLogo from "../../assets/images/RCTVBlackLogo.png";
 import "./styles.scss";
 
 function AdminPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
-    const rawUsername = localStorage.getItem("username")
+    const rawUsername = localStorage.getItem("username");
     if (!rawUsername || rawUsername === undefined || rawUsername === "") {
-      navigate('/signin')
-    } 
-  }, [navigate])
+      navigate("/signin");
+    }
+  }, [navigate]);
   const handleSignOutClick = (): void => {
     signOut();
-    navigate('/signin')
+    navigate("/signin");
   };
   return (
     <div id="admin-page__container">
@@ -25,16 +32,39 @@ function AdminPage() {
           <img className="sidebar-logo" src={blackLogo} alt="RCTV Header" />
         </header>
         <ul>
-          <li>Dashboard</li>
-          <li>Upload Agenda</li>
+          <li style={{ marginBottom: "10%" }}>
+            <Button
+              className="selected"
+              variant="text"
+              startIcon={<DashboardIcon />}
+            >
+              Dashboard
+            </Button>
+          </li>
+          <li>
+            <Button variant="text" startIcon={<AddIcon />}>
+              Upload Agenda
+            </Button>
+          </li>
         </ul>
       </menu>
-      <div>
+      <main>
         <header>
-          <h1>Digital Agenda Admin</h1>
-          <button onClick={handleSignOutClick}>Sign Out</button>
+          <h1 className="admin-header__text">Digital Agenda Admin</h1>
+          <Button
+            variant="contained"
+            onClick={handleSignOutClick}
+            endIcon={<ExitToAppIcon />}
+            sx={{ backgroundColor: "#D17253" }}
+          >
+            Sign Out
+          </Button>
         </header>
-      </div>
+        <section className="admin-data__container">
+          <header>Overview</header>
+        </section>
+        <div className="admin-vignette" />
+      </main>
     </div>
   );
 }

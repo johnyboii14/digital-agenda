@@ -504,3 +504,94 @@
   color: darkgray;
   font-size: smaller;
 }
+
+#admin-page__container {
+  display: flex;
+  flex-direction: row;
+  background-image: url("../../assets/images/adminpagebg.png");
+  main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 0 5%;
+    .MuiButton-root {
+      display: flex;
+      margin: 0;
+    }
+    header {
+      display: flex;
+      z-index: 1;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 4%;
+    }
+  }
+  menu {
+    display: flex;
+    flex: 0.2;
+    padding: 0;
+    padding-left: 2%;
+    flex-direction: column;
+    background-color: #fbf7f4;
+    height: 100vh;
+    margin: 0;
+    z-index: 100;
+    img {
+      width: 90%;
+    }
+    header {
+      margin-bottom: 34%;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      font-family: $main-font;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 24px;
+      li {
+        .MuiButton-root {
+          color: black;
+        }
+        .selected.MuiButton-root {
+          color: #d17253;
+        }
+      }
+    }
+  }
+}
+
+.admin-vignette {
+  background-color: rgba(255, 255, 255, 0.86);
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  z-index: 0;
+  left: 0;
+}
+
+.admin-header__text {
+  font-family: $main-font;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 60px;
+  /* identical to box height */
+  color: #3d4047;
+  margin: 0;
+}
+
+.admin-data__container {
+  z-index: 1;
+  header {
+    font-family: $main-font;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 30px;
+    /* identical to box height */
+
+    color: #000000;
+  }
+}
