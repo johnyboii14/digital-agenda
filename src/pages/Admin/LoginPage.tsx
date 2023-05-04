@@ -10,14 +10,12 @@ import RCTVSnackbar from "../../components/Snackbar";
 
 import { signIn } from "../../actions/auth";
 
-import "./styles.scss";
 import { SNACKBAR_STATUSES } from "../../@types";
 
-interface LoginPageProps {
-  setAuthState: Function;
-}
+import "./styles.scss";
+import { useAppDispatch } from "../../config/hooks";
 
-function LoginPage({ setAuthState }: LoginPageProps) {
+function LoginPage(): JSX.Element {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorUsername, setErrorUsername] = useState<string>("");
@@ -27,6 +25,7 @@ function LoginPage({ setAuthState }: LoginPageProps) {
   const [snackbarSeverity, setSnackbarSeverity] = useState<SNACKBAR_STATUSES>(
     SNACKBAR_STATUSES.SUCCESS
   );
+  const dispatch = useAppDispatch();
   const showSnackbarMessage = (msg: string, severity: SNACKBAR_STATUSES) => {
     setSnackbarMessage(msg);
     setSnackbarSeverity(severity);
@@ -41,12 +40,11 @@ function LoginPage({ setAuthState }: LoginPageProps) {
     setPassword(e.target.value);
 
   const handleSignInClick = async () => {
-    const isCredsValid = signIn({ username, password });
-    if (isCredsValid) {
-      setAuthState(true);
+    const isCredsValid = await dispatch(signIn({ username, password }));
+    if (isCredsValid.type === "SIGN_IN/fulfilled") {
       showSnackbarMessage("Successfully Logged In!", SNACKBAR_STATUSES.SUCCESS);
+      navigate("/admin")
     } else {
-      setAuthState(false);
       setErrorPassword(password);
       setErrorUsername(username);
       showSnackbarMessage(
