@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import apiUrl from "../constants/apiUrl";
-import { Airing, CreateAiringBody } from "../@types";
+import { AdminAiringParams, Airing, CreateAiringBody } from "../@types";
 
 const url = `${apiUrl}/airings/`;
 
@@ -55,5 +55,38 @@ export const editAiring = createAsyncThunk(
     } catch (err) {
       return null;
     }
+  }
+);
+
+export const GET_ADMIN_AIRINGS = "GET_ADMIN_AIRINGS";
+export const getAdminAirings = createAsyncThunk(
+  GET_ADMIN_AIRINGS,
+  async ({ cursor, pageSize }: AdminAiringParams, { rejectWithValue }) => {
+    try {
+      const adminUrl = `${url}admin?cursor=${cursor}&pageSize=${pageSize}`;
+      const res: AxiosResponse = await axios.get(adminUrl);
+      return {
+        data: res.data,
+        cursor,
+      };
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue({ data: error });
+    }
+  }
+);
+export const UPDATE_ADMIN_ROWS_PER_PAGE = "UPDATE_ADMIN_ROWS_PER_PAGE";
+export const updateAdminRowsPerPage = createAsyncThunk(
+  UPDATE_ADMIN_ROWS_PER_PAGE,
+  async (rowsPerPage: number) => {
+    return rowsPerPage;
+  }
+);
+
+export const UPDATE_CURSOR = "UPDATE_CURSOR";
+export const updateCursor = createAsyncThunk(
+  UPDATE_CURSOR,
+  async (cursor: number) => {
+    return cursor;
   }
 );

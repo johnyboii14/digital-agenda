@@ -11,26 +11,34 @@ import AdminAiringTable from "../../components/AdminAiringTable";
 
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
 
-import { getAirings } from "../../actions/airings";
+import { getAdminAirings } from "../../actions/airings";
 import { signOut } from "../../actions/auth";
 
 import blackLogo from "../../assets/images/RCTVBlackLogo.png";
 
 import "./styles.scss";
+import { AdminAiringParams } from "../../@types";
 
 function AdminPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch()
-  const airingsStatus = useAppSelector(state => state.airings.status)
+  const dispatch = useAppDispatch();
+  const rowsPerPage = useAppSelector((state) => state.airings.rowsPerPage);
+  const cursor = useAppSelector((state) => state.airings.cursor);
+  const airingStatus = useAppSelector((state) => state.airings.status);
   useEffect(() => {
     const rawUsername = localStorage.getItem("username");
     if (!rawUsername || rawUsername === undefined || rawUsername === "") {
       navigate("/signin");
     }
-    if (airingsStatus === "idle") {
-      dispatch(getAirings()) 
+    const dataParams: AdminAiringParams = {
+      cursor,
+      pageSize: rowsPerPage,
+    };
+    if (airingStatus === "idle") {
+      dispatch(getAdminAirings(dataParams));
+      console.log("api call is made", cursor, rowsPerPage);
     }
-  }, [airingsStatus, dispatch, navigate]);
+  }, [airingStatus, cursor, dispatch, navigate, rowsPerPage]);
   const handleSignOutClick = (): void => {
     signOut();
     navigate("/signin");

@@ -38,7 +38,7 @@ export interface HeaderHash {
   [key: string]: SortKey;
 }
 
-export type AiringType = "Infomercial" | "ShoppingBlock"
+export type AiringType = "Infomercial" | "ShoppingBlock";
 
 export interface Airing {
   ID: string;
@@ -59,3 +59,8 @@ export type CreateAiringBody = Omit<
   Airing,
   "ID" | "CreatedAt" | "DeletedAt" | "UpdatedAt"
 >;
+
+export interface AdminAiringParams {
+  cursor: number;
+  pageSize: number;
+}

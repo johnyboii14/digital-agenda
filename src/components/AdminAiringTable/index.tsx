@@ -15,7 +15,11 @@ import { visuallyHidden } from "@mui/utils";
 
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
 
-import { clearAirings } from "../../actions/airings";
+import {
+  clearAirings,
+  updateAdminRowsPerPage,
+  updateCursor,
+} from "../../actions/airings";
 
 import { Airing, HeaderHash, SortKey } from "../../@types";
 import {
@@ -68,34 +72,45 @@ export const StyledTableCell = styled(TableCell)(() => ({
   border: "none",
   fontWeight: "600",
   textAlign: "center",
-  fontFamily: "Montserrat",
+  fontFamily: "Neue Haas Grotesk Text Pro",
 }));
 
 function AdminAiringTable(): JSX.Element {
   const dispatch = useAppDispatch();
-  const airings = useAppSelector((state) => state.airings.airings);
-  const airingsForToday = airings.filter((airing) => {
-    const airingDate = new Date(airing.airing_time);
-    const today = new Date();
-    return today.getDate() === airingDate.getDate();
-  });
-  const infomercialsToday = airingsForToday.filter(
-    (airing) => airing.type === "Infomercial"
+  const airings = useAppSelector((state) => state.airings.adminAirings);
+  const cursor = useAppSelector((state) => state.airings.cursor);
+  const numOfShoppingBlocksToday = useAppSelector(
+    (state) => state.airings.numOfShoppingBlocksToday
   );
-  const shoppingBlocksToday = airingsForToday.filter(
-    (airing) => airing.type === "ShoppingBlock"
+  const numOfInfomercialsToday = useAppSelector(
+    (state) => state.airings.numOfInfomericalsToday
   );
-  useEffect(() => {
-    dispatch(clearAirings());
-  }, [dispatch]);
+  const airingTotal = useAppSelector((state) => state.airings.airingTotal);
+  const nextCursor = useAppSelector((state) => state.airings.nextCursor);
+  const rowsPerPage = useAppSelector((state) => state.airings.rowsPerPage);
+  const numOfAiringsToday = useAppSelector(
+    (state) => state.airings.numOfAiringsToday
+  );
+  const previousCursor = useAppSelector(
+    (state) => state.airings.previousCursor
+  );
   const [page, setPage] = useState<number>(0);
   const [sortKey, setSortKey] = useState<string>("item_name");
   const [sortKeyType, setKeyType] = useState<SortKey>("string");
   const [isDesc, setDesc] = useState<boolean>(false);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(25);
-  const handleChangePage = (_: unknown, newPage: number) => setPage(newPage);
+  useEffect(() => {
+    dispatch(clearAirings());
+  }, [cursor, dispatch, rowsPerPage]);
+  const handleChangePage = (_: unknown, newPage: number) => {
+    if (newPage > page) {
+      dispatch(updateCursor(nextCursor));
+    } else {
+      dispatch(updateCursor(previousCursor));
+    }
+    setPage(newPage);
+  };
   const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+e.target.value);
+    dispatch(updateAdminRowsPerPage(+e.target.value));
     return setPage(0);
   };
   const headerClickHandler = (key: string) => {
@@ -133,14 +148,13 @@ function AdminAiringTable(): JSX.Element {
     }
     return -1;
   };
-  const copyOfAirings = JSON.parse(JSON.stringify(airings));
+  const copyOfAirings = JSON.parse(
+    JSON.stringify(airings !== undefined ? airings : [])
+  );
   const sortedAirings = isDesc
     ? copyOfAirings.sort(applySort).reverse()
     : copyOfAirings.sort(applySort);
-  const currentPage = page * rowsPerPage;
-  const trailingPage = page * rowsPerPage + rowsPerPage;
-  const airingsToShow = sortedAirings.slice(currentPage, trailingPage);
-  const rows = airingsToShow.map((airing: Airing) => (
+  const rows = sortedAirings.map((airing: Airing) => (
     <AdminTableRow key={airing.ID} data={airing} />
   ));
   return (
@@ -148,15 +162,15 @@ function AdminAiringTable(): JSX.Element {
       <header>Overview</header>
       <section className="data-overview__container">
         <article className="data-header__container">
-          <h4>{airingsForToday.length}</h4>
+          <h4>{numOfAiringsToday}</h4>
           <h6>Showings Today</h6>
         </article>
         <article className="data-header__container">
-          <h4>{infomercialsToday.length}</h4>
+          <h4>{numOfInfomercialsToday}</h4>
           <h6>Infomercials Today</h6>
         </article>
         <article className="data-header__container">
-          <h4>{shoppingBlocksToday.length}</h4>
+          <h4>{numOfShoppingBlocksToday}</h4>
           <h6>Shopping Channels Today</h6>
         </article>
       </section>
@@ -174,7 +188,7 @@ function AdminAiringTable(): JSX.Element {
         <TablePagination
           rowsPerPageOptions={DEFAULT_ROW_OPTS}
           component="div"
-          count={airings.length}
+          count={airingTotal}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
