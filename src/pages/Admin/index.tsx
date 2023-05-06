@@ -17,28 +17,20 @@ import { signOut } from "../../actions/auth";
 import blackLogo from "../../assets/images/RCTVBlackLogo.png";
 
 import "./styles.scss";
-import { AdminAiringParams } from "../../@types";
 
 function AdminPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const rowsPerPage = useAppSelector((state) => state.airings.rowsPerPage);
-  const cursor = useAppSelector((state) => state.airings.cursor);
   const airingStatus = useAppSelector((state) => state.airings.status);
   useEffect(() => {
     const rawUsername = localStorage.getItem("username");
     if (!rawUsername || rawUsername === undefined || rawUsername === "") {
       navigate("/signin");
     }
-    const dataParams: AdminAiringParams = {
-      cursor,
-      pageSize: rowsPerPage,
-    };
     if (airingStatus === "idle") {
-      dispatch(getAdminAirings(dataParams));
-      console.log("api call is made", cursor, rowsPerPage);
+      dispatch(getAdminAirings());
     }
-  }, [airingStatus, cursor, dispatch, navigate, rowsPerPage]);
+  }, [airingStatus, dispatch, navigate]);
   const handleSignOutClick = (): void => {
     signOut();
     navigate("/signin");

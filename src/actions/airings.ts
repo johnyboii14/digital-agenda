@@ -2,7 +2,13 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import apiUrl from "../constants/apiUrl";
-import { AdminAiringParams, Airing, CreateAiringBody } from "../@types";
+import { Airing, CreateAiringBody } from "../@types";
+import {
+  ADMIN_ROWS_PER_PAGE_KEY,
+  ADMIN_TABLE_CURSOR_KEY,
+  DEFAULT_ADMIN_PER_PAGE,
+  DEFAULT_CURSOR,
+} from "../constants";
 
 const url = `${apiUrl}/airings/`;
 
@@ -61,8 +67,16 @@ export const editAiring = createAsyncThunk(
 export const GET_ADMIN_AIRINGS = "GET_ADMIN_AIRINGS";
 export const getAdminAirings = createAsyncThunk(
   GET_ADMIN_AIRINGS,
-  async ({ cursor, pageSize }: AdminAiringParams, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
+      let cursor = localStorage.getItem(ADMIN_TABLE_CURSOR_KEY);
+      let pageSize = localStorage.getItem(ADMIN_ROWS_PER_PAGE_KEY);
+      if (cursor === "" || cursor === undefined || cursor === null) {
+        cursor = DEFAULT_CURSOR;
+      }
+      if (pageSize === "" || pageSize === undefined || pageSize === null) {
+        pageSize = DEFAULT_ADMIN_PER_PAGE;
+      }
       const adminUrl = `${url}admin?cursor=${cursor}&pageSize=${pageSize}`;
       const res: AxiosResponse = await axios.get(adminUrl);
       return {

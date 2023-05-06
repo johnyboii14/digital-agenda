@@ -6,38 +6,29 @@ import {
   editAiring,
   getAdminAirings,
   getAirings,
-  updateCursor,
 } from "../actions/airings";
 import { Airing } from "../@types";
-import { BuildCircleRounded } from "@mui/icons-material";
+import { ADMIN_NEXT_TABLE_CURSOR_KEY } from "../constants";
 
 export type ArrayofProducts = Array<Airing>;
 
 interface AIRING_INITIAL_STATE {
   airings: Array<Airing>;
   adminAirings: Airing[];
-  cursor: number;
-  previousCursor: number;
-  nextCursor: number;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: any;
   airingTotal: number;
-  rowsPerPage: number;
   numOfAiringsToday: number;
   numOfInfomericalsToday: number;
   numOfShoppingBlocksToday: number;
 }
 
 const initialState: AIRING_INITIAL_STATE = {
-  cursor: 1,
-  nextCursor: 1,
-  previousCursor: 1,
   airings: [],
   adminAirings: [],
   status: "idle",
   error: null,
   airingTotal: 0,
-  rowsPerPage: 25,
   numOfAiringsToday: 0,
   numOfInfomericalsToday: 0,
   numOfShoppingBlocksToday: 0,
@@ -62,13 +53,14 @@ const airingsSlice = createSlice({
     }));
     builder.addCase(getAdminAirings.fulfilled, (state, action) => {
       state.status = "succeeded";
-      state.previousCursor = state.cursor;
-      state.cursor = action.payload.cursor;
-      state.nextCursor = action.payload.data.nextCursor;
+      localStorage.setItem(
+        ADMIN_NEXT_TABLE_CURSOR_KEY,
+        action.payload.data.nextCursor
+      );
       state.adminAirings = action.payload.data.airings;
       state.airingTotal = action.payload.data.totalCount;
       state.numOfAiringsToday = action.payload.data.numOfAiringsToday;
-      state.numOfInfomericalsToday = action.payload.data.numOfInfomericalsToday;
+      state.numOfInfomericalsToday = action.payload.data.numOfInfomercialsToday;
       state.numOfShoppingBlocksToday =
         action.payload.data.numOfShoppingBlocksToday;
       state.error = null;
@@ -86,10 +78,7 @@ const airingsSlice = createSlice({
       newArr.splice(airingIdx, 1);
       state.airings = newArr;
     });
-    builder.addCase(clearAirings.fulfilled, (state) => ({ ...initialState }));
-    builder.addCase(updateCursor.fulfilled, (state, action) => {
-      state.cursor = action.payload;
-    });
+    builder.addCase(clearAirings.fulfilled, () => ({ ...initialState }));
     builder.addCase(editAiring.fulfilled, (state, action) => {
       const airingToEdit: Airing = action.payload as unknown as Airing;
       const newArr = JSON.parse(

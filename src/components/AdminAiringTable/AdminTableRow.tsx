@@ -19,6 +19,8 @@ function AdminTableRow({ data }: AdminTableRowProps): JSX.Element {
     show,
   } = data;
   const localePrice = price.toLocaleString();
+  const airingDay = new Date(airingTime).toLocaleDateString()
+  const airingFormattedTime = new Date(airingTime).toLocaleTimeString()
   return (
     <TableRow
       sx={{
@@ -31,7 +33,7 @@ function AdminTableRow({ data }: AdminTableRowProps): JSX.Element {
       <StyledTableCell>{itemName}</StyledTableCell>
       <StyledTableCell>{itemNum}</StyledTableCell>
       <StyledTableCell>{airingId}</StyledTableCell>
-      <StyledTableCell>{new Date(airingTime).toDateString()}</StyledTableCell>
+      <StyledTableCell>{airingDay} {airingFormattedTime}</StyledTableCell>
       <StyledTableCell>{show}</StyledTableCell>
       <StyledTableCell>{station}</StyledTableCell>
       <StyledTableCell>${localePrice}</StyledTableCell>

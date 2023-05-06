@@ -15,14 +15,18 @@ import { visuallyHidden } from "@mui/utils";
 
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
 
-import {
-  clearAirings,
-  updateAdminRowsPerPage,
-  updateCursor,
-} from "../../actions/airings";
+import { clearAirings, getAdminAirings } from "../../actions/airings";
 
 import { Airing, HeaderHash, SortKey } from "../../@types";
 import {
+  ADMIN_NEXT_TABLE_CURSOR_KEY,
+  ADMIN_PAGE_KEY,
+  ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
+  ADMIN_ROWS_PER_PAGE_KEY,
+  ADMIN_TABLE_CURSOR_KEY,
+  DEFAULT_ADMIN_PER_PAGE,
+  DEFAULT_CURSOR,
+  DEFAULT_PREVIOUS_CURSOR,
   DEFAULT_ROW_OPTS,
   DIGITAL_AGENDA_TABLE_HEADERS,
 } from "../../constants";
@@ -31,6 +35,9 @@ import AdminTableRow from "./AdminTableRow";
 
 const StyledTableCellHeader = styled(TableCell)(() => ({
   backgroundColor: "#F5F5F5",
+  fontFamily: "Neue Haas Grotesk Text Pro",
+  fontWeight: "600",
+  textAlign: "center",
 }));
 
 const headerTypeHashmap: HeaderHash = {
@@ -51,7 +58,7 @@ const columns = (sortKey: string, isDesc: boolean, onClick: Function) =>
       align="right"
       padding="normal"
       key={key}
-      sx={{ color: "white", width: 60, textAlign: "center" }}
+      sx={{ color: "darkgrey", width: 60, textAlign: "center" }}
     >
       <TableSortLabel
         active={sortKey === key}
@@ -70,7 +77,7 @@ const columns = (sortKey: string, isDesc: boolean, onClick: Function) =>
 
 export const StyledTableCell = styled(TableCell)(() => ({
   border: "none",
-  fontWeight: "600",
+  fontWeight: "500",
   textAlign: "center",
   fontFamily: "Neue Haas Grotesk Text Pro",
 }));
@@ -78,7 +85,10 @@ export const StyledTableCell = styled(TableCell)(() => ({
 function AdminAiringTable(): JSX.Element {
   const dispatch = useAppDispatch();
   const airings = useAppSelector((state) => state.airings.adminAirings);
-  const cursor = useAppSelector((state) => state.airings.cursor);
+  let cursor = localStorage.getItem(ADMIN_TABLE_CURSOR_KEY);
+  if (cursor === "" || cursor === undefined || cursor === null) {
+    cursor = "1";
+  }
   const numOfShoppingBlocksToday = useAppSelector(
     (state) => state.airings.numOfShoppingBlocksToday
   );
@@ -86,31 +96,91 @@ function AdminAiringTable(): JSX.Element {
     (state) => state.airings.numOfInfomericalsToday
   );
   const airingTotal = useAppSelector((state) => state.airings.airingTotal);
-  const nextCursor = useAppSelector((state) => state.airings.nextCursor);
-  const rowsPerPage = useAppSelector((state) => state.airings.rowsPerPage);
+  let nextCursor = localStorage.getItem(ADMIN_NEXT_TABLE_CURSOR_KEY);
+  if (nextCursor === "" || nextCursor === undefined || nextCursor === null) {
+    nextCursor = DEFAULT_CURSOR;
+  }
+
+  let initialPreviousCursor = localStorage.getItem(
+    ADMIN_PREVIOUS_TABLE_CURSOR_KEY
+  );
+  let previousCursor: Array<string> = DEFAULT_PREVIOUS_CURSOR;
+  if (
+    initialPreviousCursor !== "" ||
+    initialPreviousCursor !== undefined ||
+    initialPreviousCursor !== null
+  ) {
+    previousCursor = JSON.parse(initialPreviousCursor as string);
+  }
+  let initialRowsPerPage = localStorage.getItem(ADMIN_ROWS_PER_PAGE_KEY);
+  if (
+    initialRowsPerPage === "" ||
+    initialRowsPerPage === undefined ||
+    initialRowsPerPage === null
+  ) {
+    initialRowsPerPage = DEFAULT_ADMIN_PER_PAGE;
+  }
+  const rawPage = localStorage.getItem(ADMIN_PAGE_KEY);
+  let initialPage = 0;
+  if (rawPage !== "" || rawPage !== undefined || rawPage !== null) {
+    initialPage = JSON.parse(rawPage as string);
+  }
+
   const numOfAiringsToday = useAppSelector(
     (state) => state.airings.numOfAiringsToday
   );
-  const previousCursor = useAppSelector(
-    (state) => state.airings.previousCursor
-  );
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(initialPage);
   const [sortKey, setSortKey] = useState<string>("item_name");
   const [sortKeyType, setKeyType] = useState<SortKey>("string");
   const [isDesc, setDesc] = useState<boolean>(false);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(
+    parseInt(initialRowsPerPage, 10)
+  );
   useEffect(() => {
     dispatch(clearAirings());
-  }, [cursor, dispatch, rowsPerPage]);
+  }, [dispatch]);
   const handleChangePage = (_: unknown, newPage: number) => {
     if (newPage > page) {
-      dispatch(updateCursor(nextCursor));
+      localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, nextCursor as string);
+      const newPreviousCursorArr = JSON.parse(JSON.stringify(previousCursor));
+      newPreviousCursorArr.push(cursor as string);
+      localStorage.setItem(
+        ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
+        JSON.stringify(newPreviousCursorArr)
+      );
     } else {
-      dispatch(updateCursor(previousCursor));
+      if (page === 0) {
+        return;
+      }
+      localStorage.setItem(ADMIN_NEXT_TABLE_CURSOR_KEY, cursor as string);
+      localStorage.setItem(
+        ADMIN_TABLE_CURSOR_KEY,
+        previousCursor[previousCursor.length - 1].toString()
+      );
+      const newPreviousCursorArr = JSON.parse(JSON.stringify(previousCursor));
+      newPreviousCursorArr.pop();
+      localStorage.setItem(
+        ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
+        JSON.stringify(newPreviousCursorArr)
+      );
     }
+    dispatch(getAdminAirings());
     setPage(newPage);
+    localStorage.setItem(ADMIN_PAGE_KEY, newPage.toString());
   };
   const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(updateAdminRowsPerPage(+e.target.value));
+    setRowsPerPage(+e.target.value);
+    localStorage.setItem(
+      ADMIN_ROWS_PER_PAGE_KEY,
+      JSON.stringify(+e.target.value)
+    );
+    localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, DEFAULT_CURSOR);
+    localStorage.setItem(
+      ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
+      JSON.stringify(DEFAULT_PREVIOUS_CURSOR)
+    );
+    dispatch(getAdminAirings());
+    localStorage.setItem(ADMIN_PAGE_KEY, "0");
     return setPage(0);
   };
   const headerClickHandler = (key: string) => {
@@ -159,7 +229,7 @@ function AdminAiringTable(): JSX.Element {
   ));
   return (
     <section className="admin-data__container">
-      <header>Overview</header>
+      <h5>Overview</h5>
       <section className="data-overview__container">
         <article className="data-header__container">
           <h4>{numOfAiringsToday}</h4>
