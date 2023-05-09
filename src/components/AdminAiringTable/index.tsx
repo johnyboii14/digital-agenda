@@ -263,6 +263,7 @@ function AdminAiringTable({
             <TableHead>
               <TableRow sx={{ backgroundColor: "#F5f5f5" }}>
                 {columns(sortKey, isDesc, headerClickHandler)}
+                <StyledTableCellHeader />
               </TableRow>
             </TableHead>
             <TableBody sx={{ border: "none" }}>{rows}</TableBody>

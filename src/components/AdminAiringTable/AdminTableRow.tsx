@@ -53,7 +53,7 @@ function AdminTableRow({
         },
       }}
     >
-      <StyledTableCell>{itemName}</StyledTableCell>
+      <StyledTableCell sx={{ width: 15 }}>{itemName}</StyledTableCell>
       <StyledTableCell>{itemNum}</StyledTableCell>
       <StyledTableCell>{airingId}</StyledTableCell>
       <StyledTableCell>
@@ -62,7 +62,7 @@ function AdminTableRow({
       <StyledTableCell>{show}</StyledTableCell>
       <StyledTableCell>{station}</StyledTableCell>
       <StyledTableCell>${localePrice}</StyledTableCell>
-      <StyledTableCell>
+      <StyledTableCell sx={{ width: 3 }}>
         <Button
           onClick={handleAdminAiringMenuClick}
           sx={{ color: "grey" }}

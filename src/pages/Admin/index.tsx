@@ -46,7 +46,7 @@ function AdminPage() {
     setSnackbar(true);
   };
   const handleCloseDeleteModal = () => {
-    toggleDeleteModal(true);
+    toggleDeleteModal(false);
     setAiringToDelete(undefined);
   };
   const handleCloseUpdateModal = () => {
