@@ -67,7 +67,10 @@ export type AiringUpdateData = Omit<
   "CreatedAt" | "DeletedAt" | "UpdatedAt" | "UpdatedAt"
 >;
 
-export type BulkCreateAiringBody = Array<CreateAiringBody>;
+export type BulkCreateAiringBody = {
+  data: Array<CreateAiringBody>;
+  user: string;
+};
 
 export interface AdminAiringParams {
   cursor: number;

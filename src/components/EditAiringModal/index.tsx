@@ -15,8 +15,6 @@ import {
 import { useAppDispatch } from "../../config/hooks";
 import { getAdminAirings, editAiring } from "../../actions/airings";
 
-import "./styles.scss";
-
 interface EditAiringModalProps {
   isOpen: boolean;
   handleClose: Function;
@@ -169,13 +167,13 @@ function EditAiringModal({
         `Successfully updated ${airingToUpdate.item_name}`,
         SNACKBAR_STATUSES.SUCCESS
       );
+      return handleClose();
     } else {
       showSnackbar(
         `Failed to update ${airingToEdit.item_name}, please contact Mike or jonathan`,
         SNACKBAR_STATUSES.ERROR
       );
     }
-    return handleClose();
   };
   return (
     <Modal open={isOpen}>

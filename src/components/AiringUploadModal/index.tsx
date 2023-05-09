@@ -62,7 +62,7 @@ function AiringUploadModal({ isOpen, handleClose }: AiringUploadModalProps) {
   };
   const handleUpload = async () => {
     setLoading(true);
-    const data: BulkCreateAiringBody = [];
+    const data: Array<CreateAiringBody> = [];
     for (let i = 0; i < csvFiles.length; i += 1) {
       const obj: any = {};
       const csvData: AiringCSVData = csvFiles[i];
@@ -80,7 +80,17 @@ function AiringUploadModal({ isOpen, handleClose }: AiringUploadModalProps) {
       data.push(obj);
     }
     // do bulk upload
-    const res = await dispatch(bulkCreateAirings(data));
+    let username = localStorage.getItem("username");
+    if (!username || username === undefined || username === "") {
+      username = "default";
+    } else {
+      username = username.toString();
+    }
+    const csvAiringData: BulkCreateAiringBody = {
+      data,
+      user: username,
+    };
+    const res = await dispatch(bulkCreateAirings(csvAiringData));
     // get response
     setLoading(false);
     if (res.type !== "BULK_CREATE_AIRINGS/fulfilled") {
@@ -126,7 +136,8 @@ function AiringUploadModal({ isOpen, handleClose }: AiringUploadModalProps) {
                   const month = parts[0].padStart(2, "0");
                   const day = parts[1].padStart(2, "0");
                   const isoDateStr = `${year}-${month}-${day}`;
-                  obj[cleanUpString(headers[j]) as keyof AiringCSVData] = isoDateStr;
+                  obj[cleanUpString(headers[j]) as keyof AiringCSVData] =
+                    isoDateStr;
                 } else if (cleanUpString(headers[j]) === "TimePST") {
                   const time = values[j].split(" ")[1];
                   obj[cleanUpString(headers[j]) as keyof AiringCSVData] = time;
