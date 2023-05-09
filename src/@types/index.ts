@@ -60,6 +60,13 @@ export type CreateAiringBody = Omit<
   "ID" | "CreatedAt" | "DeletedAt" | "UpdatedAt"
 >;
 
+export type AiringFormData = CreateAiringBody;
+
+export type AiringUpdateData = Omit<
+  Airing,
+  "CreatedAt" | "DeletedAt" | "UpdatedAt" | "UpdatedAt"
+>;
+
 export type BulkCreateAiringBody = Array<CreateAiringBody>;
 
 export interface AdminAiringParams {

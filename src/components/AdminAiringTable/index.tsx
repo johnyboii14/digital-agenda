@@ -13,6 +13,8 @@ import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
 
+import AdminTableRow from "./AdminTableRow";
+
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
 
 import { clearAirings, getAdminAirings } from "../../actions/airings";
@@ -31,7 +33,6 @@ import {
   DIGITAL_AGENDA_TABLE_HEADERS,
 } from "../../constants";
 import formatRowHeaders from "../../modules/formatRowHeaders";
-import AdminTableRow from "./AdminTableRow";
 
 const StyledTableCellHeader = styled(TableCell)(() => ({
   backgroundColor: "#F5F5F5",
@@ -82,7 +83,15 @@ export const StyledTableCell = styled(TableCell)(() => ({
   fontFamily: "Neue Haas Grotesk Text Pro",
 }));
 
-function AdminAiringTable(): JSX.Element {
+interface AdminAiringTableProps {
+  handleDeleteClick: (airing: Airing) => void;
+  handleEditClick: (airing: Airing) => void;
+}
+
+function AdminAiringTable({
+  handleDeleteClick,
+  handleEditClick,
+}: AdminAiringTableProps): JSX.Element {
   const dispatch = useAppDispatch();
   const airings = useAppSelector((state) => state.airings.adminAirings);
   let cursor = localStorage.getItem(ADMIN_TABLE_CURSOR_KEY);
@@ -101,16 +110,10 @@ function AdminAiringTable(): JSX.Element {
     nextCursor = DEFAULT_CURSOR;
   }
 
-  let initialPreviousCursor = localStorage.getItem(
-    ADMIN_PREVIOUS_TABLE_CURSOR_KEY
-  );
-  let previousCursor: Array<string> = DEFAULT_PREVIOUS_CURSOR;
-  if (
-    initialPreviousCursor !== "" ||
-    initialPreviousCursor !== undefined ||
-    initialPreviousCursor !== null
-  ) {
-    previousCursor = JSON.parse(initialPreviousCursor as string);
+  let rawPreviousCursor = localStorage.getItem(ADMIN_PREVIOUS_TABLE_CURSOR_KEY);
+  let initialPreviousCursor: Array<string> = DEFAULT_PREVIOUS_CURSOR;
+  if (rawPreviousCursor !== undefined && rawPreviousCursor !== null) {
+    initialPreviousCursor = JSON.parse(rawPreviousCursor as string);
   }
   let initialRowsPerPage = localStorage.getItem(ADMIN_ROWS_PER_PAGE_KEY);
   if (
@@ -122,7 +125,7 @@ function AdminAiringTable(): JSX.Element {
   }
   const rawPage = localStorage.getItem(ADMIN_PAGE_KEY);
   let initialPage = 0;
-  if (rawPage !== "" || rawPage !== undefined || rawPage !== null) {
+  if (rawPage !== "" && rawPage !== undefined && rawPage !== null) {
     initialPage = JSON.parse(rawPage as string);
   }
 
@@ -130,6 +133,9 @@ function AdminAiringTable(): JSX.Element {
     (state) => state.airings.numOfAiringsToday
   );
   const [page, setPage] = useState<number>(initialPage);
+  const [previousCursor, setPreviousCursor] = useState<Array<number | string>>(
+    initialPreviousCursor
+  );
   const [sortKey, setSortKey] = useState<string>("item_name");
   const [sortKeyType, setKeyType] = useState<SortKey>("string");
   const [isDesc, setDesc] = useState<boolean>(false);
@@ -148,6 +154,7 @@ function AdminAiringTable(): JSX.Element {
         ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
         JSON.stringify(newPreviousCursorArr)
       );
+      setPreviousCursor(newPreviousCursorArr);
     } else {
       if (page === 0) {
         return;
@@ -163,6 +170,7 @@ function AdminAiringTable(): JSX.Element {
         ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
         JSON.stringify(newPreviousCursorArr)
       );
+      setPreviousCursor(newPreviousCursorArr);
     }
     dispatch(getAdminAirings());
     setPage(newPage);
@@ -225,7 +233,12 @@ function AdminAiringTable(): JSX.Element {
     ? copyOfAirings.sort(applySort).reverse()
     : copyOfAirings.sort(applySort);
   const rows = sortedAirings.map((airing: Airing) => (
-    <AdminTableRow key={airing.ID} data={airing} />
+    <AdminTableRow
+      handleDeleteClick={handleDeleteClick}
+      handleEditClick={handleEditClick}
+      key={airing.ID}
+      data={airing}
+    />
   ));
   return (
     <section className="admin-data__container">

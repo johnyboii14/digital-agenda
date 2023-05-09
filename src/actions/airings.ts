@@ -2,7 +2,11 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import apiUrl from "../constants/apiUrl";
-import { Airing, BulkCreateAiringBody, CreateAiringBody } from "../@types";
+import {
+  AiringUpdateData,
+  BulkCreateAiringBody,
+  CreateAiringBody,
+} from "../@types";
 import {
   ADMIN_ROWS_PER_PAGE_KEY,
   ADMIN_TABLE_CURSOR_KEY,
@@ -53,13 +57,13 @@ export const getAiring = createAsyncThunk(
 export const EDIT_AIRING = "EDIT_AIRING";
 export const editAiring = createAsyncThunk(
   EDIT_AIRING,
-  async (airingToEdit: Airing) => {
+  async (airingToEdit: AiringUpdateData, { rejectWithValue }) => {
     try {
       const { ID: airingId, ...airingBody } = airingToEdit;
       await axios.put(`${url}/${airingId}`, airingBody);
       return airingBody;
     } catch (err) {
-      return null;
+      return rejectWithValue({ data: err });
     }
   }
 );
@@ -111,7 +115,7 @@ export const bulkCreateAirings = createAsyncThunk(
   async (airings: BulkCreateAiringBody, { rejectWithValue }) => {
     try {
       const res: AxiosResponse = await axios.post(`${url}bulk`, airings);
-      return res.data
+      return res.data;
     } catch (err) {
       return rejectWithValue({ data: err });
     }
