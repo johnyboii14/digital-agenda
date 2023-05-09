@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import apiUrl from "../constants/apiUrl";
-import { Airing, CreateAiringBody } from "../@types";
+import { Airing, BulkCreateAiringBody, CreateAiringBody } from "../@types";
 import {
   ADMIN_ROWS_PER_PAGE_KEY,
   ADMIN_TABLE_CURSOR_KEY,
@@ -102,5 +102,18 @@ export const updateCursor = createAsyncThunk(
   UPDATE_CURSOR,
   async (cursor: number) => {
     return cursor;
+  }
+);
+
+export const BULK_CREATE_AIRINGS = "BULK_CREATE_AIRINGS";
+export const bulkCreateAirings = createAsyncThunk(
+  BULK_CREATE_AIRINGS,
+  async (airings: BulkCreateAiringBody, { rejectWithValue }) => {
+    try {
+      const res: AxiosResponse = await axios.post(`${url}bulk`, airings);
+      return res.data
+    } catch (err) {
+      return rejectWithValue({ data: err });
+    }
   }
 );

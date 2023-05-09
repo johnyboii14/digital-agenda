@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
@@ -8,6 +8,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 import AdminAiringTable from "../../components/AdminAiringTable";
+import AiringUploadModal from "../../components/AiringUploadModal";
 
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
 
@@ -19,6 +20,7 @@ import blackLogo from "../../assets/images/RCTVBlackLogo.png";
 import "./styles.scss";
 
 function AdminPage() {
+  const [isUploadModalOpen, toggleUploadModal] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const airingStatus = useAppSelector((state) => state.airings.status);
@@ -34,6 +36,12 @@ function AdminPage() {
   const handleSignOutClick = (): void => {
     signOut();
     navigate("/signin");
+  };
+  const handleOpenUploadModal = (): void => {
+    toggleUploadModal(true);
+  };
+  const handleCloseUploadModal = (): void => {
+    toggleUploadModal(false);
   };
   return (
     <div id="admin-page__container">
@@ -52,8 +60,12 @@ function AdminPage() {
             </Button>
           </li>
           <li>
-            <Button variant="text" startIcon={<AddIcon />}>
-              Upload Agenda
+            <Button
+              onClick={handleOpenUploadModal}
+              variant="text"
+              startIcon={<AddIcon />}
+            >
+              Upload Airings
             </Button>
           </li>
         </ul>
@@ -73,6 +85,10 @@ function AdminPage() {
         <AdminAiringTable />
         <div className="admin-vignette" />
       </main>
+      <AiringUploadModal
+        isOpen={isUploadModalOpen}
+        handleClose={handleCloseUploadModal}
+      />
     </div>
   );
 }
