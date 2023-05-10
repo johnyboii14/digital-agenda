@@ -191,7 +191,7 @@ function EditAiringModal({
               color="success"
               onClick={handleEditConfirm}
             >
-              Edit Product
+              Edit Airing
             </Button>
             <Button
               variant="text"

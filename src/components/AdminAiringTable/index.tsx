@@ -94,6 +94,7 @@ function AdminAiringTable({
 }: AdminAiringTableProps): JSX.Element {
   const dispatch = useAppDispatch();
   const airings = useAppSelector((state) => state.airings.adminAirings);
+  const airingsStatus = useAppSelector((state) => state.airings.status);
   let cursor = localStorage.getItem(ADMIN_TABLE_CURSOR_KEY);
   if (cursor === "" || cursor === undefined || cursor === null) {
     cursor = "1";
@@ -146,6 +147,9 @@ function AdminAiringTable({
     dispatch(clearAirings());
   }, [dispatch]);
   const handleChangePage = (_: unknown, newPage: number) => {
+    if (airingsStatus === "pending") {
+      return;
+    }
     if (newPage > page) {
       localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, nextCursor as string);
       const newPreviousCursorArr = JSON.parse(JSON.stringify(previousCursor));

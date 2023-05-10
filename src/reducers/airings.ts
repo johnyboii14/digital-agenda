@@ -51,6 +51,13 @@ const airingsSlice = createSlice({
       airings: action.payload.data,
       error: null,
     }));
+    builder.addCase(getAdminAirings.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(getAdminAirings.rejected, (state) => {
+      state = initialState;
+      state.status = "failed";
+    });
     builder.addCase(getAdminAirings.fulfilled, (state, action) => {
       state.status = "succeeded";
       localStorage.setItem(
