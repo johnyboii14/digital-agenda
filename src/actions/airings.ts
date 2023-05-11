@@ -10,7 +10,6 @@ import {
 import {
   ADMIN_ROWS_PER_PAGE_KEY,
   ADMIN_TABLE_CURSOR_KEY,
-  AGENDA_DAY_KEY,
   DEFAULT_ADMIN_PER_PAGE,
   DEFAULT_CURSOR,
 } from "../constants";
@@ -98,16 +97,8 @@ export const getAdminAirings = createAsyncThunk(
 export const GET_DAY_AGENDA_DAY_AIRING = "GET_AGENDA_DAY_AIRING ";
 export const getDayAgendaAirings = createAsyncThunk(
   GET_DAY_AGENDA_DAY_AIRING,
-  async (_, { rejectWithValue }) => {
+  async (dayToQuery: string, { rejectWithValue }) => {
     try {
-      let dayToQuery = localStorage.getItem(AGENDA_DAY_KEY);
-      if (
-        dayToQuery === "" ||
-        dayToQuery === undefined ||
-        dayToQuery === null
-      ) {
-        dayToQuery = new Date().toISOString().slice(0, 10);
-      }
       const dayUrl = `${url}agenda/day?day=${dayToQuery}`;
       const res: AxiosResponse = await axios.get(dayUrl);
       return res.data;
