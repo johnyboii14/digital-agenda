@@ -4,9 +4,9 @@ import SearchIcon from "@mui/icons-material/Search";
 
 function SearchBar() {
   return (
-    <div className="search-bar">
-      <h5>Search by Item # or description</h5>
-      <SearchIcon />
+    <div className="container">
+      <input type="text" placeholder="Search..." />
+      <div className="search"></div>
     </div>
   );
 }
