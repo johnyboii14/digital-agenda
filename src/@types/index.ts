@@ -60,7 +60,31 @@ export type CreateAiringBody = Omit<
   "ID" | "CreatedAt" | "DeletedAt" | "UpdatedAt"
 >;
 
+export type AiringFormData = CreateAiringBody;
+
+export type AiringUpdateData = Omit<
+  Airing,
+  "CreatedAt" | "DeletedAt" | "UpdatedAt" | "UpdatedAt"
+>;
+
+export type BulkCreateAiringBody = {
+  data: Array<CreateAiringBody>;
+  user: string;
+};
+
 export interface AdminAiringParams {
   cursor: number;
   pageSize: number;
+}
+
+export interface AiringCSVData {
+  AiringID: string;
+  Type: string;
+  Station: string;
+  "Date (PST)": string;
+  TimePST: string;
+  SHOW: string;
+  ItemNumber: string;
+  Item: string;
+  Price: string;
 }

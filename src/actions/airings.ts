@@ -2,7 +2,17 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import apiUrl from "../constants/apiUrl";
-import { AdminAiringParams, Airing, CreateAiringBody } from "../@types";
+import {
+  AiringUpdateData,
+  BulkCreateAiringBody,
+  CreateAiringBody,
+} from "../@types";
+import {
+  ADMIN_ROWS_PER_PAGE_KEY,
+  ADMIN_TABLE_CURSOR_KEY,
+  DEFAULT_ADMIN_PER_PAGE,
+  DEFAULT_CURSOR,
+} from "../constants";
 
 const url = `${apiUrl}/airings/`;
 
@@ -47,13 +57,13 @@ export const getAiring = createAsyncThunk(
 export const EDIT_AIRING = "EDIT_AIRING";
 export const editAiring = createAsyncThunk(
   EDIT_AIRING,
-  async (airingToEdit: Airing) => {
+  async (airingToEdit: AiringUpdateData, { rejectWithValue }) => {
     try {
       const { ID: airingId, ...airingBody } = airingToEdit;
       await axios.put(`${url}/${airingId}`, airingBody);
       return airingBody;
     } catch (err) {
-      return null;
+      return rejectWithValue({ data: err });
     }
   }
 );
@@ -61,8 +71,16 @@ export const editAiring = createAsyncThunk(
 export const GET_ADMIN_AIRINGS = "GET_ADMIN_AIRINGS";
 export const getAdminAirings = createAsyncThunk(
   GET_ADMIN_AIRINGS,
-  async ({ cursor, pageSize }: AdminAiringParams, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
+      let cursor = localStorage.getItem(ADMIN_TABLE_CURSOR_KEY);
+      let pageSize = localStorage.getItem(ADMIN_ROWS_PER_PAGE_KEY);
+      if (cursor === "" || cursor === undefined || cursor === null) {
+        cursor = DEFAULT_CURSOR;
+      }
+      if (pageSize === "" || pageSize === undefined || pageSize === null) {
+        pageSize = DEFAULT_ADMIN_PER_PAGE;
+      }
       const adminUrl = `${url}admin?cursor=${cursor}&pageSize=${pageSize}`;
       const res: AxiosResponse = await axios.get(adminUrl);
       return {
@@ -88,5 +106,18 @@ export const updateCursor = createAsyncThunk(
   UPDATE_CURSOR,
   async (cursor: number) => {
     return cursor;
+  }
+);
+
+export const BULK_CREATE_AIRINGS = "BULK_CREATE_AIRINGS";
+export const bulkCreateAirings = createAsyncThunk(
+  BULK_CREATE_AIRINGS,
+  async (airings: BulkCreateAiringBody, { rejectWithValue }) => {
+    try {
+      const res: AxiosResponse = await axios.post(`${url}bulk`, airings);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue({ data: err });
+    }
   }
 );
