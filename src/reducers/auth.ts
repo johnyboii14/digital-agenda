@@ -1,8 +1,9 @@
 import { ActionReducerMapBuilder, createSlice } from "@reduxjs/toolkit";
 import { signIn } from "../actions/auth";
+import { REDUX_STATUS } from "../@types";
 
 interface AUTH_INITIAL_STATE {
-  status: "idle" | "pending" | "succeeded" | "failed";
+  status: REDUX_STATUS;
   error: any;
   isAuthorized: boolean;
 }

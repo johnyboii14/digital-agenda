@@ -6,13 +6,13 @@ import {
   editEvent,
   getEvents,
 } from "../actions/events";
-import { EVENT } from "../@types";
+import { EVENT, REDUX_STATUS } from "../@types";
 
 export type ArrayofProducts = Array<EVENT>;
 
 interface EVENTS_INITIAL_STATE {
   events: Array<EVENT>;
-  status: "idle" | "pending" | "succeeded" | "failed";
+  status: REDUX_STATUS;
   error: any;
 }
 

@@ -1,27 +1,27 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import ShoppingBlocks from "../../components/ShoppingBlocks";
+import AgendaCalendar from "../../components/AiringAgenda";
 import Header from "../../components/Header";
-import InfomericalsTable from "../../components/Infomercials";
 import Navigation from "../../components/Navigation";
 
-import { useAppDispatch, useAppSelector } from "../../config/hooks";
+import { useAppDispatch } from "../../config/hooks";
 import { clearEvents } from "../../actions/events";
+import { clearAirings } from "../../actions/airings";
 
 import "./styles.scss";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 function Home() {
   const dispatch = useAppDispatch();
   const [isDataView, setIsDataView] = useState(false);
   useEffect(() => {
     dispatch(clearEvents());
+    dispatch(clearAirings());
   }, [dispatch]);
 
   const handleToggle = () => {
     setIsDataView(!isDataView);
   };
-
-  const events = useAppSelector((state) => state.events.events);
 
   return (
     <div>
@@ -30,11 +30,7 @@ function Home() {
         <Header isDataView={isDataView} onToggle={handleToggle} />
       </header>
       <article>
-        {isDataView ? (
-          <ShoppingBlocks events={events} />
-        ) : (
-          <InfomericalsTable events={events} />
-        )}
+        <AgendaCalendar />
       </article>
     </div>
   );
