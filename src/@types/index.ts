@@ -1,3 +1,4 @@
+export type REDUX_STATUS = "idle" | "pending" | "succeeded" | "failed";
 export interface EVENT {
   id: number;
   event_description: string;
@@ -87,4 +88,9 @@ export interface AiringCSVData {
   ItemNumber: string;
   Item: string;
   Price: string;
+}
+
+export interface AgendaAiring extends Airing {
+  end_date: Date;
+  airing_start_date: Date;
 }

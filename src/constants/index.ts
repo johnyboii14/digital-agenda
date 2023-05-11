@@ -18,4 +18,5 @@ export const ADMIN_PREVIOUS_TABLE_CURSOR_KEY = "admin_previous_table_cursor";
 export const DEFAULT_ADMIN_PER_PAGE = "25";
 export const DEFAULT_CURSOR = "1";
 export const DEFAULT_PREVIOUS_CURSOR = [];
-export const ADMIN_PAGE_KEY = "admin_page"
+export const ADMIN_PAGE_KEY = "admin_page";
+export const AGENDA_DAY_KEY = "agenda_day";

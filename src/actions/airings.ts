@@ -93,6 +93,22 @@ export const getAdminAirings = createAsyncThunk(
     }
   }
 );
+
+export const GET_DAY_AGENDA_DAY_AIRING = "GET_AGENDA_DAY_AIRING ";
+export const getDayAgendaAirings = createAsyncThunk(
+  GET_DAY_AGENDA_DAY_AIRING,
+  async (dayToQuery: string, { rejectWithValue }) => {
+    try {
+      const dayUrl = `${url}agenda/day?day=${dayToQuery}`;
+      const res: AxiosResponse = await axios.get(dayUrl);
+      return res.data;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue({ data: error });
+    }
+  }
+);
+
 export const UPDATE_ADMIN_ROWS_PER_PAGE = "UPDATE_ADMIN_ROWS_PER_PAGE";
 export const updateAdminRowsPerPage = createAsyncThunk(
   UPDATE_ADMIN_ROWS_PER_PAGE,

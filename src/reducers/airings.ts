@@ -6,8 +6,9 @@ import {
   editAiring,
   getAdminAirings,
   getAirings,
+  getDayAgendaAirings,
 } from "../actions/airings";
-import { Airing } from "../@types";
+import { Airing, REDUX_STATUS } from "../@types";
 import { ADMIN_NEXT_TABLE_CURSOR_KEY } from "../constants";
 
 export type ArrayofProducts = Array<Airing>;
@@ -15,7 +16,10 @@ export type ArrayofProducts = Array<Airing>;
 interface AIRING_INITIAL_STATE {
   airings: Array<Airing>;
   adminAirings: Airing[];
-  status: "idle" | "pending" | "succeeded" | "failed";
+  agendaAirings: Airing[];
+  agendaCount: number;
+  status: REDUX_STATUS;
+  agendaStatus: REDUX_STATUS;
   error: any;
   airingTotal: number;
   numOfAiringsToday: number;
@@ -25,6 +29,9 @@ interface AIRING_INITIAL_STATE {
 
 const initialState: AIRING_INITIAL_STATE = {
   airings: [],
+  agendaAirings: [],
+  agendaCount: 0,
+  agendaStatus: "idle",
   adminAirings: [],
   status: "idle",
   error: null,
@@ -51,6 +58,14 @@ const airingsSlice = createSlice({
       airings: action.payload.data,
       error: null,
     }));
+    builder.addCase(getDayAgendaAirings.pending, (state) => {
+      state.agendaStatus = "pending";
+    });
+    builder.addCase(getDayAgendaAirings.fulfilled, (state, action) => {
+      state.agendaStatus = "succeeded";
+      state.agendaAirings = action.payload.airings;
+      state.agendaCount = action.payload.airing_count;
+    });
     builder.addCase(getAdminAirings.pending, (state) => {
       state.status = "pending";
     });

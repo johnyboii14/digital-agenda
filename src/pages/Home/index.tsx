@@ -1,29 +1,22 @@
 import { useEffect, useState } from "react";
 
+import AgendaCalendar from "../../components/AiringAgenda";
 import Header from "../../components/Header";
-import ViewNav from "../../components/ViewNav";
+import Navigation from "../../components/Navigation";
 
 import { useAppDispatch } from "../../config/hooks";
 import { clearEvents } from "../../actions/events";
+import { clearAirings } from "../../actions/airings";
 
 import "./styles.scss";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 function Home() {
-  const backgrounImage = "url(../../assets/images/Thursday-Social.jpg)";
-  const backgrounStyle = {
-    backgrounImage,
-    backgroundSize: "cover",
-    backgrounPosition: "fill",
-    height: "100vg",
-    backgroundBlendMode: "multiply",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    opacity: "90%",
-  };
-
   const dispatch = useAppDispatch();
   const [isDataView, setIsDataView] = useState(false);
   useEffect(() => {
     dispatch(clearEvents());
+    dispatch(clearAirings());
   }, [dispatch]);
 
   const handleToggle = () => {
@@ -31,14 +24,14 @@ function Home() {
   };
 
   return (
-    <div style={backgrounStyle}>
-      <header>
-        <Header />
+    <div>
+      <header className="header-placement">
+        <Navigation />
+        <Header isDataView={isDataView} onToggle={handleToggle} />
       </header>
-      <header>
-        <ViewNav isDataView={isDataView} onToggle={handleToggle} />
-      </header>
-      <main></main>
+      <main>
+        <AgendaCalendar />
+      </main>
     </div>
   );
 }
