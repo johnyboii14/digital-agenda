@@ -1,8 +1,11 @@
 body {
-  // background-color: #fff6d8;
+  background: url("../../assets/images/Thursday-Social.jpg") no-repeat center
+    center fixed;
+  background-size: auto;
+  height: 100%;
 }
 
-.header-placement {
+.row {
   display: flex;
   flex-direction: row;
 }

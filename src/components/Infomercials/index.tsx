@@ -26,7 +26,7 @@ import { useAppDispatch, useAppSelector } from "../../config/hooks";
 import { getEvents } from "../../actions/events";
 
 const StyledTableCellHeader = styled(TableCell)(() => ({
-  backgroundColor: "#C09243",
+  backgroundColor: "#F5F5F5",
 }));
 
 const StyledTableCellActionCol = styled(TableCell)(() => ({
@@ -40,7 +40,7 @@ const columns = (sortKey: string, isDesc: boolean, onClick: Function) =>
       align="right"
       padding="normal"
       key={key}
-      sx={{ color: "white", width: 60, textAlign: "center" }}
+      sx={{ color: "black", width: 60, textAlign: "center" }}
     >
       <TableSortLabel
         active={sortKey === key}
@@ -149,7 +149,7 @@ function InfomericalsTable({ events }: AiringTableProps) {
   return (
     <div>
       <header>
-        <h1>Infomercials</h1>
+        <h1 style={{ color: "white" }}>Infomercials</h1>
       </header>
       <section>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>

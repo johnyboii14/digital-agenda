@@ -4,7 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiUrl from "../constants/apiUrl";
 import { EVENT, EVENT_REQUEST } from "../@types";
 
-const url = `${apiUrl}events`;
+const url = `${apiUrl}/events`;
 
 export const GET_EVENTS = "GET_EVENTS";
 export const getEvents = createAsyncThunk(GET_EVENTS, async () => {
