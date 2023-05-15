@@ -1,0 +1,53 @@
+@import "./variables.scss";
+
+.rbc-event {
+  background-color: $background-color;
+}
+
+.agenda-item-name__text {
+  font-family: $main-font;
+  max-width: 50%;
+  font-size: small;
+}
+
+.rbc-event-label {
+  color: #faebe6;
+}
+
+.rbc-timeslot-group {
+  min-height: 120px;
+  font-family: $main-font;
+  padding-top: 20px;
+  font-weight: 500;
+  color: #d29486;
+}
+
+.rbc-day-slot .rbc-event {
+  border: 1px solid $border-color;
+}
+
+.rbc-today {
+  background-color: #f9e8df;
+}
+
+.rbc-time-view {
+  background: #fff5f2;
+}
+
+.rbc-btn-group {
+  button {
+    color: #b67b6e;
+    background-color: #f9e8df;
+    cursor: pointer;
+    transition: 0.2s all;
+    font-family: $main-font;
+    &:hover {
+      background-color: lighten(#b67b6e, 3%);
+    }
+  }
+}
+
+.rbc-toolbar-label {
+  color: whitesmoke;
+  font-family: $main-font;
+}

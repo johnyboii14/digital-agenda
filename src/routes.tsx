@@ -1,9 +1,11 @@
 import { FunctionComponent } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home"
+import Home from "./pages/Home";
 import AdminPage from "./pages/Admin";
 import LoginPage from "./pages/Admin/LoginPage";
+
+import "./styles/main.scss";
 
 const AgendaRoutes: FunctionComponent = () => (
   <BrowserRouter>

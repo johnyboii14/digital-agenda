@@ -1,5 +1,11 @@
 @import "./variables.scss";
+@import "./agenda.scss";
 
 body {
   font-family: $main-font;
+}
+
+.main-bg {
+  background-image: url("../assets/images/Thursday-Social.jpg");
+  background-size: cover;
 }

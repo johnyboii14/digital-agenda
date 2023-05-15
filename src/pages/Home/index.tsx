@@ -24,7 +24,7 @@ function Home() {
   };
 
   return (
-    <div>
+    <div className="main-bg">
       <header className="header-placement">
         <Navigation />
         <Header isDataView={isDataView} onToggle={handleToggle} />

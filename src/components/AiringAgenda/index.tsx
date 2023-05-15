@@ -16,7 +16,7 @@ interface MyAgendaDayHeaderProps {
 const MyAgendaDayHeader = ({ date, label }: MyAgendaDayHeaderProps) => {
   return (
     <div>
-      <div>{label}</div>
+      <div className="agenda-label__text">{label}</div>
       <div>{moment(date).format("dddd, MMMM D, YYYY")}</div>
     </div>
   );
@@ -28,8 +28,8 @@ interface EventProps {
 const MyAgendaEvent = ({ event }: EventProps) => {
   return (
     <div>
-      <div>{event.item_name}</div>
-      <div>{event.show}</div>
+      <div className="agenda-item-name__text">{event.item_name}</div>
+      <div className="agenda-item-show__text">{event.show}</div>
     </div>
   );
 };
@@ -81,7 +81,7 @@ function AgendaCalendar() {
         view="day"
         onView={() => null}
         views={["day"]}
-        style={{ height: 1000 }}
+        style={{ height: 1000, padding: "0 3%" }}
       />
     </div>
   );
