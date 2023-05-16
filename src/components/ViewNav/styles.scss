@@ -1,10 +1,3 @@
-.nav-placement {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: -40px;
-}
-
 .icon-placement {
   display: flex;
   gap: 30px;
@@ -12,14 +5,17 @@
 
 .nav-placement {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+  margin-top: -45px;
 
   h5 {
     font-family: "Neue Haas Grotesk";
     font-weight: 500;
     font-size: 20px;
     color: white;
+    margin-left: 70px;
   }
 }
 
@@ -74,4 +70,9 @@ button {
 
 .inactive {
   background-color: gray;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
 }

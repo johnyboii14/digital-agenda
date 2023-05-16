@@ -77,7 +77,7 @@ const headerTypeHashmap: HeaderHash = {
   price: "numeric",
 };
 
-function InfomericalsTable({ events }: AiringTableProps) {
+function AiringsTable({ events }: AiringTableProps) {
   const dispatch = useAppDispatch();
   const eventStatus = useAppSelector((state) => state.events.status);
   const airings = useAppSelector((state) => state.events.events);
@@ -148,9 +148,6 @@ function InfomericalsTable({ events }: AiringTableProps) {
 
   return (
     <div>
-      <header>
-        <h1 style={{ color: "white" }}>Infomercials</h1>
-      </header>
       <section>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 750 }}>
@@ -178,4 +175,4 @@ function InfomericalsTable({ events }: AiringTableProps) {
   );
 }
 
-export default InfomericalsTable;
+export default AiringsTable;

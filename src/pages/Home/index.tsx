@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 
-import ShoppingBlocks from "../../components/ShoppingBlocks";
 import Header from "../../components/Header";
-import InfomericalsTable from "../../components/Infomercials";
 
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
 import { clearEvents } from "../../actions/events";
 
-import "./styles.scss";
 import ViewNav from "../../components/ViewNav";
 
+import "./styles.scss";
+import AiringsTable from "../../components/AiringsTable.tsx";
+
 function Home() {
-  const backgrounImage = "url(../../assets/images/Thursday-Social.jpg)";
-  const backgrounStyle = {
-    backgrounImage,
+  const backgroundImage = "url(../../assets/images/Thursday-Social.jpg)";
+  const backgroundStyle = {
+    backgroundImage,
     backgroundSize: "cover",
     backgrounPosition: "fill",
     height: "100vg",
@@ -23,31 +23,18 @@ function Home() {
   };
 
   const dispatch = useAppDispatch();
-  const [isDataView, setIsDataView] = useState(false);
   useEffect(() => {
     dispatch(clearEvents());
   }, [dispatch]);
 
-  const handleToggle = () => {
-    setIsDataView(!isDataView);
-  };
-
   const events = useAppSelector((state) => state.events.events);
 
   return (
-    <div style={backgrounStyle}>
-      <header>
-        <Header />
-      </header>
-      <header>
-        <ViewNav isDataView={isDataView} onToggle={handleToggle} />
-      </header>
+    <div style={backgroundStyle}>
+      <Header />
+      <ViewNav />
       <main>
-        {isDataView ? (
-          <ShoppingBlocks events={events} />
-        ) : (
-          <InfomericalsTable events={events} />
-        )}
+        <AiringsTable events={events} />
       </main>
     </div>
   );

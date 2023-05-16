@@ -2,10 +2,10 @@ import React from "react";
 
 import Logo from "../../assets/images/RctvLogo.png";
 
-import "./styles.scss";
 import SearchBar from "./SearchBar";
-import ToggleSwitch from "./ToggleSwitch";
 import AdminButton from "./AdminButton";
+
+import "./styles.scss";
 
 interface HeaderProps {
   isDataView: boolean;
@@ -14,12 +14,12 @@ interface HeaderProps {
 
 const Header = () => {
   return (
-    <div className="home-header">
+    <header className="home-header">
       <img src={Logo} alt="Rare Collectibles logo" />
+      <SearchBar />
       <h1>Digital Agenda</h1>
       <AdminButton />
-      <SearchBar />
-    </div>
+    </header>
   );
 };
 
