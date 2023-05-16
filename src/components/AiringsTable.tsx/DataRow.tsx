@@ -11,7 +11,7 @@ interface DataRowProps {
   event: EVENT;
 }
 
-function ShoppingBlocksDataRow({ event }: DataRowProps) {
+function DataRow({ event }: DataRowProps) {
   const navigate = useNavigate();
   if (!event) {
     return null;
@@ -46,4 +46,4 @@ function ShoppingBlocksDataRow({ event }: DataRowProps) {
   );
 }
 
-export default ShoppingBlocksDataRow;
+export default DataRow;

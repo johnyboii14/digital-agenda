@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import AgendaCalendar from "../../components/AiringAgenda";
 import Header from "../../components/Header";
-import Navigation from "../../components/Navigation";
 
 import { useAppDispatch } from "../../config/hooks";
 import { clearEvents } from "../../actions/events";
@@ -26,7 +25,6 @@ function Home() {
   return (
     <div className="main-bg">
       <header className="header-placement">
-        <Navigation />
         <Header isDataView={isDataView} onToggle={handleToggle} />
       </header>
       <main>

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+import Tooltip from "@mui/material/Tooltip";
 import moment from "moment";
 
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
@@ -27,10 +28,12 @@ interface EventProps {
 }
 const MyAgendaEvent = ({ event }: EventProps) => {
   return (
-    <div>
-      <div className="agenda-item-name__text">{event.item_name}</div>
-      <div className="agenda-item-show__text">{event.show}</div>
-    </div>
+    <Tooltip title={event.item_name}>
+      <div>
+        <div className="agenda-item-name__text">{event.item_name}</div>
+        <div className="agenda-item-show__text">{event.show}</div>
+      </div>
+    </Tooltip>
   );
 };
 
@@ -80,6 +83,7 @@ function AgendaCalendar() {
         }}
         view="day"
         onView={() => null}
+        tooltipAccessor={(airing: AgendaAiring) => airing.item_name}
         views={["day"]}
         style={{ height: 1000, padding: "0 3%" }}
       />

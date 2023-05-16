@@ -1,0 +1,78 @@
+.icon-placement {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-placement {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: -45px;
+
+  h5 {
+    font-family: "Neue Haas Grotesk";
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+    margin-left: 70px;
+  }
+}
+
+.svg-placement {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.view-btn {
+  gap: 20px;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  border-radius: 20px;
+  margin-right: 95px;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+  justify-content: center;
+  background: #83c5be;
+}
+
+.view-btn-2 {
+  gap: 20px;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  border-radius: 20px;
+  margin-right: 95px;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+  justify-content: center;
+  background: #83c5be;
+}
+
+button {
+  color: white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.active {
+  background-color: #e5a996;
+}
+
+.inactive {
+  background-color: gray;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}

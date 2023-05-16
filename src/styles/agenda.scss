@@ -1,13 +1,23 @@
 @import "./variables.scss";
 
 .rbc-event {
-  background-color: $background-color;
+  background-color: #9d5e4a;
 }
 
 .agenda-item-name__text {
   font-family: $main-font;
   max-width: 50%;
   font-size: small;
+  color: rgb(255, 158, 39);
+  font-weight: 600;
+  transition: .2s all;
+  &:hover {
+    color:rgb(255, 140, 0)
+  }
+}
+
+.agenda-item-show__text {
+  font-size: x-small;
 }
 
 .rbc-event-label {

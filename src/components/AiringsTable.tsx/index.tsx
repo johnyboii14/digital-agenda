@@ -13,7 +13,7 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { visuallyHidden } from "@mui/utils";
 
-import ShoppingBlocksDataRow from "./ShoppingBlocksDataRow";
+import DataRow from "./DataRow";
 
 import { HeaderHash, EVENT, SortKey } from "../../@types";
 
@@ -77,7 +77,7 @@ const headerTypeHashmap: HeaderHash = {
   price: "numeric",
 };
 
-function ShoppingBlocksTable({ events }: AiringTableProps) {
+function AiringsTable({ events }: AiringTableProps) {
   const dispatch = useAppDispatch();
   const eventStatus = useAppSelector((state) => state.events.status);
   const airings = useAppSelector((state) => state.events.events);
@@ -141,16 +141,12 @@ function ShoppingBlocksTable({ events }: AiringTableProps) {
   const currentPage = page * rowsPerPage;
   const trailingPage = page * rowsPerPage + rowsPerPage;
   const productsToShow = copyOfProducts.slice(currentPage, trailingPage);
-  const allSelected = copyOfProducts.length === productsToShow.length;
   const rows = copyOfProducts.map((p: EVENT) => (
-    <ShoppingBlocksDataRow event={p} key={p.id} />
+    <DataRow event={p} key={p.id} />
   ));
 
   return (
     <div>
-      <header>
-        <h1>Shopping Blocks</h1>
-      </header>
       <section>
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 750 }}>
@@ -178,4 +174,4 @@ function ShoppingBlocksTable({ events }: AiringTableProps) {
   );
 }
 
-export default ShoppingBlocksTable;
+export default AiringsTable;
