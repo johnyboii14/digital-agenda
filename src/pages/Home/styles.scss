@@ -1,11 +1,17 @@
-body {
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.main-page-style {
   background: url("../../assets/images/Thursday-Social.jpg") no-repeat center
     center fixed;
   background-size: auto;
   height: 100%;
-}
-
-.row {
-  display: flex;
-  flex-direction: row;
+  background-size: cover;
+  background-position: fill;
+  height: 100vh;
+  background-blend-mode: multiply;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 90%;
 }

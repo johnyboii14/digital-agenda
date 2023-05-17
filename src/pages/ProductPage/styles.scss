@@ -1,0 +1,152 @@
+@import "../../styles/variables.scss";
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: $main-font;
+}
+
+.product-background {
+  background-color: #ebfeff;
+  background-size: auto;
+  height: 100%;
+  background-size: cover;
+  background-position: fill;
+  height: 100vh;
+}
+.header-product {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.body-placement {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.back-button-design {
+  display: flex;
+  flex-direction: row;
+  border-radius: 20px;
+  height: 50px;
+  width: 100px;
+  cursor: pointer;
+  justify-content: center;
+  background: black;
+  &:hover {
+    background-color: #5ca1c1;
+  }
+}
+
+.back-button-position {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 5px;
+
+  h6 {
+    font-family: "Neue Haas Grotesk";
+    color: white;
+    display: flex;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    cursor: pointer;
+    margin-top: 20px;
+    align-self: start;
+  }
+
+  svg {
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+  }
+}
+
+.edit-button-design {
+  display: flex;
+  flex-direction: row;
+  border-radius: 20px;
+  height: 50px;
+  width: 100px;
+  cursor: pointer;
+  justify-content: center;
+  background: #d7b96b;
+  position: relative;
+  left: 90%;
+  top: 56px;
+  &:hover {
+    background-color: #5ca1c1;
+  }
+}
+
+.edit-button-position {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 5px;
+
+  h6 {
+    font-family: "Neue Haas Grotesk";
+    color: black;
+    display: flex;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    cursor: pointer;
+    margin-top: 20px;
+    align-self: start;
+  }
+
+  svg {
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+  }
+}
+
+.product-highlights {
+  margin-left: 20%;
+  padding-right: 40px;
+}
+
+.product-images {
+  margin-left: 7%;
+
+  img {
+    width: 361px;
+    height: 512px;
+  }
+}
+
+.product-info {
+  margin-left: 2%;
+}
+
+.product-info-title {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1px;
+  color: #686868;
+}
+
+.product-info-detail {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 15px;
+  color: black;
+}
+
+.product-info-price {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 20px;
+  color: black;
+}

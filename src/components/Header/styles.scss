@@ -1,8 +1,10 @@
+@import "../../styles/variables.scss";
 .home-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 90px;
 
   h1 {
     font-family: "Neue Haas Grotesk";
@@ -10,7 +12,7 @@
     font-size: 48px;
     color: white;
     position: relative;
-    right: 14%;
+    left: 5%;
   }
 
   img {
@@ -27,7 +29,7 @@
   display: flex;
   flex-direction: row;
   position: relative;
-  right: 7%;
+  left: 25%;
   margin: 0;
   border-radius: 20px;
   height: 50px;
@@ -69,7 +71,7 @@
 
 .container {
   position: relative;
-  right: 13%;
+  right: 8%;
   transform: translateX(-50%);
   .search {
     position: absolute;
@@ -177,4 +179,31 @@
       font-weight: bolder;
     }
   }
+}
+
+// view styling
+
+.sort-option {
+  display: flex;
+  width: 18%;
+  flex-direction: column !important;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: 90px;
+  right: 41%;
+  section {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
+}
+
+.table-option__header {
+  display: flex;
+  font-family: $main-font;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
 }

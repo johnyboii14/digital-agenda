@@ -1,7 +1,4 @@
-import { useNavigate } from "react-router-dom";
 import TableRow from "@mui/material/TableRow";
-
-import * as React from "react";
 
 import { StyledTableCell } from ".";
 
@@ -12,7 +9,6 @@ interface DataRowProps {
 }
 
 function DataRow({ event }: DataRowProps) {
-  const navigate = useNavigate();
   if (!event) {
     return null;
   }
