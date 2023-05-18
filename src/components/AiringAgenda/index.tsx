@@ -31,7 +31,7 @@ const MyAgendaEvent = ({ event }: EventProps) => {
     <Tooltip title={event.item_name}>
       <div>
         <div className="agenda-item-name__text">{event.item_name}</div>
-        <div className="agenda-item-show__text">{event.show}</div>
+        <div className="agenda-item-show__text">{event.show} - {event.station}</div>
       </div>
     </Tooltip>
   );
