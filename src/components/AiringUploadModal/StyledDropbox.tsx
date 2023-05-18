@@ -1,16 +1,19 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const getColor = (props: any): any => {
-  if (props.isDragAccept) {
-    return "#00e676";
+  if (props.isDragAccept === true) {
+    return '#00e676';
   }
-  if (props.isDragReject) {
-    return "#ff1744";
+
+  if (props.isDragReject === true) {
+    return '#ff1744';
   }
-  if (props.isFocused) {
-    return "#2196f3";
+
+  if (props.isFocused === true) {
+    return '#2196f3';
   }
-  return "#eeeeee";
+
+  return '#eeeeee';
 };
 
 export default styled.div`

@@ -1,12 +1,12 @@
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
   handleClose: () => void;
   deleteMessage: string;
-  handleDelete: Function;
+  handleDelete: () => void;
 }
 
 function DeleteConfirmModal({
@@ -14,7 +14,10 @@ function DeleteConfirmModal({
   handleClose,
   deleteMessage,
   handleDelete,
-}: DeleteConfirmModalProps) {
+}: DeleteConfirmModalProps): JSX.Element {
+  const handleDeleteClick = (): void => {
+    handleDelete();
+  };
   return (
     <Modal open={isOpen}>
       <Box>
@@ -26,7 +29,7 @@ function DeleteConfirmModal({
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => handleDelete()}
+                onClick={handleDeleteClick}
               >
                 Delete
               </Button>
@@ -36,8 +39,10 @@ function DeleteConfirmModal({
             <Button
               variant="text"
               color="info"
-              style={{ color: "grey" }}
-              onClick={() => handleClose()}
+              style={{ color: 'grey' }}
+              onClick={() => {
+                handleClose();
+              }}
             >
               Close
             </Button>

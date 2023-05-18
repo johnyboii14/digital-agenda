@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import TableRow from "@mui/material/TableRow";
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import TableRow from '@mui/material/TableRow';
 
-import { StyledTableCell } from ".";
+import { StyledTableCell } from '.';
 
-import { Airing } from "../../@types";
+import { type Airing } from '../../@types';
 
 interface AdminTableRowProps {
   data: Airing;
@@ -20,18 +20,26 @@ function AdminTableRow({
   handleDeleteClick,
   handleEditClick,
 }: AdminTableRowProps): JSX.Element {
-  const [anchorEl, setMenuEl] = useState<null | HTMLElement>(null);
-  const open: boolean = Boolean(anchorEl);
-  const handleClose = () => setMenuEl(null);
+  const [anchorEl, setMenuEl] = useState<undefined | HTMLElement>(undefined);
+  const open = Boolean(anchorEl);
+  const handleClose = (): void => {
+    setMenuEl(undefined);
+  };
+
   const handleDeleteBtnClick = (): void => {
     handleDeleteClick(data);
   };
+
   const handleEditBtnClick = (): void => {
     handleEditClick(data);
   };
+
   const handleAdminAiringMenuClick = (
     event: React.MouseEvent<HTMLButtonElement>
-  ) => setMenuEl(event.currentTarget);
+  ): void => {
+    setMenuEl(event.currentTarget);
+  };
+
   const {
     item_name: itemName,
     item_number: itemNum,
@@ -47,9 +55,9 @@ function AdminTableRow({
   return (
     <TableRow
       sx={{
-        border: "none",
-        "&:nth-of-type(odd)": {
-          backgroundColor: "#F9E9E3",
+        border: 'none',
+        '&:nth-of-type(odd)': {
+          backgroundColor: '#F9E9E3',
         },
       }}
     >
@@ -65,7 +73,7 @@ function AdminTableRow({
       <StyledTableCell sx={{ width: 3 }}>
         <Button
           onClick={handleAdminAiringMenuClick}
-          sx={{ color: "grey" }}
+          sx={{ color: 'grey' }}
           variant="text"
         >
           ...
@@ -76,7 +84,7 @@ function AdminTableRow({
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ "aria-labelledby": `${data.ID}-button` }}
+        MenuListProps={{ 'aria-labelledby': `${data.ID}-button` }}
       >
         <MenuItem onClick={handleEditBtnClick}>Manage Airing</MenuItem>
         <MenuItem onClick={handleDeleteBtnClick}>Delete Airing</MenuItem>

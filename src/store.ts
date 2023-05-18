@@ -1,5 +1,5 @@
-import { configureStore, PreloadedState } from "@reduxjs/toolkit";
-import thunk from "redux-thunk";
+import { configureStore, type PreloadedState } from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
 import {
   persistStore,
   persistReducer,
@@ -9,13 +9,13 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-import rootReducer from "./reducers";
+import rootReducer from './reducers';
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   version: 1,
   storage,
 };
@@ -31,7 +31,7 @@ const store = configureStore({
     }).prepend(thunk),
 });
 
-export function setupStore(preloadedState?: PreloadedState<RootState>) {
+export function setupStore(preloadedState?: PreloadedState<RootState>): any {
   return configureStore({
     reducer: rootReducer,
     preloadedState,

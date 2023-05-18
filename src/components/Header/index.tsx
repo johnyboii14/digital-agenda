@@ -1,23 +1,22 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
-import IconButton from '@mui/material/IconButton'
-import CollectionsIcon from '@mui/icons-material/Collections'
-import TableViewIcon from '@mui/icons-material/TableView'
-import LoginIcon from '@mui/icons-material/Login'
+import IconButton from '@mui/material/IconButton';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import TableViewIcon from '@mui/icons-material/TableView';
+import LoginIcon from '@mui/icons-material/Login';
 
-import SearchBar from './SearchBar'
+import SearchBar from './SearchBar';
 
-import Logo from '../../assets/images/RctvLogo.png'
+import Logo from '../../assets/images/RctvLogo.png';
 
+import './styles.scss';
 
-import './styles.scss'
+const Header = (): JSX.Element => {
+  const navigate = useNavigate();
+  const handleClick = (): void => {
+    navigate('/admin');
+  };
 
-const Header = () => {
-  const navigate = useNavigate()
-  const handleClick = () => {
-    navigate(`/admin`)
-  }
   return (
     <header className="home-header">
       <img src={Logo} alt="Rare Collectibles logo" />
@@ -48,7 +47,7 @@ const Header = () => {
         </section>
       </article>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

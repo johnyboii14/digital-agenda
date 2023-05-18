@@ -1,25 +1,24 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 import {
-  Airing,
-  AiringFormData,
-  AiringUpdateData,
-  SNACKBAR_STATUSES,
-} from "../../@types";
+  type Airing,
+  type AiringFormData,
+  type AiringUpdateData,
+} from '../../@types';
 
-import { useAppDispatch } from "../../config/hooks";
-import { getAdminAirings, editAiring } from "../../actions/airings";
+import { useAppDispatch } from '../../config/hooks';
+import { getAdminAirings, editAiring } from '../../actions/airings';
 
 interface EditAiringModalProps {
   isOpen: boolean;
-  handleClose: Function;
+  handleClose: () => void;
   airingToEdit: Airing;
-  showSnackbar: Function;
+  showSnackbar: (isError: boolean, status: string) => void;
 }
 
 interface FormField {
@@ -35,87 +34,88 @@ function EditAiringModal({
   handleClose,
   airingToEdit,
   showSnackbar,
-}: EditAiringModalProps) {
+}: EditAiringModalProps): JSX.Element {
   const dispatch = useAppDispatch();
   const {
-    airing_id,
+    airing_id: initialAiringId,
     type,
     station,
-    airing_time,
+    airing_time: initialAiringTime,
     show,
-    item_number,
-    item_name,
+    item_number: initialItemNumber,
+    item_name: initialItemName,
     price,
   } = airingToEdit;
   const initialAiringForm: AiringFormData = {
-    airing_id,
+    airing_id: initialAiringId,
     type,
     station,
-    airing_time,
+    airing_time: initialAiringTime,
     show,
-    item_number,
-    item_name,
+    item_number: initialItemNumber,
+    item_name: initialItemName,
     price,
   };
   const [airingToUpdate, updateAiringForm] =
     useState<AiringFormData>(initialAiringForm);
   const FORM_FIELDS: FormField[] = [
     {
-      label: "Airing ID",
-      key: "airing_id",
+      label: 'Airing ID',
+      key: 'airing_id',
       value: airingToUpdate?.airing_id,
       initialValue: airingToEdit.airing_id,
     },
     {
-      label: "Type",
-      key: "type",
+      label: 'Type',
+      key: 'type',
       value: airingToUpdate?.type,
       initialValue: airingToEdit.type,
     },
     {
-      label: "Station",
-      key: "station",
+      label: 'Station',
+      key: 'station',
       value: airingToUpdate?.station,
       initialValue: airingToEdit.station,
     },
     {
-      label: "Airing Time",
-      key: "airing_time",
+      label: 'Airing Time',
+      key: 'airing_time',
       value: airingToUpdate?.airing_time,
       initialValue: airingToEdit.airing_time,
     },
     {
-      label: "Show",
-      key: "show",
+      label: 'Show',
+      key: 'show',
       value: airingToUpdate?.show,
       initialValue: airingToEdit.show,
     },
     {
-      label: "Item Number",
-      key: "item_number",
+      label: 'Item Number',
+      key: 'item_number',
       value: airingToUpdate?.item_number,
       initialValue: airingToEdit.item_number,
     },
     {
-      label: "Item Name",
-      key: "item_name",
+      label: 'Item Name',
+      key: 'item_name',
       value: airingToUpdate?.item_name,
       initialValue: airingToEdit.item_name,
     },
     {
-      label: "Price",
-      key: "price",
+      label: 'Price',
+      key: 'price',
       value: airingToUpdate?.price,
       initialValue: airingToEdit.price,
-      type: "number",
+      type: 'number',
     },
   ];
   const dataFields = FORM_FIELDS.map((f: FormField): JSX.Element => {
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
       const copyOfState = JSON.parse(JSON.stringify(airingToUpdate));
       copyOfState[f.key] = e.target.value;
       updateAiringForm(copyOfState);
     };
+
     if (f.type === null || f.type === undefined) {
       return (
         <TextField
@@ -128,7 +128,8 @@ function EditAiringModal({
         />
       );
     }
-    if (f.type === "number") {
+
+    if (f.type === 'number') {
       return (
         <TextField
           value={f.value}
@@ -141,6 +142,7 @@ function EditAiringModal({
         />
       );
     }
+
     return (
       <TextField
         value={f.value}
@@ -152,29 +154,32 @@ function EditAiringModal({
       />
     );
   });
-  const handleEditConfirm = async () => {
-    // create airing obj
+  const updateAiring = async (): Promise<void> => {
+    // Create airing obj
     const dataObj: AiringUpdateData = {
       ...airingToUpdate,
       ID: airingToEdit.ID,
     };
-    // dispatch edit
+    // Dispatch edit
     const res = await dispatch(editAiring(dataObj));
-    // show snackbar
-    if (res.meta.requestStatus === "fulfilled") {
-      dispatch(getAdminAirings());
-      showSnackbar(
-        `Successfully updated ${airingToUpdate.item_name}`,
-        SNACKBAR_STATUSES.SUCCESS
-      );
-      return handleClose();
-    } else {
-      showSnackbar(
-        `Failed to update ${airingToEdit.item_name}, please contact Mike or jonathan`,
-        SNACKBAR_STATUSES.ERROR
-      );
+    // Show snackbar
+    if (res.meta.requestStatus === 'fulfilled') {
+      void dispatch(getAdminAirings());
+      showSnackbar(false, `Successfully updated ${airingToUpdate.item_name}`);
+      handleClose();
+      return;
     }
+
+    showSnackbar(
+      true,
+      `Failed to update ${airingToEdit.item_name}, please contact Mike or jonathan`
+    );
   };
+
+  const handleEditConfirm = (): void => {
+    void updateAiring();
+  };
+
   return (
     <Modal open={isOpen}>
       <Box>
@@ -196,8 +201,8 @@ function EditAiringModal({
             <Button
               variant="text"
               color="info"
-              style={{ color: "grey" }}
-              onClick={() => handleClose()}
+              style={{ color: 'grey' }}
+              onClick={handleClose}
             >
               Close
             </Button>

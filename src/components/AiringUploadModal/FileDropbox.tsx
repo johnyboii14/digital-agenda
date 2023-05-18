@@ -1,13 +1,13 @@
-import { RefCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import { type RefCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 
-import StyledDropbox from "./StyledDropbox";
+import StyledDropbox from './StyledDropbox';
 
-type CSVDropboxProps = {
-  onDrop: RefCallback<Array<File>>;
-};
+interface CSVDropboxProps {
+  onDrop: RefCallback<File[]>;
+}
 
-function CSVDropbox({ onDrop }: CSVDropboxProps) {
+function CSVDropbox({ onDrop }: CSVDropboxProps): JSX.Element {
   const { getRootProps, getInputProps, isDragAccept, isFocused, isDragReject } =
     useDropzone({
       onDrop,

@@ -1,23 +1,24 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
-import CoinImg from '../../assets/images/Samplecoin.png'
+import CoinImg from '../../assets/images/Samplecoin.png';
 
-import DropDownMenu from '../../components/DropDownMenu'
+import DropDownMenu from '../../components/DropDownMenu';
 
-import EditIcon from '@mui/icons-material/Edit'
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn'
+import EditIcon from '@mui/icons-material/Edit';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
-import './styles.scss'
+import './styles.scss';
 
-function ProductPage() {
-  const navigate = useNavigate()
-  const handleBack = () => {
-    navigate(-1)
-  }
-  const handleEdit = () => {
-    navigate(`/`)
-  }
+function ProductPage(): JSX.Element {
+  const navigate = useNavigate();
+  const handleBack = (): void => {
+    navigate(-1);
+  };
+
+  const handleEdit = (): void => {
+    navigate('/');
+  };
+
   return (
     <div className="product-background">
       <header className="header-product">
@@ -85,7 +86,7 @@ function ProductPage() {
         </section>
       </body>
     </div>
-  )
+  );
 }
 
-export default ProductPage
+export default ProductPage;

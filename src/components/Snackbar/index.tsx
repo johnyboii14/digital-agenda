@@ -1,9 +1,9 @@
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import { SNACKBAR_STATUSES } from "../../@types";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { type SNACKBAR_STATUSES } from '../../@types';
 
 interface RCTVSnackbarProps {
-  setSnackbar: Function;
+  setSnackbar: (bool: boolean) => void;
   severity: SNACKBAR_STATUSES;
   isOpen: boolean;
   snackbarMessage: string;
@@ -14,16 +14,18 @@ function RCTVSnackbar({
   severity,
   isOpen,
   snackbarMessage,
-}: RCTVSnackbarProps) {
+}: RCTVSnackbarProps): JSX.Element {
   const handleSnackbarClose = (
     _e?: React.SyntheticEvent | Event,
     reason?: string
-  ) => {
-    if (reason === "clickaway") {
+  ): void => {
+    if (reason === 'clickaway') {
       return;
     }
+
     setSnackbar(false);
   };
+
   return (
     <Snackbar
       open={isOpen}
@@ -33,7 +35,7 @@ function RCTVSnackbar({
       <Alert
         onClose={handleSnackbarClose}
         severity={severity}
-        sx={{ width: "100%" }}
+        sx={{ width: '100%' }}
       >
         {snackbarMessage}
       </Alert>

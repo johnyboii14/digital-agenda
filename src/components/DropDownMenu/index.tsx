@@ -1,10 +1,8 @@
-import React from "react";
+import Composites from './Composites';
+import DownSells from './DownSells';
+import UpSells from './UpSells';
 
-import Composites from "./Composites";
-import DownSells from "./DownSells";
-import UpSells from "./UpSells";
-
-function DropDownMenu() {
+function DropDownMenu(): JSX.Element {
   return (
     <div>
       <Composites />

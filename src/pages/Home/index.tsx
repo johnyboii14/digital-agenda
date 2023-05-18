@@ -1,26 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react';
 
-import AgendaCalendar from '../../components/AiringAgenda'
-import Header from '../../components/Header'
+import AgendaCalendar from '../../components/AiringAgenda';
+import Header from '../../components/Header';
 
-import { useAppDispatch } from '../../config/hooks'
-import { clearEvents } from '../../actions/events'
-import { clearAirings } from '../../actions/airings'
+import { useAppDispatch } from '../../config/hooks';
+import { clearEvents } from '../../actions/events';
+import { clearAirings } from '../../actions/airings';
 
-import './styles.scss'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
+import './styles.scss';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-function Home() {
-  const dispatch = useAppDispatch()
-  const [isDataView, setIsDataView] = useState(false)
+function Home(): JSX.Element {
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(clearEvents())
-    dispatch(clearAirings())
-  }, [dispatch])
-
-  const handleToggle = () => {
-    setIsDataView(!isDataView)
-  }
+    void dispatch(clearEvents());
+    void dispatch(clearAirings());
+  }, [dispatch]);
 
   return (
     <div className="main-page-style">
@@ -29,7 +24,7 @@ function Home() {
         <AgendaCalendar />
       </main>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

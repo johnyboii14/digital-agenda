@@ -1,57 +1,76 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import RCTVSnackbar from "../../components/Snackbar";
+import RCTVSnackbar from '../../components/Snackbar';
 
-import { signIn } from "../../actions/auth";
+import { signIn } from '../../actions/auth';
 
-import { SNACKBAR_STATUSES } from "../../@types";
+import { SNACKBAR_STATUSES } from '../../@types';
 
-import "./styles.scss";
-import { useAppDispatch } from "../../config/hooks";
+import './styles.scss';
+import { useAppDispatch } from '../../config/hooks';
 
 function LoginPage(): JSX.Element {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [errorUsername, setErrorUsername] = useState<string>("");
-  const [errorPassword, setErrorPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [errorUsername, setErrorUsername] = useState<string>('');
+  const [errorPassword, setErrorPassword] = useState<string>('');
   const [snackbarOpen, setSnackbar] = useState<boolean>(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<SNACKBAR_STATUSES>(
     SNACKBAR_STATUSES.SUCCESS
   );
   const dispatch = useAppDispatch();
-  const showSnackbarMessage = (msg: string, severity: SNACKBAR_STATUSES) => {
+  const showSnackbarMessage = (
+    msg: string,
+    severity: SNACKBAR_STATUSES
+  ): void => {
     setSnackbarMessage(msg);
     setSnackbarSeverity(severity);
-    return setSnackbar(true);
+    setSnackbar(true);
   };
+
   const navigate = useNavigate();
-  const handleGoHomeClick = () => navigate("/");
+  const handleGoHomeClick = (): void => {
+    navigate('/');
+  };
 
-  const handleUsernameInput = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleUsernameInput = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     setUsername(e.target.value);
-  const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setPassword(e.target.value);
+  };
 
-  const handleSignInClick = async () => {
+  const handlePasswordInput = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setPassword(e.target.value);
+  };
+
+  const authorizeData = async (): Promise<void> => {
     const isCredsValid = await dispatch(signIn({ username, password }));
-    if (isCredsValid.type === "SIGN_IN/fulfilled") {
-      showSnackbarMessage("Successfully Logged In!", SNACKBAR_STATUSES.SUCCESS);
-      navigate("/admin")
+    if (isCredsValid.type === 'SIGN_IN/fulfilled') {
+      showSnackbarMessage('Successfully Logged In!', SNACKBAR_STATUSES.SUCCESS);
+      navigate('/admin');
     } else {
       setErrorPassword(password);
       setErrorUsername(username);
       showSnackbarMessage(
-        "Invalid credentials, please check your username or password",
+        'Invalid credentials, please check your username or password',
         SNACKBAR_STATUSES.ERROR
       );
     }
+  };
+
+  const handleSignInClick = (): void => {
+    authorizeData()
+      .then(() => {})
+      .catch(() => {});
   };
 
   const usernameWrong = username === errorUsername;
@@ -69,13 +88,13 @@ function LoginPage(): JSX.Element {
           <header>Welcome Back</header>
           <form className="sign-in-form__form">
             <TextField
-              color={!usernameWrong ? "error" : "error"}
+              color={usernameWrong ? 'error' : 'error'}
               label="Username"
               value={username}
               onChange={handleUsernameInput}
             />
             <TextField
-              color={!passwordWrong ? "primary" : "error"}
+              color={passwordWrong ? 'primary' : 'error'}
               label="Password"
               type="password"
               value={password}

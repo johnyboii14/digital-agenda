@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TablePagination from "@mui/material/TablePagination";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import { visuallyHidden } from "@mui/utils";
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TablePagination from '@mui/material/TablePagination';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import { visuallyHidden } from '@mui/utils';
 
-import AdminTableRow from "./AdminTableRow";
+import AdminTableRow from './AdminTableRow';
 
-import { useAppDispatch, useAppSelector } from "../../config/hooks";
+import { useAppDispatch, useAppSelector } from '../../config/hooks';
 
-import { clearAirings, getAdminAirings } from "../../actions/airings";
+import { clearAirings, getAdminAirings } from '../../actions/airings';
 
-import { Airing, HeaderHash, SortKey } from "../../@types";
+import { type Airing, type HeaderHash, type SortKey } from '../../@types';
 import {
   ADMIN_NEXT_TABLE_CURSOR_KEY,
   ADMIN_PAGE_KEY,
@@ -31,56 +31,64 @@ import {
   DEFAULT_PREVIOUS_CURSOR,
   DEFAULT_ROW_OPTS,
   DIGITAL_AGENDA_TABLE_HEADERS,
-} from "../../constants";
-import formatRowHeaders from "../../modules/formatRowHeaders";
+} from '../../constants';
+import formatRowHeaders from '../../modules/formatRowHeaders';
 
 const StyledTableCellHeader = styled(TableCell)(() => ({
-  backgroundColor: "#F5F5F5",
-  fontFamily: "Neue Haas Grotesk Text Pro",
-  fontWeight: "600",
-  textAlign: "center",
+  backgroundColor: '#F5F5F5',
+  fontFamily: 'Neue Haas Grotesk Text Pro',
+  fontWeight: '600',
+  textAlign: 'center',
 }));
 
 const headerTypeHashmap: HeaderHash = {
-  item_name: "string",
-  item_number: "string",
-  airing_id: "string",
-  airing_time: "date",
-  show: "string",
-  price: "numeric",
-  station: "string",
+  item_name: 'string',
+  item_number: 'string',
+  airing_id: 'string',
+  airing_time: 'date',
+  show: 'string',
+  price: 'numeric',
+  station: 'string',
 };
 
-const columns = (sortKey: string, isDesc: boolean, onClick: Function) =>
+const columns = (
+  sortKey: string,
+  isDesc: boolean,
+  onClick: (key: string) => void
+): JSX.Element[] =>
   DIGITAL_AGENDA_TABLE_HEADERS.filter(
-    (k) => k !== "highlights" && k !== "attributes" && k !== "images"
-  ).map((key) => (
-    <StyledTableCellHeader
-      align="right"
-      padding="normal"
-      key={key}
-      sx={{ color: "darkgrey", width: 60, textAlign: "center" }}
-    >
-      <TableSortLabel
-        active={sortKey === key}
-        direction={isDesc ? "desc" : "asc"}
-        onClick={() => onClick(key)}
+    (k) => k !== 'highlights' && k !== 'attributes' && k !== 'images'
+  ).map(
+    (key): JSX.Element => (
+      <StyledTableCellHeader
+        align="right"
+        padding="normal"
+        key={key}
+        sx={{ color: 'darkgrey', width: 60, textAlign: 'center' }}
       >
-        {formatRowHeaders(key)}
-        {sortKey === key && (
-          <Box component="span" sx={visuallyHidden}>
-            {isDesc ? "sorted descending" : "sorted ascending"}
-          </Box>
-        )}
-      </TableSortLabel>
-    </StyledTableCellHeader>
-  ));
+        <TableSortLabel
+          active={sortKey === key}
+          direction={isDesc ? 'desc' : 'asc'}
+          onClick={() => {
+            onClick(key);
+          }}
+        >
+          {formatRowHeaders(key)}
+          {sortKey === key && (
+            <Box component="span" sx={visuallyHidden}>
+              {isDesc ? 'sorted descending' : 'sorted ascending'}
+            </Box>
+          )}
+        </TableSortLabel>
+      </StyledTableCellHeader>
+    )
+  );
 
 export const StyledTableCell = styled(TableCell)(() => ({
-  border: "none",
-  fontWeight: "500",
-  textAlign: "center",
-  fontFamily: "Neue Haas Grotesk Text Pro",
+  border: 'none',
+  fontWeight: '500',
+  textAlign: 'center',
+  fontFamily: 'Neue Haas Grotesk Text Pro',
 }));
 
 interface AdminAiringTableProps {
@@ -96,9 +104,10 @@ function AdminAiringTable({
   const airings = useAppSelector((state) => state.airings.adminAirings);
   const airingsStatus = useAppSelector((state) => state.airings.status);
   let cursor = localStorage.getItem(ADMIN_TABLE_CURSOR_KEY);
-  if (cursor === "" || cursor === undefined || cursor === null) {
-    cursor = "1";
+  if (cursor === '' || cursor === undefined || cursor === null) {
+    cursor = '1';
   }
+
   const numOfShoppingBlocksToday = useAppSelector(
     (state) => state.airings.numOfShoppingBlocksToday
   );
@@ -107,27 +116,31 @@ function AdminAiringTable({
   );
   const airingTotal = useAppSelector((state) => state.airings.airingTotal);
   let nextCursor = localStorage.getItem(ADMIN_NEXT_TABLE_CURSOR_KEY);
-  if (nextCursor === "" || nextCursor === undefined || nextCursor === null) {
+  if (nextCursor === '' || nextCursor === undefined || nextCursor === null) {
     nextCursor = DEFAULT_CURSOR;
   }
 
-  let rawPreviousCursor = localStorage.getItem(ADMIN_PREVIOUS_TABLE_CURSOR_KEY);
-  let initialPreviousCursor: Array<string> = DEFAULT_PREVIOUS_CURSOR;
+  const rawPreviousCursor = localStorage.getItem(
+    ADMIN_PREVIOUS_TABLE_CURSOR_KEY
+  );
+  let initialPreviousCursor: string[] = DEFAULT_PREVIOUS_CURSOR;
   if (rawPreviousCursor !== undefined && rawPreviousCursor !== null) {
-    initialPreviousCursor = JSON.parse(rawPreviousCursor as string);
+    initialPreviousCursor = JSON.parse(rawPreviousCursor);
   }
+
   let initialRowsPerPage = localStorage.getItem(ADMIN_ROWS_PER_PAGE_KEY);
   if (
-    initialRowsPerPage === "" ||
+    initialRowsPerPage === '' ||
     initialRowsPerPage === undefined ||
     initialRowsPerPage === null
   ) {
     initialRowsPerPage = DEFAULT_ADMIN_PER_PAGE;
   }
+
   const rawPage = localStorage.getItem(ADMIN_PAGE_KEY);
   let initialPage = 0;
-  if (rawPage !== "" && rawPage !== undefined && rawPage !== null) {
-    initialPage = JSON.parse(rawPage as string);
+  if (rawPage !== '' && rawPage !== undefined && rawPage !== null) {
+    initialPage = JSON.parse(rawPage);
   }
 
   const numOfAiringsToday = useAppSelector(
@@ -137,23 +150,26 @@ function AdminAiringTable({
   const [previousCursor, setPreviousCursor] = useState<Array<number | string>>(
     initialPreviousCursor
   );
-  const [sortKey, setSortKey] = useState<string>("item_name");
-  const [sortKeyType, setKeyType] = useState<SortKey>("string");
+  const [sortKey, setSortKey] = useState<string>('item_name');
+  const [sortKeyType, setKeyType] = useState<SortKey>('string');
   const [isDesc, setDesc] = useState<boolean>(false);
   const [rowsPerPage, setRowsPerPage] = useState<number>(
     parseInt(initialRowsPerPage, 10)
   );
   useEffect(() => {
-    dispatch(clearAirings());
+    void dispatch(clearAirings());
   }, [dispatch]);
-  const handleChangePage = (_: unknown, newPage: number) => {
-    if (airingsStatus === "pending") {
+  const handleChangePage = (_: unknown, newPage: number): void => {
+    if (airingsStatus === 'pending') {
       return;
     }
+
     if (newPage > page) {
-      localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, nextCursor as string);
+      if (nextCursor !== null) {
+        localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, nextCursor);
+      }
       const newPreviousCursorArr = JSON.parse(JSON.stringify(previousCursor));
-      newPreviousCursorArr.push(cursor as string);
+      newPreviousCursorArr.push(cursor);
       localStorage.setItem(
         ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
         JSON.stringify(newPreviousCursorArr)
@@ -163,7 +179,10 @@ function AdminAiringTable({
       if (page === 0) {
         return;
       }
-      localStorage.setItem(ADMIN_NEXT_TABLE_CURSOR_KEY, cursor as string);
+
+      if (cursor != null) {
+        localStorage.setItem(ADMIN_NEXT_TABLE_CURSOR_KEY, cursor);
+      }
       localStorage.setItem(
         ADMIN_TABLE_CURSOR_KEY,
         previousCursor[previousCursor.length - 1].toString()
@@ -176,60 +195,74 @@ function AdminAiringTable({
       );
       setPreviousCursor(newPreviousCursorArr);
     }
-    dispatch(getAdminAirings());
+
+    void dispatch(getAdminAirings());
     setPage(newPage);
     localStorage.setItem(ADMIN_PAGE_KEY, newPage.toString());
   };
-  const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+e.target.value);
+
+  const handleChangeRowsPerPage = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setRowsPerPage(Number(e.target.value));
     localStorage.setItem(
       ADMIN_ROWS_PER_PAGE_KEY,
-      JSON.stringify(+e.target.value)
+      JSON.stringify(Number(e.target.value))
     );
     localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, DEFAULT_CURSOR);
     localStorage.setItem(
       ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
       JSON.stringify(DEFAULT_PREVIOUS_CURSOR)
     );
-    dispatch(getAdminAirings());
-    localStorage.setItem(ADMIN_PAGE_KEY, "0");
-    return setPage(0);
+    void dispatch(getAdminAirings());
+    localStorage.setItem(ADMIN_PAGE_KEY, '0');
+    setPage(0);
   };
-  const headerClickHandler = (key: string) => {
+
+  const headerClickHandler = (key: string): void => {
     const isCurrentKey = key === sortKey;
     if (isCurrentKey) {
-      return setDesc(!isDesc);
+      setDesc(!isDesc);
+      return;
     }
+
     setKeyType(headerTypeHashmap[key]);
     setDesc(false);
-    return setSortKey(key);
+    setSortKey(key);
   };
+
   const applySort = (a: any, b: any): number => {
-    if (sortKeyType === "numeric") {
-      const firstNum = +a[sortKey];
-      const secondNum = +b[sortKey];
+    if (sortKeyType === 'numeric') {
+      const firstNum = Number(a[sortKey]);
+      const secondNum = Number(b[sortKey]);
       if (firstNum > secondNum) {
         return 1;
       }
+
       if (firstNum < secondNum) {
         return -1;
       }
     }
-    if (sortKeyType === "date") {
+
+    if (sortKeyType === 'date') {
       const dateA = new Date(a[sortKey]);
       const dateB = new Date(b[sortKey]);
       if (dateA < dateB) {
         return 1;
       }
+
       if (dateA > dateB) {
         return -1;
       }
     }
-    if (sortKeyType === "string") {
+
+    if (sortKeyType === 'string') {
       return a[sortKey].localeCompare(b[sortKey]);
     }
+
     return -1;
   };
+
   const copyOfAirings = JSON.parse(
     JSON.stringify(airings !== undefined ? airings : [])
   );
@@ -261,16 +294,16 @@ function AdminAiringTable({
           <h6>Shopping Channels Today</h6>
         </article>
       </section>
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 750 }}>
           <Table size="small" stickyHeader aria-label="sticky table">
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#F5f5f5" }}>
+              <TableRow sx={{ backgroundColor: '#F5f5f5' }}>
                 {columns(sortKey, isDesc, headerClickHandler)}
                 <StyledTableCellHeader />
               </TableRow>
             </TableHead>
-            <TableBody sx={{ border: "none" }}>{rows}</TableBody>
+            <TableBody sx={{ border: 'none' }}>{rows}</TableBody>
           </Table>
         </TableContainer>
         <TablePagination

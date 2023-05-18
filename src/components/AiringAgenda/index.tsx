@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import Tooltip from "@mui/material/Tooltip";
-import moment from "moment";
+import { useEffect } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import Tooltip from '@mui/material/Tooltip';
+import moment from 'moment';
 
-import { useAppDispatch, useAppSelector } from "../../config/hooks";
-import { getDayAgendaAirings } from "../../actions/airings";
-import { AgendaAiring } from "../../@types";
+import { useAppDispatch, useAppSelector } from '../../config/hooks';
+import { getDayAgendaAirings } from '../../actions/airings';
+import { type AgendaAiring } from '../../@types';
 
 const localizer = momentLocalizer(moment);
 
@@ -14,35 +14,36 @@ interface MyAgendaDayHeaderProps {
   label: string;
 }
 
-const MyAgendaDayHeader = ({ date, label }: MyAgendaDayHeaderProps) => {
-  return (
-    <div>
-      <div className="agenda-label__text">{label}</div>
-      <div>{moment(date).format("dddd, MMMM D, YYYY")}</div>
-    </div>
-  );
-};
+const MyAgendaDayHeader = ({
+  date,
+  label,
+}: MyAgendaDayHeaderProps): JSX.Element => (
+  <div>
+    <div className="agenda-label__text">{label}</div>
+    <div>{moment(date).format('dddd, MMMM D, YYYY')}</div>
+  </div>
+);
 
 interface EventProps {
   event: AgendaAiring;
 }
-const MyAgendaEvent = ({ event }: EventProps) => {
-  return (
-    <Tooltip title={event.item_name}>
-      <div>
-        <div className="agenda-item-name__text">{event.item_name}</div>
-        <div className="agenda-item-show__text">{event.show} - {event.station}</div>
+const MyAgendaEvent = ({ event }: EventProps): JSX.Element => (
+  <Tooltip title={event.item_name}>
+    <div>
+      <div className="agenda-item-name__text">{event.item_name}</div>
+      <div className="agenda-item-show__text">
+        {event.show} - {event.station}
       </div>
-    </Tooltip>
-  );
-};
+    </div>
+  </Tooltip>
+);
 
-function AgendaCalendar() {
+function AgendaCalendar(): JSX.Element {
   const dispatch = useAppDispatch();
   const agendaStatus = useAppSelector((state) => state.airings.agendaStatus);
   const formatSelectedDate = (date: Date): string =>
-    date.toISOString().split("T")[0];
-  const airings: Array<AgendaAiring> = useAppSelector(
+    date.toISOString().split('T')[0];
+  const airings: AgendaAiring[] = useAppSelector(
     (state) => state.airings.agendaAirings
   ).map((airing) => {
     const endDate = new Date(airing.airing_time);
@@ -57,20 +58,25 @@ function AgendaCalendar() {
     };
   });
   const handleNavigate = (date: Date): void => {
-    dispatch(getDayAgendaAirings(formatSelectedDate(date)));
+    void dispatch(getDayAgendaAirings(formatSelectedDate(date)));
   };
+
   useEffect(() => {
-    if (agendaStatus === "idle") {
-      dispatch(getDayAgendaAirings(formatSelectedDate(new Date())));
+    if (agendaStatus === 'idle') {
+      void dispatch(getDayAgendaAirings(formatSelectedDate(new Date())));
     }
   }, [agendaStatus, dispatch]);
 
+  const formats = {
+    timeGutterFormat: 'HH:mm',
+  };
   return (
     <div>
       <Calendar
         localizer={localizer}
         startAccessor="airing_start_date"
         endAccessor="end_date"
+        formats={formats}
         titleAccessor="item_name"
         onNavigate={handleNavigate}
         events={airings}
@@ -84,8 +90,8 @@ function AgendaCalendar() {
         view="day"
         onView={() => null}
         tooltipAccessor={(airing: AgendaAiring) => airing.item_name}
-        views={["day"]}
-        style={{ height: 1000, padding: "0 3%" }}
+        views={['day']}
+        style={{ height: 1000, padding: '0 3%' }}
       />
     </div>
   );
