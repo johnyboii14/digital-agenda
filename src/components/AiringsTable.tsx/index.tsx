@@ -24,6 +24,7 @@ import {
 import formatRowHeaders from "../../modules/formatRowHeaders";
 import { useAppDispatch, useAppSelector } from "../../config/hooks";
 import { getEvents } from "../../actions/events";
+import { getAirings2 } from "../../actions/airings";
 
 const StyledTableCellHeader = styled(TableCell)(() => ({
   backgroundColor: "#F5F5F5",
@@ -89,7 +90,7 @@ function AiringsTable({ events }: AiringTableProps) {
   const [savedEvents, setEvents] = useState<Array<EVENT>>([]);
   useEffect(() => {
     if (eventStatus === "idle") {
-      dispatch(getEvents());
+      dispatch(getAirings2());
     }
     if (eventStatus === "succeeded") {
       setEvents(airings);

@@ -20,7 +20,7 @@ function ProductPage() {
   };
   return (
     <div className="product-background">
-      <header className="header-product">
+      <nav className="header-product">
         <div className="edit-button-design " onClick={handleEdit}>
           <article className="edit-button-position">
             <EditIcon />
@@ -34,11 +34,11 @@ function ProductPage() {
           </article>
         </div>
         <h1>C3456 - .01 1873 Closed 3 Indian Cent PCGS MS65RD</h1>
-      </header>
-      <body className="body-placement">
+      </nav>
+      <main className="body-placement">
         <section className="product-info">
           <h5 className="product-info-title">Price</h5>
-          <h4 className="product-info-price">$1,399.99</h4>
+          <h5 className="product-info-price">$1,399.99</h5>
           <h5 className="product-info-title">Composition</h5>
           <h5 className="product-info-detail">99.9% Silver</h5>
           <h5 className="product-info-title">Weight</h5>
@@ -81,7 +81,7 @@ function ProductPage() {
             <DropDownMenu />
           </section>
         </section>
-      </body>
+      </main>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   editAiring,
   getAdminAirings,
   getAirings,
+  getAirings2,
   updateCursor,
 } from "../actions/airings";
 import { Airing } from "../@types";
@@ -55,6 +56,12 @@ const airingsSlice = createSlice({
       error: action,
     }));
     builder.addCase(getAirings.fulfilled, (_state, action) => ({
+      ...initialState,
+      status: "succeeded",
+      airings: action.payload.data,
+      error: null,
+    }));
+    builder.addCase(getAirings2.fulfilled, (_state, action) => ({
       ...initialState,
       status: "succeeded",
       airings: action.payload.data,

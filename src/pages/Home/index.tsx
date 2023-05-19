@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import AiringsTable from "../../components/AiringsTable.tsx";
 
 import "./styles.scss";
+import AdminAiringTable from "../../components/AdminAiringTable";
 
 function Home() {
   const dispatch = useAppDispatch();
@@ -19,7 +20,8 @@ function Home() {
     <div className="main-page-style">
       <Header />
       <main>
-        <AiringsTable events={events} />
+        {/* <AiringsTable events={events} /> */}
+        <AdminAiringTable />
       </main>
     </div>
   );

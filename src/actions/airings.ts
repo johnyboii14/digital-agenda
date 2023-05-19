@@ -4,7 +4,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiUrl from "../constants/apiUrl";
 import { AdminAiringParams, Airing, CreateAiringBody } from "../@types";
 
-const url = `${apiUrl}/airings/`;
+const url = `${apiUrl}airings/`;
+
+export const GET_AIRINGS2 = "GET_AIRINGS2";
+export const getAirings2 = createAsyncThunk(GET_AIRINGS2, async () => {
+  const res: AxiosResponse = await axios.get(url);
+  return res.data;
+});
 
 export const GET_AIRINGS = "GET_AIRINGS";
 export const getAirings = createAsyncThunk(GET_AIRINGS, async () => {
