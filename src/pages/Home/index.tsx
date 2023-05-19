@@ -20,8 +20,7 @@ function Home() {
     <div className="main-page-style">
       <Header />
       <main>
-        {/* <AiringsTable events={events} /> */}
-        <AdminAiringTable />
+        <AiringsTable events={events} />
       </main>
     </div>
   );
