@@ -46,15 +46,17 @@ function AgendaCalendar(): JSX.Element {
   const airings: AgendaAiring[] = useAppSelector(
     (state) => state.airings.agendaAirings
   ).map((airing) => {
-    const endDate = new Date(airing.airing_time);
-    const date = new Date(endDate);
-    date.setMinutes(date.getMinutes() + 30);
-    const newDateString = moment(date).toDate();
-    const airingStartDate = moment(airing.airing_time).toDate();
+    const timezoneRemovedVal = airing.airing_time.slice(
+      0,
+      airing.airing_time.length - 4
+    );
+    const airingDate = new Date(timezoneRemovedVal);
+    const endDate = new Date(timezoneRemovedVal);
+    endDate.setMinutes(endDate.getMinutes() + 30);
     return {
       ...airing,
-      end_date: newDateString,
-      airing_start_date: airingStartDate,
+      end_date: endDate,
+      airing_start_date: airingDate,
     };
   });
   const handleNavigate = (date: Date): void => {
@@ -67,16 +69,12 @@ function AgendaCalendar(): JSX.Element {
     }
   }, [agendaStatus, dispatch]);
 
-  const formats = {
-    timeGutterFormat: 'HH:mm',
-  };
   return (
     <div>
       <Calendar
         localizer={localizer}
         startAccessor="airing_start_date"
         endAccessor="end_date"
-        formats={formats}
         titleAccessor="item_name"
         onNavigate={handleNavigate}
         events={airings}

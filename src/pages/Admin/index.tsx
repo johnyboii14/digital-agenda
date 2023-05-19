@@ -86,7 +86,9 @@ function AdminPage(): JSX.Element {
     void confirmDeleteAiring();
   };
 
-  const airingStatus = useAppSelector((state) => state.airings.status);
+  const airingStatus = useAppSelector(
+    (state: { airings: { status: any } }) => state.airings.status
+  );
   useEffect(() => {
     const rawUsername = localStorage.getItem('username');
     if (
