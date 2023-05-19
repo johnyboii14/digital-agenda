@@ -1,4 +1,4 @@
-@import "./variables.scss";
+@import './variables.scss';
 
 .rbc-event {
   background-color: #9d5e4a;
@@ -10,9 +10,9 @@
   font-size: small;
   color: rgb(255, 158, 39);
   font-weight: 600;
-  transition: .2s all;
+  transition: 0.2s all;
   &:hover {
-    color:rgb(255, 140, 0)
+    color: rgb(255, 140, 0);
   }
 }
 
@@ -20,8 +20,10 @@
   font-size: x-small;
 }
 
-.rbc-event-label {
-  color: #faebe6;
+.rbc-day-slot {
+  .rbc-event-label {
+    display: none;
+  }
 }
 
 .rbc-timeslot-group {
@@ -57,7 +59,19 @@
   }
 }
 
-.rbc-toolbar-label {
-  color: whitesmoke;
+.rbc-toolbar {
+  .rbc-toolbar-label {
+    color: whitesmoke;
+    font-family: $main-font;
+    font-weight: 500;
+    padding-right: 12%;
+  }
+}
+
+.agenda-item-number__text {
   font-family: $main-font;
+  max-width: 50%;
+  font-size: small;
+  color: #f9e8df;
+  font-weight: 500;
 }

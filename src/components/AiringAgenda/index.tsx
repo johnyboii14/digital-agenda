@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
@@ -9,27 +9,13 @@ import { type AgendaAiring } from '../../@types';
 
 const localizer = momentLocalizer(moment);
 
-interface MyAgendaDayHeaderProps {
-  date: Date;
-  label: string;
-}
-
-const MyAgendaDayHeader = ({
-  date,
-  label,
-}: MyAgendaDayHeaderProps): JSX.Element => (
-  <div>
-    <div className="agenda-label__text">{label}</div>
-    <div>{moment(date).format('dddd, MMMM D, YYYY')}</div>
-  </div>
-);
-
 interface EventProps {
   event: AgendaAiring;
 }
 const MyAgendaEvent = ({ event }: EventProps): JSX.Element => (
   <Tooltip title={event.item_name}>
     <div>
+      <header className="agenda-item-number__text">{event.item_number}</header>
       <div className="agenda-item-name__text">{event.item_name}</div>
       <div className="agenda-item-show__text">
         {event.show} - {event.station}
@@ -70,28 +56,27 @@ function AgendaCalendar(): JSX.Element {
   }, [agendaStatus, dispatch]);
 
   return (
-    <div>
-      <Calendar
-        localizer={localizer}
-        startAccessor="airing_start_date"
-        endAccessor="end_date"
-        titleAccessor="item_name"
-        onNavigate={handleNavigate}
-        events={airings}
-        selectable
-        components={{
-          day: {
-            header: MyAgendaDayHeader,
-            event: MyAgendaEvent,
-          },
-        }}
-        view="day"
-        onView={() => null}
-        tooltipAccessor={(airing: AgendaAiring) => airing.item_name}
-        views={['day']}
-        style={{ height: 1000, padding: '0 3%' }}
-      />
-    </div>
+    <Calendar<AgendaAiring>
+      localizer={localizer}
+      startAccessor="airing_start_date"
+      endAccessor="end_date"
+      titleAccessor="item_name"
+      onNavigate={handleNavigate}
+      events={airings}
+      selectable
+      components={{
+        day: {
+          event: MyAgendaEvent,
+        },
+      }}
+      view="day"
+      timeslots={1}
+      step={30}
+      onView={() => null}
+      tooltipAccessor={(airing: AgendaAiring) => airing.item_name}
+      views={['day']}
+      style={{ height: 1000, padding: '0 3%' }}
+    />
   );
 }
 
