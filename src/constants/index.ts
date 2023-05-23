@@ -1,13 +1,13 @@
 export const DEFAULT_ROW_OPTS: number[] = [25, 50, 100];
 
 export const DIGITAL_AGENDA_TABLE_HEADERS = [
-	'item_name',
-	'item_no',
-	'airing_id',
-	'airing_time',
-	'show',
-	'station',
-	'price',
+  'item_name',
+  'item_no',
+  'airing_id',
+  'airing_time',
+  'show',
+  'station',
+  'price',
 ];
 
 export const ADMIN_TABLE_CURSOR_KEY = 'admin_table_cursor';
@@ -20,3 +20,4 @@ export const DEFAULT_CURSOR = '1';
 export const DEFAULT_PREVIOUS_CURSOR = [];
 export const ADMIN_PAGE_KEY = 'admin_page';
 export const AGENDA_DAY_KEY = 'agenda_day';
+export const DEFAULT_TIMEZONE = 'America/Los_Angeles';
