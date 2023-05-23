@@ -13,19 +13,19 @@ import TablePagination from '@mui/material/TablePagination';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 
-import AdminTableRow from './AdminTableRow';
+import AiringTableRow from './AiringTableRow';
 
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 
-import { clearAirings, getAdminAirings } from '../../actions/airings';
+import { getTableAirings } from '../../actions/airings';
 
 import { type Airing, type HeaderHash, type SortKey } from '../../@types';
 import {
-  ADMIN_NEXT_TABLE_CURSOR_KEY,
-  ADMIN_PAGE_KEY,
-  ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
-  ADMIN_ROWS_PER_PAGE_KEY,
-  ADMIN_TABLE_CURSOR_KEY,
+  AIRING_TABLE_NEXT_CURSOR_KEY,
+  AIRING_TABLE_PAGE_KEY,
+  AIRING_TABLE_PREVIOUS_TABLE_CURSOR_KEY,
+  AIRING_TABLE_ROWS_PER_PAGE_KEY,
+  AIRING_TABLE_CURSOR_KEY,
   DEFAULT_PER_PAGE,
   DEFAULT_CURSOR,
   DEFAULT_PREVIOUS_CURSOR,
@@ -91,44 +91,30 @@ export const StyledTableCell = styled(TableCell)(() => ({
   fontFamily: 'Neue Haas Grotesk Text Pro',
 }));
 
-interface AdminAiringTableProps {
-  handleDeleteClick: (airing: Airing) => void;
-  handleEditClick: (airing: Airing) => void;
-}
-
-function AdminAiringTable({
-  handleDeleteClick,
-  handleEditClick,
-}: AdminAiringTableProps): JSX.Element {
+function AiringTable(): JSX.Element {
   const dispatch = useAppDispatch();
-  const airings = useAppSelector((state) => state.airings.adminAirings);
+  const airings = useAppSelector((state) => state.airings.tableAirings);
   const airingsStatus = useAppSelector((state) => state.airings.status);
-  let cursor = localStorage.getItem(ADMIN_TABLE_CURSOR_KEY);
+  let cursor = localStorage.getItem(AIRING_TABLE_CURSOR_KEY);
   if (cursor === '' || cursor === undefined || cursor === null) {
     cursor = '1';
   }
 
-  const numOfShoppingBlocksToday = useAppSelector(
-    (state) => state.airings.numOfShoppingBlocksToday
-  );
-  const numOfInfomercialsToday = useAppSelector(
-    (state) => state.airings.numOfInfomericalsToday
-  );
   const airingTotal = useAppSelector((state) => state.airings.airingTotal);
-  let nextCursor = localStorage.getItem(ADMIN_NEXT_TABLE_CURSOR_KEY);
+  let nextCursor = localStorage.getItem(AIRING_TABLE_NEXT_CURSOR_KEY);
   if (nextCursor === '' || nextCursor === undefined || nextCursor === null) {
     nextCursor = DEFAULT_CURSOR;
   }
 
   const rawPreviousCursor = localStorage.getItem(
-    ADMIN_PREVIOUS_TABLE_CURSOR_KEY
+    AIRING_TABLE_PREVIOUS_TABLE_CURSOR_KEY
   );
   let initialPreviousCursor: string[] = DEFAULT_PREVIOUS_CURSOR;
   if (rawPreviousCursor !== undefined && rawPreviousCursor !== null) {
     initialPreviousCursor = JSON.parse(rawPreviousCursor);
   }
 
-  let initialRowsPerPage = localStorage.getItem(ADMIN_ROWS_PER_PAGE_KEY);
+  let initialRowsPerPage = localStorage.getItem(AIRING_TABLE_ROWS_PER_PAGE_KEY);
   if (
     initialRowsPerPage === '' ||
     initialRowsPerPage === undefined ||
@@ -137,15 +123,12 @@ function AdminAiringTable({
     initialRowsPerPage = DEFAULT_PER_PAGE;
   }
 
-  const rawPage = localStorage.getItem(ADMIN_PAGE_KEY);
+  const rawPage = localStorage.getItem(AIRING_TABLE_PAGE_KEY);
   let initialPage = 0;
   if (rawPage !== '' && rawPage !== undefined && rawPage !== null) {
     initialPage = JSON.parse(rawPage);
   }
 
-  const numOfAiringsToday = useAppSelector(
-    (state) => state.airings.numOfAiringsToday
-  );
   const [page, setPage] = useState<number>(initialPage);
   const [previousCursor, setPreviousCursor] = useState<Array<number | string>>(
     initialPreviousCursor
@@ -157,7 +140,7 @@ function AdminAiringTable({
     parseInt(initialRowsPerPage, 10)
   );
   useEffect(() => {
-    void dispatch(clearAirings());
+    void dispatch(getTableAirings());
   }, [dispatch]);
   const handleChangePage = (_: unknown, newPage: number): void => {
     if (airingsStatus === 'pending') {
@@ -166,12 +149,12 @@ function AdminAiringTable({
 
     if (newPage > page) {
       if (nextCursor !== null) {
-        localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, nextCursor);
+        localStorage.setItem(AIRING_TABLE_CURSOR_KEY, nextCursor);
       }
       const newPreviousCursorArr = JSON.parse(JSON.stringify(previousCursor));
       newPreviousCursorArr.push(cursor);
       localStorage.setItem(
-        ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
+        AIRING_TABLE_PREVIOUS_TABLE_CURSOR_KEY,
         JSON.stringify(newPreviousCursorArr)
       );
       setPreviousCursor(newPreviousCursorArr);
@@ -181,24 +164,24 @@ function AdminAiringTable({
       }
 
       if (cursor != null) {
-        localStorage.setItem(ADMIN_NEXT_TABLE_CURSOR_KEY, cursor);
+        localStorage.setItem(AIRING_TABLE_NEXT_CURSOR_KEY, cursor);
       }
       localStorage.setItem(
-        ADMIN_TABLE_CURSOR_KEY,
+        AIRING_TABLE_CURSOR_KEY,
         previousCursor[previousCursor.length - 1].toString()
       );
       const newPreviousCursorArr = JSON.parse(JSON.stringify(previousCursor));
       newPreviousCursorArr.pop();
       localStorage.setItem(
-        ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
+        AIRING_TABLE_PREVIOUS_TABLE_CURSOR_KEY,
         JSON.stringify(newPreviousCursorArr)
       );
       setPreviousCursor(newPreviousCursorArr);
     }
 
-    void dispatch(getAdminAirings());
+    void dispatch(getTableAirings());
     setPage(newPage);
-    localStorage.setItem(ADMIN_PAGE_KEY, newPage.toString());
+    localStorage.setItem(AIRING_TABLE_PAGE_KEY, newPage.toString());
   };
 
   const handleChangeRowsPerPage = (
@@ -206,16 +189,16 @@ function AdminAiringTable({
   ): void => {
     setRowsPerPage(Number(e.target.value));
     localStorage.setItem(
-      ADMIN_ROWS_PER_PAGE_KEY,
+      AIRING_TABLE_ROWS_PER_PAGE_KEY,
       JSON.stringify(Number(e.target.value))
     );
-    localStorage.setItem(ADMIN_TABLE_CURSOR_KEY, DEFAULT_CURSOR);
+    localStorage.setItem(AIRING_TABLE_CURSOR_KEY, DEFAULT_CURSOR);
     localStorage.setItem(
-      ADMIN_PREVIOUS_TABLE_CURSOR_KEY,
+      AIRING_TABLE_PREVIOUS_TABLE_CURSOR_KEY,
       JSON.stringify(DEFAULT_PREVIOUS_CURSOR)
     );
-    void dispatch(getAdminAirings());
-    localStorage.setItem(ADMIN_PAGE_KEY, '0');
+    void dispatch(getTableAirings());
+    localStorage.setItem(AIRING_TABLE_PAGE_KEY, '0');
     setPage(0);
   };
 
@@ -270,37 +253,16 @@ function AdminAiringTable({
     ? copyOfAirings.sort(applySort).reverse()
     : copyOfAirings.sort(applySort);
   const rows = sortedAirings.map((airing: Airing) => (
-    <AdminTableRow
-      handleDeleteClick={handleDeleteClick}
-      handleEditClick={handleEditClick}
-      key={airing.ID}
-      data={airing}
-    />
+    <AiringTableRow key={airing.ID} data={airing} />
   ));
   return (
     <section className="admin-data__container">
-      <h5>Overview</h5>
-      <section className="data-overview__container">
-        <article className="data-header__container">
-          <h4>{numOfAiringsToday}</h4>
-          <h6>Showings Today</h6>
-        </article>
-        <article className="data-header__container">
-          <h4>{numOfInfomercialsToday}</h4>
-          <h6>Infomercials Today</h6>
-        </article>
-        <article className="data-header__container">
-          <h4>{numOfShoppingBlocksToday}</h4>
-          <h6>Shopping Channels Today</h6>
-        </article>
-      </section>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 750 }}>
           <Table size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow sx={{ backgroundColor: '#F5f5f5' }}>
                 {columns(sortKey, isDesc, headerClickHandler)}
-                <StyledTableCellHeader />
               </TableRow>
             </TableHead>
             <TableBody sx={{ border: 'none' }}>{rows}</TableBody>
@@ -320,4 +282,4 @@ function AdminAiringTable({
   );
 }
 
-export default AdminAiringTable;
+export default AiringTable;

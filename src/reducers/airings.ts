@@ -7,9 +7,13 @@ import {
   getAdminAirings,
   getAirings,
   getDayAgendaAirings,
+  getTableAirings,
 } from '../actions/airings';
 import { type Airing, type ReduxStatus } from '../@types';
-import { ADMIN_NEXT_TABLE_CURSOR_KEY } from '../constants';
+import {
+  ADMIN_NEXT_TABLE_CURSOR_KEY,
+  AIRING_TABLE_NEXT_CURSOR_KEY,
+} from '../constants';
 
 export type ArrayofProducts = Airing[];
 
@@ -25,6 +29,8 @@ interface AIRING_INITIAL_STATE {
   numOfAiringsToday: number;
   numOfInfomericalsToday: number;
   numOfShoppingBlocksToday: number;
+  tableAirings: Airing[];
+  tableStatus: ReduxStatus;
 }
 
 const initialState: AIRING_INITIAL_STATE = {
@@ -39,6 +45,8 @@ const initialState: AIRING_INITIAL_STATE = {
   numOfAiringsToday: 0,
   numOfInfomericalsToday: 0,
   numOfShoppingBlocksToday: 0,
+  tableAirings: [],
+  tableStatus: 'idle',
 };
 
 const airingsSlice = createSlice({
@@ -86,6 +94,15 @@ const airingsSlice = createSlice({
       state.numOfShoppingBlocksToday =
         action.payload.data.numOfShoppingBlocksToday;
       state.error = null;
+    });
+    builder.addCase(getTableAirings.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      localStorage.setItem(
+        AIRING_TABLE_NEXT_CURSOR_KEY,
+        action.payload.data.nextCursor
+      );
+      state.airingTotal = action.payload.data.total;
+      state.tableAirings = action.payload.data.airings;
     });
     builder.addCase(createAirings.fulfilled, (state, action) => {
       const { airing } = action.payload;
