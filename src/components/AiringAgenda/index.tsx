@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
+import momentTz from 'moment-timezone';
+
+import AgendaEvent from './AgendaEvent';
 
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { getDayAgendaAirings } from '../../actions/airings';
@@ -12,23 +14,19 @@ const localizer = momentLocalizer(moment);
 interface EventProps {
   event: AgendaAiring;
 }
-const MyAgendaEvent = ({ event }: EventProps): JSX.Element => (
-  <Tooltip title={event.item_name}>
-    <div>
-      <header className="agenda-item-number__text">{event.item_number}</header>
-      <div className="agenda-item-name__text">{event.item_name}</div>
-      <div className="agenda-item-show__text">
-        {event.show} - {event.station}
-      </div>
-    </div>
-  </Tooltip>
-);
+const MyAgendaEvent = ({ event }: EventProps): JSX.Element => {
+  return <AgendaEvent key={event.ID} event={event} />;
+};
 
+const LA_TIMEZONE = 'America/Los_Angeles';
 function AgendaCalendar(): JSX.Element {
   const dispatch = useAppDispatch();
   const agendaStatus = useAppSelector((state) => state.airings.agendaStatus);
-  const formatSelectedDate = (date: Date): string =>
-    date.toISOString().split('T')[0];
+  const formatSelectedDate = (date: Date): string => {
+    // Format the date to "yyyy-mm-dd" in the target time zone
+    const formattedDate = momentTz(date).tz(LA_TIMEZONE).format('YYYY-MM-DD');
+    return formattedDate;
+  };
   const airings: AgendaAiring[] = useAppSelector(
     (state) => state.airings.agendaAirings
   ).map((airing) => {
@@ -36,8 +34,8 @@ function AgendaCalendar(): JSX.Element {
       0,
       airing.airing_time.length - 4
     );
-    const airingDate = new Date(timezoneRemovedVal);
-    const endDate = new Date(timezoneRemovedVal);
+    const airingDate = momentTz(timezoneRemovedVal).tz(LA_TIMEZONE).toDate();
+    const endDate = momentTz(timezoneRemovedVal).tz(LA_TIMEZONE).toDate();
     endDate.setMinutes(endDate.getMinutes() + 30);
     return {
       ...airing,
@@ -46,23 +44,50 @@ function AgendaCalendar(): JSX.Element {
     };
   });
   const handleNavigate = (date: Date): void => {
-    void dispatch(getDayAgendaAirings(formatSelectedDate(date)));
+    dispatch(getDayAgendaAirings(formatSelectedDate(date)));
   };
 
   useEffect(() => {
     if (agendaStatus === 'idle') {
-      void dispatch(getDayAgendaAirings(formatSelectedDate(new Date())));
+      dispatch(getDayAgendaAirings(formatSelectedDate(new Date())));
     }
   }, [agendaStatus, dispatch]);
+  const eventStyleGetter = (event: AgendaAiring): any => {
+    // Your logic to conditionally determine the background color based on the airing details
+    let className = '';
+
+    if (event.station.toLowerCase().includes('bloomberg')) {
+      className += 'bloomberg-rbc-event';
+    }
+    if (event.station.toLowerCase().includes('fox')) {
+      className += 'fox-rbc-event';
+    }
+
+    if (event.station.toLowerCase() === 'fx') {
+      className += 'fx-rbc-event';
+    }
+
+    if (event.station.toLowerCase() === 'history channel') {
+      className += 'history-channel-rbc-event';
+    }
+
+    if (event.station.toLowerCase() === 'nat geo wild') {
+      className += 'nat-geo-wild-rbc-event';
+    }
+
+    return {
+      className,
+    };
+  };
 
   return (
     <Calendar<AgendaAiring>
       localizer={localizer}
       startAccessor="airing_start_date"
       endAccessor="end_date"
-      titleAccessor="item_name"
       onNavigate={handleNavigate}
       events={airings}
+      eventPropGetter={eventStyleGetter}
       selectable
       components={{
         day: {

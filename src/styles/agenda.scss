@@ -2,6 +2,87 @@
 
 .rbc-event {
   background-color: #9d5e4a;
+  background-repeat: no-repeat;
+  background-size: 250px;
+}
+
+.bloomberg-rbc-event {
+  @extend .rbc-event;
+  background-color: black;
+  background-image: url('../assets/images/bloomberg-logo.png');
+  background-position: bottom left;
+  .agenda-item-name__text {
+    color: gold;
+    font-size: medium;
+  }
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
+}
+
+.fox-rbc-event {
+  background-color: #3e7398;
+  background-image: url('../assets/images/fox-news-logo-2.png');
+  background-size: 140px;
+  .agenda-item-name__text {
+    color: gold;
+    font-size: medium;
+  }
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
+}
+
+.fx-rbc-event {
+  @extend .rbc-event;
+  background-image: url('../assets/images/fxlogo2.png');
+  background-color: #36454f;
+  .agenda-item-name__text {
+    color: gold;
+    background-image: linear-gradient(to right, #fffffa, #ffea80);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
+}
+
+.history-channel-rbc-event {
+  @extend .rbc-event;
+  background-image: url('../assets/images/historychannellogo.png');
+  background-size: 100px;
+  background-color: #b55c40;
+  .agenda-item-name__text {
+    font-weight: bold;
+    background-image: linear-gradient(
+      to right,
+      hsla(206, 100%, 73.3%, 1),
+      #ffea80
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.nat-geo-wild-rbc-event {
+  background-image: url('../assets/images/natgeowildlogo.png');
+  background-color: black;
+  background-size: 130px;
+  .agenda-item-name__text {
+    color: gold;
+    font-size: medium;
+    font-weight: bold;
+    background-image: linear-gradient(to right, rgb(255, 119, 119), #ffea80);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
 }
 
 .agenda-item-name__text {
