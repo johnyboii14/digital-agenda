@@ -29,3 +29,13 @@ export const ADMIN_PAGE_KEY = 'admin_page';
 export const AGENDA_DAY_KEY = 'agenda_day';
 export const DEFAULT_TIMEZONE = 'America/Los_Angeles';
 export const DEFAULT_VIEW_OPTION = 'default_view_option';
+
+export const AIRING_TABLE_SHOW_FILTER = 'airing_table_show_filter';
+export const AIRING_TABLE_STATION_FILTER = 'airing_table_station_filter';
+export const AIRING_TABLE_PRICE_FILTER = 'airing_table_price_filter';
+export const AIRING_TABLE_PRICE_OVER_UNDER_FILTER =
+  'airing_table_price_over_under_price_filter';
+export const AIRING_TABLE_ITEM_NUMBER_FILTER =
+  'airing_table_item_number_filter';
+export const AIRING_TABLE_ITEM_NAME_FILTER = 'airing_table_item_name_filter';
+export const AIRING_TABLE_AIRING_ID_FILTER = 'airing_table_airing_id_filter';
