@@ -106,6 +106,7 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
           value={itemNameFilter}
           variant="standard"
           onChange={handleItemNameInput}
+          sx={{ flex: '100%' }}
         />
         <TextField
           label="Item Number"
@@ -131,25 +132,29 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
           variant="standard"
           onChange={handleStationInput}
         />
-        <FormControl>
-          <InputLabel>Under Or Over</InputLabel>
-          <Select
-            value={priceOverUnderFilter}
-            label="Over or Under"
-            onChange={handlePriceOverUnderInput}
-          >
-            <MenuItem value="over">Over</MenuItem>
-            <MenuItem value="under">Under</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          label="Price"
-          value={priceFilter}
-          variant="standard"
-          onChange={handlePriceInput}
-        />
+        <div className="price__text-field">
+          <FormControl>
+            <InputLabel>Under Or Over</InputLabel>
+            <Select
+              value={priceOverUnderFilter}
+              label="Over or Under"
+              onChange={handlePriceOverUnderInput}
+            >
+              <MenuItem value="over">Over</MenuItem>
+              <MenuItem value="under">Under</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            label="Price"
+            value={priceFilter}
+            variant="standard"
+            onChange={handlePriceInput}
+          />
+        </div>
       </form>
-      <Button color="success">Apply Filters</Button>
+      <Button variant="contained" color="success" sx={{ marginLeft: '10px' }}>
+        Apply Filters
+      </Button>
     </motion.div>
   );
 }

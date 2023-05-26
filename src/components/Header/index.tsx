@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 
 import Button from '@mui/material/Button';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import FilterIcon from '@mui/icons-material/Filter';
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import TableViewIcon from '@mui/icons-material/TableView';
@@ -39,6 +40,7 @@ const Header = ({
     navigate('/admin');
   };
   const handleAgendaIconClick = (): void => {
+    toggleMenu(false);
     if (viewOption === VIEW_OPTION.AGENDA) {
       return;
     }
@@ -77,7 +79,14 @@ const Header = ({
       <section>
         <section className="filter-airing__container">
           {viewOption === VIEW_OPTION.TABLE && (
-            <Button onClick={handleFilterClick}>Filter Airings</Button>
+            <Button
+              sx={{ backgroundColor: '#cb6c4d' }}
+              variant="contained"
+              startIcon={<FilterIcon />}
+              onClick={handleFilterClick}
+            >
+              Filter Airings
+            </Button>
           )}
         </section>
         <section className="view-option__container">
@@ -100,11 +109,9 @@ const Header = ({
           </section>
         </section>
       </section>
-      {showMenu && (
-        <AnimatePresence>
-          <TableFilterMenu handleClose={handleMenuCloseClick} />
-        </AnimatePresence>
-      )}
+      <AnimatePresence>
+        {showMenu && <TableFilterMenu handleClose={handleMenuCloseClick} />}
+      </AnimatePresence>
     </nav>
   );
 };
