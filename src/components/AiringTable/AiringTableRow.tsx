@@ -30,12 +30,12 @@ function AiringTableRow({ data }: AiringTableRowProps): JSX.Element {
         },
       }}
     >
-      <StyledTableCell sx={{ width: 15 }}>{itemName}</StyledTableCell>
-      <StyledTableCell>{itemNum}</StyledTableCell>
-      <StyledTableCell>{airingId}</StyledTableCell>
       <StyledTableCell>
         {airingDay} {airingFormattedTime}
       </StyledTableCell>
+      <StyledTableCell>{itemNum}</StyledTableCell>
+      <StyledTableCell sx={{ width: 15 }}>{itemName}</StyledTableCell>
+      <StyledTableCell>{airingId}</StyledTableCell>
       <StyledTableCell>{show}</StyledTableCell>
       <StyledTableCell>{station}</StyledTableCell>
       <StyledTableCell>${localePrice}</StyledTableCell>

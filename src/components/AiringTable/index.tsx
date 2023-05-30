@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,11 +14,13 @@ import TablePagination from '@mui/material/TablePagination';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 
+import CloseIcon from '@mui/icons-material/Close';
+
 import AiringTableRow from './AiringTableRow';
 
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 
-import { getTableAirings } from '../../actions/airings';
+import { filterTableAirings, getTableAirings } from '../../actions/airings';
 
 import { type Airing, type HeaderHash, type SortKey } from '../../@types';
 import {
@@ -31,6 +34,12 @@ import {
   DEFAULT_PREVIOUS_CURSOR,
   DEFAULT_ROW_OPTS,
   DIGITAL_AGENDA_TABLE_HEADERS,
+  AIRING_TABLE_AIRING_ID_FILTER,
+  AIRING_TABLE_ITEM_NAME_FILTER,
+  AIRING_TABLE_ITEM_NUMBER_FILTER,
+  AIRING_TABLE_PRICE_FILTER,
+  AIRING_TABLE_SHOW_FILTER,
+  AIRING_TABLE_STATION_FILTER,
 } from '../../constants';
 import formatRowHeaders from '../../modules/formatRowHeaders';
 
@@ -42,10 +51,10 @@ const StyledTableCellHeader = styled(TableCell)(() => ({
 }));
 
 const headerTypeHashmap: HeaderHash = {
-  item_name: 'string',
-  item_number: 'string',
-  airing_id: 'string',
   airing_time: 'date',
+  item_number: 'string',
+  item_name: 'string',
+  airing_id: 'string',
   show: 'string',
   price: 'numeric',
   station: 'string',
@@ -105,7 +114,102 @@ function AiringTable(): JSX.Element {
   if (nextCursor === '' || nextCursor === undefined || nextCursor === null) {
     nextCursor = DEFAULT_CURSOR;
   }
-
+  const priceFilter = localStorage.getItem(AIRING_TABLE_PRICE_FILTER);
+  const stationFilter = localStorage.getItem(AIRING_TABLE_STATION_FILTER);
+  const showFilter = localStorage.getItem(AIRING_TABLE_SHOW_FILTER);
+  const itemNumberFilter = localStorage.getItem(
+    AIRING_TABLE_ITEM_NUMBER_FILTER
+  );
+  const airingIdFilter = localStorage.getItem(AIRING_TABLE_AIRING_ID_FILTER);
+  const itemNameFilter = localStorage.getItem(AIRING_TABLE_ITEM_NAME_FILTER);
+  interface RawFilter {
+    key: string;
+    value: string | null;
+    storageKey: string;
+    label: string;
+  }
+  const rawFiltersToShow: RawFilter[] = [
+    {
+      label: 'Price',
+      key: 'price',
+      value: priceFilter,
+      storageKey: AIRING_TABLE_PRICE_FILTER,
+    },
+    {
+      label: 'Station',
+      value: stationFilter,
+      storageKey: AIRING_TABLE_STATION_FILTER,
+      key: 'station',
+    },
+    {
+      label: 'Show',
+      value: showFilter,
+      storageKey: AIRING_TABLE_SHOW_FILTER,
+      key: 'show',
+    },
+    {
+      label: 'Item Number',
+      value: itemNumberFilter,
+      storageKey: AIRING_TABLE_ITEM_NUMBER_FILTER,
+      key: 'item_number',
+    },
+    {
+      label: 'Airing ID',
+      value: airingIdFilter,
+      storageKey: AIRING_TABLE_AIRING_ID_FILTER,
+      key: 'airing_id',
+    },
+    {
+      label: 'Item Name',
+      value: itemNameFilter,
+      storageKey: AIRING_TABLE_ITEM_NAME_FILTER,
+      key: 'item_name',
+    },
+  ];
+  let queryUrl: string = '';
+  rawFiltersToShow.forEach((f) => {
+    const val = f.value;
+    if (val !== undefined && val !== null) {
+      queryUrl += `&${f.key}=${val}`;
+    }
+  });
+  const handleFilterClose = (key: string): void => {
+    localStorage.removeItem(key);
+    const idx = rawFiltersToShow.findIndex((f) => f.storageKey === key);
+    if (idx > -1) {
+      rawFiltersToShow[idx].value = null;
+    }
+    if (rawFiltersToShow.some((f) => f.value !== null)) {
+      void dispatch(filterTableAirings(queryUrl));
+    } else {
+      void dispatch(getTableAirings());
+    }
+  };
+  const filtersToShow: JSX.Element[] = rawFiltersToShow.map((rawFilter) => {
+    if (rawFilter.value === null) {
+      return <></>;
+    }
+    const handleClose = (): void => {
+      handleFilterClose(rawFilter.storageKey);
+    };
+    return (
+      <article className="airing-filter__container" key={rawFilter.key}>
+        <IconButton onClick={handleClose}>
+          <CloseIcon htmlColor="white" />
+        </IconButton>
+        <header>
+          {rawFilter.key.replace(
+            /^_*(.)|_+(.)/g,
+            (_s, c: string | undefined, d: string) =>
+              c !== undefined && c.length > 0
+                ? c.toUpperCase()
+                : ' ' + d.toUpperCase()
+          )}
+        </header>
+        <h6>{rawFilter.value}</h6>
+      </article>
+    );
+  });
   const rawPreviousCursor = localStorage.getItem(
     AIRING_TABLE_PREVIOUS_TABLE_CURSOR_KEY
   );
@@ -133,14 +237,18 @@ function AiringTable(): JSX.Element {
   const [previousCursor, setPreviousCursor] = useState<Array<number | string>>(
     initialPreviousCursor
   );
-  const [sortKey, setSortKey] = useState<string>('item_name');
-  const [sortKeyType, setKeyType] = useState<SortKey>('string');
+  const [sortKey, setSortKey] = useState<string>('airing_time');
+  const [sortKeyType, setKeyType] = useState<SortKey>('date');
   const [isDesc, setDesc] = useState<boolean>(false);
   const [rowsPerPage, setRowsPerPage] = useState<number>(
     parseInt(initialRowsPerPage, 10)
   );
   useEffect(() => {
-    void dispatch(getTableAirings());
+    if (queryUrl.length > 2) {
+      void dispatch(filterTableAirings(queryUrl));
+    } else {
+      void dispatch(getTableAirings());
+    }
   }, [dispatch]);
   const handleChangePage = (_: unknown, newPage: number): void => {
     if (airingsStatus === 'pending') {
@@ -257,6 +365,7 @@ function AiringTable(): JSX.Element {
   ));
   return (
     <section className="admin-data__container">
+      <section className="airing-filters__container">{filtersToShow}</section>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 750 }}>
           <Table size="small" stickyHeader aria-label="sticky table">

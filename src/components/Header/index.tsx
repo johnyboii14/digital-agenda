@@ -4,7 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 
 import Button from '@mui/material/Button';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import FilterIcon from '@mui/icons-material/Filter';
+import FilterIcon from '@mui/icons-material/FilterList';
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import TableViewIcon from '@mui/icons-material/TableView';
@@ -76,7 +76,7 @@ const Header = ({
           Sign In
         </Button>
       </section>
-      <section>
+      <section className="header-options__container">
         <section className="filter-airing__container">
           {viewOption === VIEW_OPTION.TABLE && (
             <Button

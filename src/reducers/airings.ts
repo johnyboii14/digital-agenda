@@ -4,6 +4,7 @@ import {
   createAirings,
   deleteAiring,
   editAiring,
+  filterTableAirings,
   getAdminAirings,
   getAirings,
   getDayAgendaAirings,
@@ -103,6 +104,15 @@ const airingsSlice = createSlice({
       );
       state.airingTotal = action.payload.data.total;
       state.tableAirings = action.payload.data.airings;
+    });
+    builder.addCase(filterTableAirings.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      localStorage.setItem(
+        AIRING_TABLE_NEXT_CURSOR_KEY,
+        action.payload.nextCursor
+      );
+      state.airingTotal = action.payload.totalCount;
+      state.tableAirings = action.payload.airings;
     });
     builder.addCase(createAirings.fulfilled, (state, action) => {
       const { airing } = action.payload;

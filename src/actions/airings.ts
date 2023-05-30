@@ -165,3 +165,28 @@ export const bulkCreateAirings = createAsyncThunk(
     }
   }
 );
+
+export const FILTER_TABLE_AIRINGS = 'FILTER_TABLE_AIRINGS';
+export const filterTableAirings = createAsyncThunk(
+  FILTER_TABLE_AIRINGS,
+  async (searchParams: string, { rejectWithValue }) => {
+    try {
+      let cursor = localStorage.getItem(AIRING_TABLE_CURSOR_KEY);
+      let pageSize = localStorage.getItem(AIRING_TABLE_ROWS_PER_PAGE_KEY);
+      if (cursor === '' || cursor === undefined || cursor === null) {
+        cursor = DEFAULT_CURSOR;
+      }
+
+      if (pageSize === '' || pageSize === undefined || pageSize === null) {
+        pageSize = DEFAULT_PER_PAGE;
+      }
+
+      const res: AxiosResponse = await axios.get(
+        `${url}?cursor=${cursor}&pageSize=${pageSize}${searchParams}`
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue({ data: err });
+    }
+  }
+);

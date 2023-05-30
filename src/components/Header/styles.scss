@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   width: 40%;
-  position: absolute;
+  position: fixed;
   left: 0;
   background-color: whitesmoke;
   height: 70vh;
@@ -93,4 +93,37 @@
   flex-direction: column;
   flex-basis: 70%;
   margin: 20px 0px;
+}
+
+.header-options__container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+  font-family: $main-font;
+}
+
+.airing-filter__container {
+  align-items: flex-start;
+  background: cornflowerblue;
+  border-radius: 12%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  max-width: 100px;
+  padding: 0 1%;
+  h6 {
+    margin: 10px 0;
+  }
+  header {
+    font-style: italic;
+  }
+}
+
+.airing-filters__container {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-bottom: 2%;
+  padding: 0 3%;
 }

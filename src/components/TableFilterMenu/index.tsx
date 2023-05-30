@@ -20,12 +20,15 @@ import {
   AIRING_TABLE_SHOW_FILTER,
   AIRING_TABLE_STATION_FILTER,
 } from '../../constants';
+import { useAppDispatch } from '../../config/hooks';
+import { filterTableAirings } from '../../actions/airings';
 
 interface TableFilterMenuProps {
   handleClose: () => void;
 }
 
 function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const defaultPriceFilter = localStorage.getItem(AIRING_TABLE_PRICE_FILTER);
   const defaultStationFilter = localStorage.getItem(
     AIRING_TABLE_STATION_FILTER
@@ -88,6 +91,57 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
   };
   const handlePriceOverUnderInput = (e: SelectChangeEvent<string>): void => {
     setPriceOverUnderFilter(e.target.value);
+  };
+  const applyFilters = async (): Promise<void> => {
+    let searchParams = '';
+    if (itemNameFilter.length > 0) {
+      localStorage.setItem(AIRING_TABLE_ITEM_NAME_FILTER, itemNameFilter);
+      searchParams += '&item_name=' + itemNameFilter;
+    } else {
+      localStorage.removeItem(AIRING_TABLE_ITEM_NAME_FILTER);
+    }
+    if (itemNumberFilter.length > 0) {
+      localStorage.setItem(AIRING_TABLE_ITEM_NUMBER_FILTER, itemNumberFilter);
+      searchParams += '&item_number=' + itemNumberFilter;
+    } else {
+      localStorage.removeItem(AIRING_TABLE_ITEM_NUMBER_FILTER);
+    }
+    if (airingIdFilter.length > 0) {
+      localStorage.setItem(AIRING_TABLE_AIRING_ID_FILTER, airingIdFilter);
+      searchParams += '&airing_id=' + airingIdFilter;
+    } else {
+      localStorage.removeItem(AIRING_TABLE_AIRING_ID_FILTER);
+    }
+    if (showFilter.length > 0) {
+      localStorage.setItem(AIRING_TABLE_SHOW_FILTER, showFilter);
+      searchParams += '&show=' + showFilter;
+    } else {
+      localStorage.removeItem(AIRING_TABLE_SHOW_FILTER);
+    }
+    if (stationFilter.length > 0) {
+      localStorage.setItem(AIRING_TABLE_STATION_FILTER, stationFilter);
+      searchParams += '&station=' + stationFilter;
+    } else {
+      localStorage.removeItem(AIRING_TABLE_STATION_FILTER);
+    }
+    if (
+      priceFilter !== defaultPriceFilter &&
+      priceFilter !== '' &&
+      priceFilter !== '0'
+    ) {
+      localStorage.setItem(AIRING_TABLE_PRICE_FILTER, priceFilter);
+      if (priceOverUnderFilter === 'under') {
+        searchParams += '&under=false';
+      }
+      searchParams += '&price=' + priceFilter;
+    } else {
+      localStorage.removeItem(AIRING_TABLE_PRICE_FILTER);
+    }
+    await dispatch(filterTableAirings(searchParams));
+  };
+  const handleApplyConfirm = (): void => {
+    void applyFilters();
+    handleClose();
   };
   return (
     <motion.div
@@ -152,7 +206,12 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
           />
         </div>
       </form>
-      <Button variant="contained" color="success" sx={{ marginLeft: '10px' }}>
+      <Button
+        onClick={handleApplyConfirm}
+        variant="contained"
+        color="success"
+        sx={{ marginLeft: '10px' }}
+      >
         Apply Filters
       </Button>
     </motion.div>
