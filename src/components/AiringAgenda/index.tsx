@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
@@ -8,7 +8,7 @@ import AgendaEvent from './AgendaEvent';
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { getDayAgendaAirings } from '../../actions/airings';
 import { type AgendaAiring } from '../../@types';
-import { DEFAULT_TIMEZONE } from '../../constants';
+import { AIRING_DAY, DEFAULT_TIMEZONE } from '../../constants';
 
 const localizer = momentLocalizer(moment);
 
@@ -20,8 +20,14 @@ const MyAgendaEvent = ({ event }: EventProps): JSX.Element => {
 };
 
 function AgendaCalendar(): JSX.Element {
+  const rawAiringDay: string | null = localStorage.getItem(AIRING_DAY);
+  let initialAiringDay: Date = new Date();
+  if (rawAiringDay !== null) {
+    initialAiringDay = new Date(rawAiringDay);
+  }
+  const [agendaDate, setAgendaDate] = useState<Date | string>(initialAiringDay);
   const dispatch = useAppDispatch();
-  const formatSelectedDate = (date: Date): string => {
+  const formatSelectedDate = (date: Date | string): string => {
     // Format the date to "yyyy-mm-dd" in the target time zone
     const formattedDate = momentTz(date)
       .tz(DEFAULT_TIMEZONE)
@@ -76,15 +82,18 @@ function AgendaCalendar(): JSX.Element {
   });
   const handleNavigate = (date: Date): void => {
     dispatch(getDayAgendaAirings(formatSelectedDate(date)));
+    setAgendaDate(date);
+    localStorage.setItem(AIRING_DAY, date.toDateString());
   };
 
   useEffect(() => {
-    dispatch(getDayAgendaAirings(formatSelectedDate(new Date())));
+    dispatch(getDayAgendaAirings(formatSelectedDate(agendaDate)));
   }, []);
   return (
     <Calendar<AgendaAiring>
       localizer={localizer}
       startAccessor="airing_start_date"
+      date={agendaDate}
       endAccessor="end_date"
       onNavigate={handleNavigate}
       events={airings}

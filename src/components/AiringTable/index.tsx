@@ -40,6 +40,7 @@ import {
   AIRING_TABLE_PRICE_FILTER,
   AIRING_TABLE_SHOW_FILTER,
   AIRING_TABLE_STATION_FILTER,
+  AIRING_TABLE_PRICE_OVER_UNDER_FILTER,
 } from '../../constants';
 import formatRowHeaders from '../../modules/formatRowHeaders';
 
@@ -120,6 +121,9 @@ function AiringTable(): JSX.Element {
   const itemNumberFilter = localStorage.getItem(
     AIRING_TABLE_ITEM_NUMBER_FILTER
   );
+  const priceOverUnderFilter = localStorage.getItem(
+    AIRING_TABLE_PRICE_OVER_UNDER_FILTER
+  );
   const airingIdFilter = localStorage.getItem(AIRING_TABLE_AIRING_ID_FILTER);
   const itemNameFilter = localStorage.getItem(AIRING_TABLE_ITEM_NAME_FILTER);
   interface RawFilter {
@@ -154,6 +158,12 @@ function AiringTable(): JSX.Element {
       key: 'item_number',
     },
     {
+      label: 'Over Under',
+      value: priceOverUnderFilter,
+      storageKey: AIRING_TABLE_PRICE_OVER_UNDER_FILTER,
+      key: 'under',
+    },
+    {
       label: 'Airing ID',
       value: airingIdFilter,
       storageKey: AIRING_TABLE_AIRING_ID_FILTER,
@@ -168,16 +178,32 @@ function AiringTable(): JSX.Element {
   ];
   let queryUrl: string = '';
   rawFiltersToShow.forEach((f) => {
-    const val = f.value;
+    let val = f.value;
     if (val !== undefined && val !== null) {
+      if (f.key === 'under') {
+        if (val === 'over') {
+          val = 'false';
+        } else {
+          val = 'true';
+        }
+      }
       queryUrl += `&${f.key}=${val}`;
     }
   });
   const handleFilterClose = (key: string): void => {
-    localStorage.removeItem(key);
-    const idx = rawFiltersToShow.findIndex((f) => f.storageKey === key);
-    if (idx > -1) {
-      rawFiltersToShow[idx].value = null;
+    if (key === 'price') {
+      const priceIdx = rawFiltersToShow.findIndex((f) => f.key === 'price');
+      const overUnderIdx = rawFiltersToShow.findIndex(
+        (f) => f.key === 'Over Under'
+      );
+      rawFiltersToShow[priceIdx].value = null;
+      rawFiltersToShow[overUnderIdx].value = null;
+    } else {
+      localStorage.removeItem(key);
+      const idx = rawFiltersToShow.findIndex((f) => f.storageKey === key);
+      if (idx > -1) {
+        rawFiltersToShow[idx].value = null;
+      }
     }
     if (rawFiltersToShow.some((f) => f.value !== null)) {
       void dispatch(filterTableAirings(queryUrl));
@@ -186,8 +212,22 @@ function AiringTable(): JSX.Element {
     }
   };
   const filtersToShow: JSX.Element[] = rawFiltersToShow.map((rawFilter) => {
+    if (rawFilter.key === 'under') {
+      return <></>;
+    }
     if (rawFilter.value === null) {
       return <></>;
+    }
+    let valueText = rawFilter.value;
+    if (rawFilter.key === 'price') {
+      const rawPriceOverUnder = localStorage.getItem(
+        AIRING_TABLE_PRICE_OVER_UNDER_FILTER
+      );
+      const overUnderText =
+        rawPriceOverUnder !== null ? rawPriceOverUnder : 'Under';
+      valueText = `${
+        overUnderText.charAt(0).toUpperCase() + overUnderText.slice(1)
+      } $${valueText}`;
     }
     const handleClose = (): void => {
       handleFilterClose(rawFilter.storageKey);
@@ -206,7 +246,7 @@ function AiringTable(): JSX.Element {
                 : ' ' + d.toUpperCase()
           )}
         </header>
-        <h6>{rawFilter.value}</h6>
+        <h6>{valueText}</h6>
       </article>
     );
   });

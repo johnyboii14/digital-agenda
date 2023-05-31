@@ -63,7 +63,7 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
     defaultPriceFilter ?? ''
   );
   const [priceOverUnderFilter, setPriceOverUnderFilter] = useState<string>(
-    defaultPriceOverUnderFilter ?? ''
+    defaultPriceOverUnderFilter ?? 'over'
   );
   const handleStationInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setStationFilter(e.target.value);
@@ -129,8 +129,14 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
       priceFilter !== '' &&
       priceFilter !== '0'
     ) {
+      localStorage.setItem(
+        AIRING_TABLE_PRICE_OVER_UNDER_FILTER,
+        priceOverUnderFilter
+      );
       localStorage.setItem(AIRING_TABLE_PRICE_FILTER, priceFilter);
       if (priceOverUnderFilter === 'under') {
+        searchParams += '&under=true';
+      } else {
         searchParams += '&under=false';
       }
       searchParams += '&price=' + priceFilter;
@@ -193,6 +199,7 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
               value={priceOverUnderFilter}
               label="Over or Under"
               onChange={handlePriceOverUnderInput}
+              defaultValue="over"
             >
               <MenuItem value="over">Over</MenuItem>
               <MenuItem value="under">Under</MenuItem>

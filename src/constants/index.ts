@@ -39,3 +39,4 @@ export const AIRING_TABLE_ITEM_NUMBER_FILTER =
   'airing_table_item_number_filter';
 export const AIRING_TABLE_ITEM_NAME_FILTER = 'airing_table_item_name_filter';
 export const AIRING_TABLE_AIRING_ID_FILTER = 'airing_table_airing_id_filter';
+export const AIRING_DAY = 'airing_day';
