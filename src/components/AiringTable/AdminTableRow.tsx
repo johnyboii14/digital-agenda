@@ -5,7 +5,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 
-import { StyledTableCell } from '.';
+import { StyledTableCell } from './';
 
 import { type Airing } from '../../@types';
 
@@ -61,12 +61,12 @@ function AdminTableRow({
         },
       }}
     >
-      <StyledTableCell sx={{ width: 15 }}>{itemName}</StyledTableCell>
-      <StyledTableCell>{itemNum}</StyledTableCell>
-      <StyledTableCell>{airingId}</StyledTableCell>
       <StyledTableCell>
         {airingDay} {airingFormattedTime}
       </StyledTableCell>
+      <StyledTableCell>{itemNum}</StyledTableCell>
+      <StyledTableCell sx={{ width: 15 }}>{itemName}</StyledTableCell>
+      <StyledTableCell>{airingId}</StyledTableCell>
       <StyledTableCell>{show}</StyledTableCell>
       <StyledTableCell>{station}</StyledTableCell>
       <StyledTableCell>${localePrice}</StyledTableCell>

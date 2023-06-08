@@ -17,6 +17,7 @@ import { visuallyHidden } from '@mui/utils';
 import CloseIcon from '@mui/icons-material/Close';
 
 import AiringTableRow from './AiringTableRow';
+import AdminTableRow from './AdminTableRow';
 
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 
@@ -44,9 +45,11 @@ import {
 } from '../../constants';
 import formatRowHeaders from '../../modules/formatRowHeaders';
 
+const fontFamily = 'Neue Haas Grotesk';
+
 const StyledTableCellHeader = styled(TableCell)(() => ({
   backgroundColor: '#F5F5F5',
-  fontFamily: 'Neue Haas Grotesk Text Pro',
+  fontFamily,
   fontWeight: '600',
   textAlign: 'center',
 }));
@@ -98,10 +101,20 @@ export const StyledTableCell = styled(TableCell)(() => ({
   border: 'none',
   fontWeight: '500',
   textAlign: 'center',
-  fontFamily: 'Neue Haas Grotesk Text Pro',
+  fontFamily,
 }));
 
-function AiringTable(): JSX.Element {
+interface AiringTableProps {
+  isAdmin: boolean;
+  handleDeleteClick?: (airing: Airing) => void;
+  handleEditClick?: (airing: Airing) => void;
+}
+
+function AiringTable({
+  isAdmin = false,
+  handleDeleteClick,
+  handleEditClick,
+}: AiringTableProps): JSX.Element {
   const dispatch = useAppDispatch();
   const airings = useAppSelector((state) => state.airings.tableAirings);
   const airingsStatus = useAppSelector((state) => state.airings.status);
@@ -284,7 +297,7 @@ function AiringTable(): JSX.Element {
     parseInt(initialRowsPerPage, 10)
   );
   useEffect(() => {
-    if (queryUrl.length > 2) {
+    if (queryUrl.length > 2 && !isAdmin) {
       void dispatch(filterTableAirings(queryUrl));
     } else {
       void dispatch(getTableAirings());
@@ -400,9 +413,20 @@ function AiringTable(): JSX.Element {
   const sortedAirings = isDesc
     ? copyOfAirings.sort(applySort).reverse()
     : copyOfAirings.sort(applySort);
-  const rows = sortedAirings.map((airing: Airing) => (
-    <AiringTableRow key={airing.ID} data={airing} />
-  ));
+  const rows = sortedAirings.map((airing: Airing) =>
+    isAdmin &&
+    handleEditClick !== undefined &&
+    handleDeleteClick !== undefined ? (
+      <AdminTableRow
+        key={airing.ID}
+        data={airing}
+        handleEditClick={handleEditClick}
+        handleDeleteClick={handleDeleteClick}
+      />
+    ) : (
+      <AiringTableRow key={airing.ID} data={airing} />
+    )
+  );
   return (
     <section className="admin-data__container">
       <section className="airing-filters__container">{filtersToShow}</section>
@@ -412,6 +436,7 @@ function AiringTable(): JSX.Element {
             <TableHead>
               <TableRow sx={{ backgroundColor: '#F5f5f5' }}>
                 {columns(sortKey, isDesc, headerClickHandler)}
+                {isAdmin && <StyledTableCellHeader />}
               </TableRow>
             </TableHead>
             <TableBody sx={{ border: 'none' }}>{rows}</TableBody>

@@ -32,7 +32,7 @@ function Home(): JSX.Element {
     void dispatch(clearAirings());
   }, [dispatch]);
   const content =
-    viewOption === VIEW_OPTION.AGENDA ? <AgendaCalendar /> : <AiringTable />;
+    viewOption === VIEW_OPTION.AGENDA ? <AgendaCalendar /> : <AiringTable isAdmin={false} />;
 
   return (
     <div className="main-page-style">

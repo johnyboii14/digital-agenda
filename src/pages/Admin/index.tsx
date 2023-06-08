@@ -7,8 +7,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-import AdminAiringTable from '../../components/AdminAiringTable';
 import AiringUploadModal from '../../components/AiringUploadModal';
+import AiringTable from '../../components/AiringTable';
 import EditAiringModal from '../../components/EditAiringModal';
 import RCTVSnackbar from '../../components/Snackbar';
 import DeleteConfirmModal from '../../components/DeleteConfirmModal';
@@ -155,9 +155,10 @@ function AdminPage(): JSX.Element {
             Sign Out
           </Button>
         </header>
-        <AdminAiringTable
-          handleEditClick={handleOpenUpdateModal}
+        <AiringTable
+          isAdmin={true}
           handleDeleteClick={handleOpenDeleteModal}
+          handleEditClick={handleOpenUpdateModal}
         />
         <div className="admin-vignette" />
       </main>
