@@ -44,6 +44,15 @@ function AgendaCalendar(): JSX.Element {
     if (event.station.toLowerCase().includes('fox')) {
       className += 'fox-rbc-event';
     }
+    if (event.station.toLowerCase().includes('nbc')) {
+      className += 'nbc-rbc-event';
+    }
+    if (event.station.toLowerCase().includes('stadium')) {
+      className += 'stadium-rbc-event';
+    }
+    if (event.station.toLowerCase().includes('comet')) {
+      className += 'comet-rbc-event';
+    }
 
     if (event.station.toLowerCase() === 'fx') {
       className += 'fx-rbc-event';
