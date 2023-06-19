@@ -9,6 +9,8 @@ import {
   getAirings,
   getDayAgendaAirings,
   getTableAirings,
+  getTableAiringsV2,
+  getTotalAirings,
 } from '../actions/airings';
 import { type Airing, type ReduxStatus } from '../@types';
 import {
@@ -27,6 +29,7 @@ interface AIRING_INITIAL_STATE {
   agendaStatus: ReduxStatus;
   error: any;
   airingTotal: number;
+  pageTotal: number;
   numOfAiringsToday: number;
   numOfInfomericalsToday: number;
   numOfShoppingBlocksToday: number;
@@ -43,6 +46,7 @@ const initialState: AIRING_INITIAL_STATE = {
   status: 'idle',
   error: null,
   airingTotal: 0,
+  pageTotal: 0,
   numOfAiringsToday: 0,
   numOfInfomericalsToday: 0,
   numOfShoppingBlocksToday: 0,
@@ -104,6 +108,14 @@ const airingsSlice = createSlice({
       );
       state.airingTotal = action.payload.data.total;
       state.tableAirings = action.payload.data.airings;
+    });
+    builder.addCase(getTotalAirings.fulfilled, (state, action) => {
+      state.airingTotal = action.payload.total;
+    });
+    builder.addCase(getTableAiringsV2.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.pageTotal = action.payload.pageTotal;
+      state.tableAirings = action.payload.airings;
     });
     builder.addCase(filterTableAirings.fulfilled, (state, action) => {
       state.status = 'succeeded';

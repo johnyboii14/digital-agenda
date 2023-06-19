@@ -190,3 +190,31 @@ export const filterTableAirings = createAsyncThunk(
     }
   }
 );
+
+export const GET_TABLE_AIRINGS_V2 = 'GET_TABLE_AIRINGS_V2';
+export const getTableAiringsV2 = createAsyncThunk(
+  GET_TABLE_AIRINGS_V2,
+  async (searchParams: string, { rejectWithValue }) => {
+    try {
+      const res: AxiosResponse = await axios.get(
+        `${url}v2/table${searchParams}`
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue({ data: err });
+    }
+  }
+);
+
+export const GET_TOTAL_AIRINGS = 'GET_TOTAL_AIRINGS';
+export const getTotalAirings = createAsyncThunk(
+  GET_TOTAL_AIRINGS,
+  async (_, { rejectWithValue }) => {
+    try {
+      const res: AxiosResponse = await axios.get(`${url}total`);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue({ data: err });
+    }
+  }
+);
