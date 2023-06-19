@@ -35,6 +35,11 @@
     text-align: center;
 }
 
+.table-header__text--selected {
+    @extend .table-header__text;
+    color: #332E30;
+}
+
 .airing-table__container {
     display: table;
     width: 100%;
@@ -52,6 +57,14 @@
         font-family: "Neue Haas Grotesk";
         margin: 0 20px;
         color: #332E30;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.2px;
     }
+}
+
+.airing-table-row__container:nth-child(even) {
+    background-color: #fff
+}
+
+.airing-table-row__container:nth-child(odd) {
+    background-color: rgb(249, 233, 227);
 }

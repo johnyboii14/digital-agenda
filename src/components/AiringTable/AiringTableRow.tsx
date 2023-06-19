@@ -19,11 +19,11 @@ function AiringTableRow({ data }: AiringTableRowProps): JSX.Element {
   const airingFormattedTime = new Date(airingTime).toLocaleTimeString();
   return (
     <tr className="airing-table-row__container">
-      <td>
+      <td style={{ width: '100px' }}>
         {airingDay} {airingFormattedTime}
       </td>
       <td>{itemNum}</td>
-      <td style={{ width: 15 }}>{itemName}</td>
+      <td style={{ width: '300px' }}>{itemName}</td>
       <td>{airingId}</td>
       <td>{show}</td>
       <td>{station}</td>

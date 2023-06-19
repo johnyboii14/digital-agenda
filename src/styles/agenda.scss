@@ -13,6 +13,7 @@
   color: rgb(255, 158, 39);
   font-weight: 600;
   transition: 0.2s all;
+
   &:hover {
     color: rgb(255, 140, 0);
   }
@@ -55,6 +56,7 @@
     cursor: pointer;
     transition: 0.2s all;
     font-family: $main-font;
+
     &:hover {
       background-color: lighten(#b67b6e, 3%);
     }
@@ -82,6 +84,7 @@
   @extend .rbc-event;
   background-image: url('../assets/images/fxlogo2.png');
   background-color: #36454f;
+
   .agenda-item-name__text {
     color: gold;
     background-image: linear-gradient(to right, #fffffa, #ffea80);
@@ -89,6 +92,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
   .agenda-item-number__text {
     color: ghostwhite;
   }
@@ -99,13 +103,12 @@
   background-image: url('../assets/images/historychannellogo.png');
   background-size: 100px;
   background-color: #b55c40;
+
   .agenda-item-name__text {
     font-weight: bold;
-    background-image: linear-gradient(
-      to right,
-      hsla(206, 100%, 73.3%, 1),
-      #ffea80
-    );
+    background-image: linear-gradient(to right,
+        hsla(206, 100%, 73.3%, 1),
+        #ffea80);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -116,6 +119,7 @@
   background-image: url('../assets/images/natgeowildlogo.png');
   background-color: black;
   background-size: 130px;
+
   .agenda-item-name__text {
     color: gold;
     font-size: medium;
@@ -125,6 +129,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
   .agenda-item-number__text {
     color: ghostwhite;
   }
@@ -135,10 +140,12 @@
   background-color: black;
   background-image: url('../assets/images/bloomberg-logo.png');
   background-position: bottom left;
+
   .agenda-item-name__text {
     color: gold;
     font-size: medium;
   }
+
   .agenda-item-number__text {
     color: ghostwhite;
   }
@@ -148,10 +155,12 @@
   background-color: #3e7398;
   background-image: url('../assets/images/fox-news-logo-2.png');
   background-size: 140px;
+
   .agenda-item-name__text {
     color: gold;
     font-size: medium;
   }
+
   .agenda-item-number__text {
     color: ghostwhite;
   }
@@ -165,7 +174,10 @@
 .comet-rbc-event {
   @extend .fox-rbc-event;
   background-color: #22d1f9;
-  background-image: url('../assets/images/comet-logo.png')
+  background-image: url('../assets/images/comet-logo.png');
+  .agenda-item-name__text {
+    color: black !important;
+  }
 }
 
 .nbc-rbc-event {

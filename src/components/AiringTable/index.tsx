@@ -270,8 +270,15 @@ function AiringTable({
       const handleClick = (): void => {
         headerClickHandler(key);
       };
+      const className =
+        key === sortKey ? 'table-header__text--selected' : 'table-header__text';
       return (
-        <td className="table-header__text" key={key} onClick={handleClick}>
+        <td
+          className={className}
+          key={key}
+          onClick={handleClick}
+          style={{ cursor: 'pointer' }}
+        >
           {formatRowHeaders(key)}
         </td>
       );
