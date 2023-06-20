@@ -98,34 +98,6 @@ export const getAdminAirings = createAsyncThunk(
   }
 );
 
-export const GET_TABLE_AIRINGS = 'GET_TABLE_AIRINGS';
-export const getTableAirings = createAsyncThunk(
-  GET_TABLE_AIRINGS,
-  async (_, { rejectWithValue }) => {
-    try {
-      let cursor = localStorage.getItem(AIRING_TABLE_CURSOR_KEY);
-      let pageSize = localStorage.getItem(AIRING_TABLE_ROWS_PER_PAGE_KEY);
-      if (cursor === '' || cursor === undefined || cursor === null) {
-        cursor = DEFAULT_CURSOR;
-      }
-
-      if (pageSize === '' || pageSize === undefined || pageSize === null) {
-        pageSize = DEFAULT_PER_PAGE;
-      }
-
-      const adminUrl = `${url}table?cursor=${cursor}&pageSize=${pageSize}`;
-      const res: AxiosResponse = await axios.get(adminUrl);
-      return {
-        data: res.data,
-        cursor,
-      };
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue({ data: error });
-    }
-  }
-);
-
 export const GET_DAY_AGENDA_DAY_AIRING = 'GET_AGENDA_DAY_AIRING ';
 export const getDayAgendaAirings = createAsyncThunk(
   GET_DAY_AGENDA_DAY_AIRING,
@@ -191,14 +163,12 @@ export const filterTableAirings = createAsyncThunk(
   }
 );
 
-export const GET_TABLE_AIRINGS_V2 = 'GET_TABLE_AIRINGS_V2';
-export const getTableAiringsV2 = createAsyncThunk(
-  GET_TABLE_AIRINGS_V2,
+export const GET_TABLE_AIRINGS = 'GET_TABLE_AIRINGS';
+export const getTableAirings = createAsyncThunk(
+  GET_TABLE_AIRINGS,
   async (searchParams: string, { rejectWithValue }) => {
     try {
-      const res: AxiosResponse = await axios.get(
-        `${url}v2/table${searchParams}`
-      );
+      const res: AxiosResponse = await axios.get(`${url}table${searchParams}`);
       return res.data;
     } catch (err) {
       return rejectWithValue({ data: err });

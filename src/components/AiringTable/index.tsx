@@ -16,9 +16,9 @@ import AdminTableRow from './AdminTableRow';
 
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 
-import { getTableAiringsV2, getTotalAirings } from '../../actions/airings';
+import { getTableAirings, getTotalAirings } from '../../actions/airings';
 
-import { type Airing, type HeaderHash, type SortKey } from '../../@types';
+import { type Airing } from '../../@types';
 import {
   DIGITAL_AGENDA_TABLE_HEADERS,
   AIRING_TABLE_AIRING_ID_FILTER,
@@ -29,11 +29,14 @@ import {
   AIRING_TABLE_STATION_FILTER,
   AIRING_TABLE_PRICE_OVER_UNDER_FILTER,
   AIRING_TABLE_DATE_KEY,
+  AIRING_TABLE_SORT_KEY,
+  AIRING_TABLE_SORT_DIR_KEY,
 } from '../../constants';
 import formatDate from '../../modules/formatDate';
 import addSubtractDay from '../../modules/addSubtractDay';
-import replaceDateInQueryString from '../../constants/replaceDateInQueryString';
+import replaceDateInQueryString from '../../modules/replaceDateInQueryString';
 import formatRowHeaders from '../../modules/formatRowHeaders';
+import updateTableURL from '../../modules/updateTableURL';
 
 const fontFamily = 'Neue Haas Grotesk';
 
@@ -43,16 +46,6 @@ const StyledTableCellHeader = styled(TableCell)(() => ({
   fontWeight: '600',
   textAlign: 'center',
 }));
-
-const headerTypeHashmap: HeaderHash = {
-  airing_time: 'date',
-  item_number: 'string',
-  item_name: 'string',
-  airing_id: 'string',
-  show: 'string',
-  price: 'numeric',
-  station: 'string',
-};
 
 export const StyledTableCell = styled(TableCell)(() => ({
   border: 'none',
@@ -81,6 +74,8 @@ function AiringTable({
   const stationFilter = localStorage.getItem(AIRING_TABLE_STATION_FILTER);
   const showFilter = localStorage.getItem(AIRING_TABLE_SHOW_FILTER);
   const initialDate = localStorage.getItem(AIRING_TABLE_DATE_KEY);
+  const initialSortKey = localStorage.getItem(AIRING_TABLE_SORT_KEY);
+  const initialIsDesc = localStorage.getItem(AIRING_TABLE_SORT_DIR_KEY);
   const itemNumberFilter = localStorage.getItem(
     AIRING_TABLE_ITEM_NUMBER_FILTER
   );
@@ -89,6 +84,12 @@ function AiringTable({
   );
   const airingIdFilter = localStorage.getItem(AIRING_TABLE_AIRING_ID_FILTER);
   const itemNameFilter = localStorage.getItem(AIRING_TABLE_ITEM_NAME_FILTER);
+  const [sortKey, setSortKey] = useState<string>(
+    initialSortKey !== null ? initialSortKey : 'airing_time'
+  );
+  const [isDesc, setDesc] = useState<boolean>(
+    initialIsDesc !== null ? Boolean(initialIsDesc) : false
+  );
   const [currentDate, setCurrentDate] = useState<string>(
     initialDate !== null ? initialDate : formatDate(new Date())
   );
@@ -142,7 +143,9 @@ function AiringTable({
       key: 'item_name',
     },
   ];
-  let queryUrl: string = `?day=${currentDate}`;
+  let queryUrl: string = `?day=${currentDate}&sort_by=${sortKey}&sort_order=${
+    isDesc ? 'desc' : 'asc'
+  }`;
   rawFiltersToShow.forEach((f) => {
     let val = f.value;
     if (val !== undefined && val !== null) {
@@ -171,7 +174,7 @@ function AiringTable({
         rawFiltersToShow[idx].value = null;
       }
     }
-    dispatch(getTableAiringsV2(queryUrl));
+    dispatch(getTableAirings(queryUrl));
   };
   const filtersToShow: JSX.Element[] = rawFiltersToShow.map((rawFilter) => {
     if (rawFilter.key === 'under') {
@@ -213,57 +216,27 @@ function AiringTable({
     );
   });
 
-  const [sortKey, setSortKey] = useState<string>('airing_time');
-  const [sortKeyType, setKeyType] = useState<SortKey>('date');
-  const [isDesc, setDesc] = useState<boolean>(false);
   const headerClickHandler = (key: string): void => {
     const isCurrentKey = key === sortKey;
     if (isCurrentKey) {
       setDesc(!isDesc);
+      queryUrl = updateTableURL(queryUrl, '', key, !isDesc ? 'desc' : 'asc');
+      dispatch(getTableAirings(queryUrl));
       return;
     }
 
-    setKeyType(headerTypeHashmap[key]);
+    localStorage.setItem(AIRING_TABLE_SORT_DIR_KEY, JSON.stringify(false));
+    localStorage.setItem(AIRING_TABLE_SORT_KEY, key);
     setDesc(false);
     setSortKey(key);
+    queryUrl = updateTableURL(queryUrl, '', key, 'asc');
+    dispatch(getTableAirings(queryUrl));
   };
 
   useEffect(() => {
-    dispatch(getTableAiringsV2(queryUrl));
+    dispatch(getTableAirings(queryUrl));
     dispatch(getTotalAirings());
   }, [dispatch]);
-
-  const applySort = (a: any, b: any): number => {
-    if (sortKeyType === 'numeric') {
-      const firstNum = Number(a[sortKey]);
-      const secondNum = Number(b[sortKey]);
-      if (firstNum > secondNum) {
-        return 1;
-      }
-
-      if (firstNum < secondNum) {
-        return -1;
-      }
-    }
-
-    if (sortKeyType === 'date') {
-      const dateA = new Date(a[sortKey]);
-      const dateB = new Date(b[sortKey]);
-      if (dateA < dateB) {
-        return 1;
-      }
-
-      if (dateA > dateB) {
-        return -1;
-      }
-    }
-
-    if (sortKeyType === 'string') {
-      return a[sortKey].localeCompare(b[sortKey]);
-    }
-
-    return -1;
-  };
 
   const columns = (): JSX.Element[] =>
     DIGITAL_AGENDA_TABLE_HEADERS.map((key): JSX.Element => {
@@ -296,7 +269,7 @@ function AiringTable({
     }
     setCurrentDate(newDate);
     queryUrl = replaceDateInQueryString(queryUrl, newDate);
-    dispatch(getTableAiringsV2(queryUrl));
+    dispatch(getTableAirings(queryUrl));
   };
 
   const handleGoBackClick = (): void => {
@@ -306,26 +279,23 @@ function AiringTable({
     handleChangePage(false);
   };
 
-  const copyOfAirings = JSON.parse(
-    JSON.stringify(airings !== undefined ? airings : [])
-  );
-  const sortedAirings = isDesc
-    ? copyOfAirings.sort(applySort).reverse()
-    : copyOfAirings.sort(applySort);
-  const rows = sortedAirings.map((airing: Airing) =>
-    isAdmin &&
-    handleEditClick !== undefined &&
-    handleDeleteClick !== undefined ? (
-      <AdminTableRow
-        key={airing.ID}
-        data={airing}
-        handleEditClick={handleEditClick}
-        handleDeleteClick={handleDeleteClick}
-      />
-    ) : (
-      <AiringTableRow key={airing.ID} data={airing} />
-    )
-  );
+  const rows =
+    airings !== undefined && airings !== null && airings.length > 0
+      ? airings.map((airing: Airing) =>
+          isAdmin &&
+          handleEditClick !== undefined &&
+          handleDeleteClick !== undefined ? (
+            <AdminTableRow
+              key={airing.ID}
+              data={airing}
+              handleEditClick={handleEditClick}
+              handleDeleteClick={handleDeleteClick}
+            />
+          ) : (
+            <AiringTableRow key={airing.ID} data={airing} />
+          )
+        )
+      : [];
   return (
     <section className="admin-data__container">
       <section className="airing-filters__container">{filtersToShow}</section>

@@ -33,10 +33,6 @@ export enum SNACKBAR_STATUSES {
   'INFO' = 'info',
 }
 
-export type SortKey = 'date' | 'boolean' | 'string' | 'numeric' | '';
-
-export type HeaderHash = Record<string, SortKey>;
-
 export type AiringType = 'Infomercial' | 'ShoppingBlock';
 
 export interface Airing {

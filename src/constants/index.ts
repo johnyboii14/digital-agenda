@@ -19,6 +19,7 @@ export const AIRING_TABLE_CURSOR_KEY = 'airing_table_cursor';
 export const AIRING_TABLE_NEXT_CURSOR_KEY = 'airing_next_table_cursor';
 export const AIRING_TABLE_ROWS_PER_PAGE_KEY = 'airing_table_rows_per_page';
 export const AIRING_TABLE_SORT_KEY = 'airing_table_sort';
+export const AIRING_TABLE_SORT_DIR_KEY = 'airing_table_sort_dir';
 export const AIRING_TABLE_PREVIOUS_TABLE_CURSOR_KEY =
   'airing_previous_table_cursor';
 export const AIRING_TABLE_PAGE_KEY = 'airing_table_page';

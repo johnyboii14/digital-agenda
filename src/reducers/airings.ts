@@ -9,7 +9,6 @@ import {
   getAirings,
   getDayAgendaAirings,
   getTableAirings,
-  getTableAiringsV2,
   getTotalAirings,
 } from '../actions/airings';
 import { type Airing, type ReduxStatus } from '../@types';
@@ -100,19 +99,10 @@ const airingsSlice = createSlice({
         action.payload.data.numOfShoppingBlocksToday;
       state.error = null;
     });
-    builder.addCase(getTableAirings.fulfilled, (state, action) => {
-      state.status = 'succeeded';
-      localStorage.setItem(
-        AIRING_TABLE_NEXT_CURSOR_KEY,
-        action.payload.data.nextCursor
-      );
-      state.airingTotal = action.payload.data.total;
-      state.tableAirings = action.payload.data.airings;
-    });
     builder.addCase(getTotalAirings.fulfilled, (state, action) => {
       state.airingTotal = action.payload.total;
     });
-    builder.addCase(getTableAiringsV2.fulfilled, (state, action) => {
+    builder.addCase(getTableAirings.fulfilled, (state, action) => {
       state.status = 'succeeded';
       state.pageTotal = action.payload.pageTotal;
       state.tableAirings = action.payload.airings;

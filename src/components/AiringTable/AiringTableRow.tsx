@@ -16,7 +16,12 @@ function AiringTableRow({ data }: AiringTableRowProps): JSX.Element {
   } = data;
   const localePrice = price.toLocaleString();
   const airingDay = new Date(airingTime).toLocaleDateString();
-  const airingFormattedTime = new Date(airingTime).toLocaleTimeString();
+  const airingFormattedTime = new Date(airingTime).toLocaleTimeString('en-US', {
+    timeZone: 'UTC',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
   return (
     <tr className="airing-table-row__container">
       <td style={{ width: '100px' }}>
