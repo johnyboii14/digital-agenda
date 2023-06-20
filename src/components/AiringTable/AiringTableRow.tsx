@@ -15,7 +15,9 @@ function AiringTableRow({ data }: AiringTableRowProps): JSX.Element {
     show,
   } = data;
   const localePrice = price.toLocaleString();
-  const airingDay = new Date(airingTime).toLocaleDateString();
+  const airingDay = new Date(airingTime).toLocaleDateString('en-US', {
+    timeZone: 'UTC',
+  });
   const airingFormattedTime = new Date(airingTime).toLocaleTimeString('en-US', {
     timeZone: 'UTC',
     hour: 'numeric',
