@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { parseISO } from 'date-fns';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
 
@@ -82,7 +83,11 @@ function AgendaCalendar(): JSX.Element {
       .tz(DEFAULT_TIMEZONE)
       .toDate();
     const endDate = momentTz(timezoneRemovedVal).tz(DEFAULT_TIMEZONE).toDate();
-    endDate.setMinutes(endDate.getMinutes() + 30);
+    const date = parseISO(timezoneRemovedVal);
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const minutesToSet = hour === 23 && minute === 30 ? 29 : 30;
+    endDate.setMinutes(endDate.getMinutes() + minutesToSet);
     return {
       ...airing,
       end_date: endDate,

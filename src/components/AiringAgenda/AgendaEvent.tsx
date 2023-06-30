@@ -8,7 +8,7 @@ interface AgendaEventProps {
 function AgendaEvent({ event }: AgendaEventProps): JSX.Element {
   return (
     <Tooltip title={event.item_name}>
-      <div>
+      <div style={{ minHeight: '120px' }}>
         <header className="agenda-item-number__text">
           {event.item_number} - {event.airing_id}
         </header>
