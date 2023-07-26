@@ -1,8 +1,9 @@
 export type ReduxStatus = 'idle' | 'pending' | 'succeeded' | 'failed';
+export type AiringType = 'Infomercial' | 'ShoppingBlock';
 export interface EVENT {
   id: number;
   event_description: string;
-  event_type: string;
+  event_type: AiringType;
   event_show: string;
   item_no: string;
   station: string;
@@ -32,8 +33,6 @@ export enum SNACKBAR_STATUSES {
   'WARNING' = 'warning',
   'INFO' = 'info',
 }
-
-export type AiringType = 'Infomercial' | 'ShoppingBlock';
 
 export interface Airing {
   ID: string;

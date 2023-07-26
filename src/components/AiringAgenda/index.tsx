@@ -39,6 +39,10 @@ function AgendaCalendar(): JSX.Element {
     // Your logic to conditionally determine the background color based on the airing details
     let className = '';
 
+    if (event.type === 'ShoppingBlock') {
+      className += 'shopping-block-event ';
+    }
+
     if (event.station.toLowerCase().includes('bloomberg')) {
       className += 'bloomberg-rbc-event';
     }
