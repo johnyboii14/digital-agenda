@@ -10,6 +10,12 @@ export const DIGITAL_AGENDA_TABLE_HEADERS = [
   'price',
 ];
 
+export const ADMIN_USERS_DISPLAY_NAME: Record<string, string> = {
+  molie: 'Mike Olie',
+  jwhite: 'Jackite White',
+  atodd: 'April Todd',
+};
+
 export const ADMIN_TABLE_CURSOR_KEY = 'admin_table_cursor';
 export const ADMIN_NEXT_TABLE_CURSOR_KEY = 'admin_next_table_cursor';
 export const ADMIN_ROWS_PER_PAGE_KEY = 'admin_rows_per_page';

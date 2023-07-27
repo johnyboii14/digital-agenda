@@ -108,28 +108,30 @@ function AgendaCalendar(): JSX.Element {
     dispatch(getDayAgendaAirings(formatSelectedDate(agendaDate)));
   }, []);
   return (
-    <Calendar<AgendaAiring>
-      localizer={localizer}
-      startAccessor="airing_start_date"
-      date={agendaDate}
-      endAccessor="end_date"
-      onNavigate={handleNavigate}
-      events={airings}
-      eventPropGetter={eventStyleGetter}
-      selectable
-      components={{
-        day: {
-          event: MyAgendaEvent,
-        },
-      }}
-      view="day"
-      timeslots={1}
-      step={30}
-      onView={() => null}
-      tooltipAccessor={(airing: AgendaAiring) => airing.item_name}
-      views={['day']}
-      style={{ height: 1000, padding: '0 3%' }}
-    />
+    <>
+      <Calendar<AgendaAiring>
+        localizer={localizer}
+        startAccessor="airing_start_date"
+        date={agendaDate}
+        endAccessor="end_date"
+        onNavigate={handleNavigate}
+        events={airings}
+        eventPropGetter={eventStyleGetter}
+        selectable
+        components={{
+          day: {
+            event: MyAgendaEvent,
+          },
+        }}
+        view="day"
+        timeslots={1}
+        step={30}
+        onView={() => null}
+        tooltipAccessor={(airing: AgendaAiring) => airing.item_name}
+        views={['day']}
+        style={{ height: 1000, padding: '0 3%' }}
+      />
+    </>
   );
 }
 

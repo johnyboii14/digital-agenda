@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { type ADMIN_USER } from '../@types';
 
 import ADMIN_USERS from '../constants/adminUsers';
+import { ADMIN_USERS_DISPLAY_NAME } from '../constants';
 
 export const SIGN_IN = 'SIGN_IN';
 export const signIn = createAsyncThunk(
@@ -26,7 +27,13 @@ export const signIn = createAsyncThunk(
           ADMIN_USERS[userIndex].password.toLowerCase() ===
           password.toLowerCase()
         ) {
-          localStorage.setItem('username', ADMIN_USERS[userIndex].username);
+          const loginName = ADMIN_USERS[userIndex].username;
+          const displayName = ADMIN_USERS_DISPLAY_NAME[loginName];
+          if (displayName !== undefined || displayName !== null) {
+            localStorage.setItem('username', displayName);
+          } else {
+            localStorage.setItem('username', loginName);
+          }
           return true;
         }
 

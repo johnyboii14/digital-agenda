@@ -103,7 +103,7 @@ export const getDayAgendaAirings = createAsyncThunk(
   GET_DAY_AGENDA_DAY_AIRING,
   async (dayToQuery: string, { rejectWithValue }) => {
     try {
-      const dayUrl = `${url}agenda/day?day=${dayToQuery}`;
+      const dayUrl = `${url}agenda?day=${dayToQuery}`;
       const res: AxiosResponse = await axios.get(dayUrl);
       return res.data;
     } catch (err) {
