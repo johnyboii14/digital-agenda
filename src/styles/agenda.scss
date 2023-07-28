@@ -173,6 +173,11 @@
   background-image: url('../assets/images/stadium-logo.jpeg');
 }
 
+.vice-rbc-event {
+  @extend .bloomberg-rbc-event;
+  background-image: url('../assets/images/vice-og.png');
+}
+
 .comet-rbc-event {
   @extend .fox-rbc-event;
   background-color: #22d1f9;
@@ -186,4 +191,11 @@
   @extend .fox-rbc-event;
   background-image: url('../assets/images/nbc-logo.jpg');
   background-color: black;
+}
+
+.shopping-block-event {
+  background-color: #e3a363;
+  .agenda-item-name__text {
+    color: #ef6262;
+  }
 }

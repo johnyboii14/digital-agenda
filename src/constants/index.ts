@@ -12,8 +12,13 @@ export const DIGITAL_AGENDA_TABLE_HEADERS = [
 
 export const ADMIN_USERS_DISPLAY_NAME: Record<string, string> = {
   molie: 'Mike Olie',
-  jwhite: 'Jackite White',
+  jwhite: 'Jackie White',
   atodd: 'April Todd',
+  lrolon: 'Laurie Rolon',
+  slugo: 'Shalisa Lugo',
+  chiggins: 'Candice Higgins',
+  lhuisken: 'Laura Huisken',
+  bpamilton: 'Bridgette Pamilton',
 };
 
 export const ADMIN_TABLE_CURSOR_KEY = 'admin_table_cursor';

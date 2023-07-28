@@ -96,5 +96,5 @@ export enum VIEW_OPTION {
 export interface DefaultModalProps {
   isOpen: boolean;
   handleClose: () => void;
-  showSnackbar: (isError: boolean, status: string) => void;
+  showSnackbar?: (isError: boolean, status: string) => void;
 }

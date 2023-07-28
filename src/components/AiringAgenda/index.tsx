@@ -5,6 +5,7 @@ import moment from 'moment';
 import momentTz from 'moment-timezone';
 
 import AgendaEvent from './AgendaEvent';
+import AiringInfoModal from '../AiringInfoModal';
 
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { getDayAgendaAirings } from '../../actions/airings';
@@ -21,6 +22,9 @@ const MyAgendaEvent = ({ event }: EventProps): JSX.Element => {
 };
 
 function AgendaCalendar(): JSX.Element {
+  const [isAiringInfoModalOpen, toggleAiringInfoModal] =
+    useState<boolean>(false);
+  const [airingToPreview, setAiringToPreview] = useState<AgendaAiring>();
   const rawAiringDay: string | null = localStorage.getItem(AIRING_DAY);
   let initialAiringDay: Date = new Date();
   if (rawAiringDay !== null) {
@@ -57,6 +61,9 @@ function AgendaCalendar(): JSX.Element {
     }
     if (event.station.toLowerCase().includes('comet')) {
       className += 'comet-rbc-event';
+    }
+    if (event.station.toLowerCase().includes('vice')) {
+      className += 'vice-rbc-event';
     }
 
     if (event.station.toLowerCase() === 'fx') {
@@ -103,7 +110,15 @@ function AgendaCalendar(): JSX.Element {
     setAgendaDate(date);
     localStorage.setItem(AIRING_DAY, date.toDateString());
   };
+  const handleCloseInfoModal = (): void => {
+    setAiringToPreview(undefined);
+    toggleAiringInfoModal(false);
+  };
 
+  const handleOpenInfoModal = (airing: AgendaAiring): void => {
+    setAiringToPreview(airing);
+    toggleAiringInfoModal(true);
+  };
   useEffect(() => {
     dispatch(getDayAgendaAirings(formatSelectedDate(agendaDate)));
   }, []);
@@ -117,6 +132,9 @@ function AgendaCalendar(): JSX.Element {
         onNavigate={handleNavigate}
         events={airings}
         eventPropGetter={eventStyleGetter}
+        onSelectEvent={(s): void => {
+          handleOpenInfoModal(s);
+        }}
         selectable
         components={{
           day: {
@@ -131,6 +149,13 @@ function AgendaCalendar(): JSX.Element {
         views={['day']}
         style={{ height: 1000, padding: '0 3%' }}
       />
+      {airingToPreview != null && (
+        <AiringInfoModal
+          handleClose={handleCloseInfoModal}
+          isOpen={isAiringInfoModalOpen}
+          airingToPreview={airingToPreview}
+        />
+      )}
     </>
   );
 }

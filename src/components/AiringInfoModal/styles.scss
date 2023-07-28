@@ -1,0 +1,36 @@
+@import '../../styles/typography.scss';
+@import '../../styles/variables';
+
+.airing-info__row {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0px;
+  article {
+    color: #141414;
+    font-family: $main-font;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+}
+
+.airing-info__header {
+  color: #e5a996;
+  font-family: $main-font;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.airing-info__container {
+  padding: 0 11%;
+}
+
+.airing-info-main__header {
+  color: #a85a40;
+  font-size: 30px;
+  padding-left: 0px;
+  padding: 5px 30px;
+}
