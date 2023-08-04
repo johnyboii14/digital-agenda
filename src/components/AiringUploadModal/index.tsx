@@ -7,7 +7,12 @@ import Box from '@mui/material/Box';
 import FileDropbox from './FileDropbox';
 import RCTVSnackbar from '../Snackbar';
 
-import { bulkCreateAirings, getAdminAirings } from '../../actions/airings';
+import {
+  bulkCreateAirings,
+  chunkCreateAirings,
+  confirmChunkCreateAirings,
+  getAdminAirings,
+} from '../../actions/airings';
 
 import { useAppDispatch } from '../../config/hooks';
 import {
@@ -15,6 +20,8 @@ import {
   type BulkCreateAiringBody,
   type CreateAiringBody,
   SNACKBAR_STATUSES,
+  type ChunkCreateAiringBody,
+  type ChunkCreateAiringConfirmBody,
 } from '../../@types';
 import cleanUpString from '../../helpers/cleanUpString';
 
@@ -106,20 +113,66 @@ function AiringUploadModal({
       data,
       user: username,
     };
-    const res = await dispatch(bulkCreateAirings(csvAiringData));
-    // Get response
-    setLoading(false);
-    if (res.type !== 'BULK_CREATE_AIRINGS/fulfilled') {
-      // Handle error
-      showSnackbar(true, 'Unable to create airings');
-      return;
-    }
+    if (data.length > 700) {
+      // Chunk data here and make api calls here
+      const chunkSize = 600;
+      const chunkedData: CreateAiringBody[][] = [];
+      for (let i = 0; i < data.length; i += chunkSize) {
+        const chunk = data.slice(i, i + chunkSize);
+        chunkedData.push(chunk);
+      }
 
-    // Handle success
-    showSnackbar(false, 'Successfully uploaded airings!');
-    // Call get admin products
-    void dispatch(getAdminAirings());
-    resetState();
+      try {
+        const promises = chunkedData.map((chunk) => {
+          const chunkedCSVAiringData: ChunkCreateAiringBody = {
+            data: chunk,
+          };
+          return dispatch(chunkCreateAirings(chunkedCSVAiringData));
+        });
+
+        const responses = await Promise.all(promises);
+
+        if (
+          responses.some((res) => res.type !== 'CHUNK_CREATE_AIRINGS/fulfilled')
+        ) {
+          // Handle error
+          showSnackbar(true, 'Unable to create airings');
+          setLoading(false);
+          return;
+        }
+        // All API calls succeeded
+        showSnackbar(
+          false,
+          `Successfully uploaded airings! The agenda now has ${data.length} airings`
+        );
+        // Call get admin products
+        const chunkConfirmBody: ChunkCreateAiringConfirmBody = {
+          user: username,
+        };
+        void dispatch(confirmChunkCreateAirings(chunkConfirmBody));
+        void dispatch(getAdminAirings());
+        resetState();
+      } catch (error) {
+        // Handle error
+        showSnackbar(true, 'Error while uploading airings');
+        resetState();
+      }
+    } else {
+      const res = await dispatch(bulkCreateAirings(csvAiringData));
+      // Get response
+      setLoading(false);
+      if (res.type !== 'BULK_CREATE_AIRINGS/fulfilled') {
+        // Handle error
+        showSnackbar(true, 'Unable to create airings');
+        return;
+      }
+
+      // Handle success
+      showSnackbar(false, 'Successfully uploaded airings!');
+      // Call get admin products
+      void dispatch(getAdminAirings());
+      resetState();
+    }
   };
 
   const handleCSVDrop = useCallback((acceptedFile: File[]): void => {

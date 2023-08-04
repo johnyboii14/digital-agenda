@@ -2,10 +2,12 @@ import axios, { type AxiosError, type AxiosResponse } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import apiUrl from '../constants/apiUrl';
-import {
-  type AiringUpdateData,
-  type BulkCreateAiringBody,
-  type CreateAiringBody,
+import type {
+  ChunkCreateAiringBody,
+  AiringUpdateData,
+  BulkCreateAiringBody,
+  CreateAiringBody,
+  ChunkCreateAiringConfirmBody,
 } from '../@types';
 import {
   ADMIN_ROWS_PER_PAGE_KEY,
@@ -134,6 +136,33 @@ export const bulkCreateAirings = createAsyncThunk(
       return res.data;
     } catch (err) {
       return rejectWithValue({ data: err });
+    }
+  }
+);
+
+export const CHUNK_CREATE_AIRINGS = 'CHUNK_CREATE_AIRINGS';
+export const chunkCreateAirings = createAsyncThunk(
+  CHUNK_CREATE_AIRINGS,
+  async (airings: ChunkCreateAiringBody, { rejectWithValue }) => {
+    try {
+      const res: AxiosResponse = await axios.post(`${url}chunk`, airings);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue({ data: err });
+    }
+  }
+);
+
+export const CHUNK_CREATE_AIRINGS_CONFIRM = 'CHUNK_CREATE_AIRINGS_CONFIRM';
+export const confirmChunkCreateAirings = createAsyncThunk(
+  CHUNK_CREATE_AIRINGS_CONFIRM,
+  async (data: ChunkCreateAiringConfirmBody, { rejectWithValue }) => {
+    try {
+      const res: AxiosResponse = await axios.post(`${url}chunk/confirm`, data);
+      return res.data;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue({ data: error });
     }
   }
 );

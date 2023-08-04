@@ -66,6 +66,14 @@ export interface BulkCreateAiringBody {
   user: string;
 }
 
+export interface ChunkCreateAiringBody {
+  data: CreateAiringBody[];
+}
+
+export interface ChunkCreateAiringConfirmBody {
+  user: string;
+}
+
 export interface AdminAiringParams {
   cursor: number;
   pageSize: number;

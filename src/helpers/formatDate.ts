@@ -20,7 +20,8 @@ function formatDateInPST(inputDate: string): string {
   const month = months[dateObj.getUTCMonth()];
   const year = dateObj.getUTCFullYear();
   const hour = dateObj.getUTCHours();
-  const minutes = dateObj.getUTCMinutes();
+  const rawMinutes = dateObj.getUTCMinutes();
+  const minutes = rawMinutes < 10 ? `0${rawMinutes}` : rawMinutes;
   const meridiem = hour >= 12 ? 'PM' : 'AM';
   const hour12 = hour % 12;
 
