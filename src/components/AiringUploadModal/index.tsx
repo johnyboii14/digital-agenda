@@ -168,6 +168,10 @@ function AiringUploadModal({
       }
 
       // Handle success
+      const chunkConfirmBody: ChunkCreateAiringConfirmBody = {
+        user: username,
+      };
+      void dispatch(confirmChunkCreateAirings(chunkConfirmBody));
       showSnackbar(false, 'Successfully uploaded airings!');
       // Call get admin products
       void dispatch(getAdminAirings());
