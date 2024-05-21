@@ -1,6 +1,6 @@
-import { Fragment, Suspense } from "react";
+import { Fragment, Suspense } from 'react';
 
-function Layout({ children }: any) {
+function Layout({ children }: any): JSX.Element {
   return (
     <Fragment>
       <Suspense fallback={<b>Loading ...</b>}>{children}</Suspense>

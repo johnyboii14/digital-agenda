@@ -1,12 +1,7 @@
-import React from "react";
-
-import SearchIcon from "@mui/icons-material/Search";
-
-function SearchBar() {
+function SearchBar(): JSX.Element {
   return (
-    <div className="container">
-      <input type="text" placeholder="Search..." />
-      <div className="search"></div>
+    <div className="search-bar">
+      <h5>Search by Item # or description</h5>
     </div>
   );
 }

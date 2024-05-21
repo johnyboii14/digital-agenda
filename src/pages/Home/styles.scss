@@ -1,11 +1,24 @@
-body {
-  background: url("../../assets/images/Thursday-Social.jpg") no-repeat center
-    center fixed;
-  background-size: auto;
-  height: 100%;
-}
-
 .row {
   display: flex;
   flex-direction: row;
+}
+
+.main-page-style {
+  height: 100%;
+  background-size: cover;
+  background-image: url('../../assets/images/Thursday-Social.jpg');
+  background-position: bottom;
+}
+
+.vignette {
+  background: linear-gradient(
+    180deg,
+    rgba(181, 138, 124, 0.76) -1.22%,
+    rgba(255, 255, 255, 0) 98.78%
+  );
+  position: absolute;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  z-index: 0;
 }

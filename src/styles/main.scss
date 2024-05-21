@@ -1,5 +1,14 @@
 @import "./variables.scss";
 
+@import "./admin.scss";
+@import "./agenda.scss";
+@import "./airingtable.scss";
+
 body {
   font-family: $main-font;
+}
+
+.main-bg {
+  background-image: url("../assets/images/Thursday-Social.jpg");
+  background-size: cover;
 }

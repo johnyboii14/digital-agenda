@@ -1,0 +1,201 @@
+@import './variables.scss';
+
+.rbc-event {
+  background-color: #9d5e4a;
+  background-repeat: no-repeat;
+  background-size: 250px;
+}
+
+.agenda-item-name__text {
+  font-family: $main-font;
+  max-width: 50%;
+  font-size: small;
+  color: rgb(255, 158, 39);
+  font-weight: 600;
+  transition: 0.2s all;
+
+  &:hover {
+    color: rgb(255, 140, 0);
+  }
+}
+
+.agenda-item-show__text {
+  font-size: x-small;
+}
+
+.rbc-day-slot {
+  .rbc-event-label {
+    display: none;
+  }
+}
+
+.rbc-timeslot-group {
+  min-height: 120px;
+  font-family: $main-font;
+  padding-top: 20px;
+  font-weight: 500;
+  color: #d29486;
+}
+
+.rbc-day-slot .rbc-event {
+  border: 1px solid $border-color;
+}
+
+.rbc-today {
+  background-color: #f9e8df;
+}
+
+.rbc-time-view {
+  background: #fff5f2;
+}
+
+.rbc-btn-group {
+  button {
+    color: #b67b6e;
+    background-color: #f9e8df;
+    cursor: pointer;
+    transition: 0.2s all;
+    font-family: $main-font;
+
+    &:hover {
+      background-color: lighten(#b67b6e, 3%);
+    }
+  }
+}
+
+.rbc-toolbar {
+  .rbc-toolbar-label {
+    color: whitesmoke;
+    font-family: $main-font;
+    font-weight: 500;
+    padding-right: 12%;
+  }
+}
+
+.agenda-item-number__text {
+  font-family: $main-font;
+  max-width: 50%;
+  font-size: small;
+  color: #f9e8df;
+  font-weight: 500;
+}
+
+.fx-rbc-event {
+  @extend .rbc-event;
+  background-image: url('../assets/images/fxlogo2.png');
+  background-color: #36454f;
+
+  .agenda-item-name__text {
+    color: gold;
+    background-image: linear-gradient(to right, #fffffa, #ffea80);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
+}
+
+.history-channel-rbc-event {
+  @extend .rbc-event;
+  background-image: url('../assets/images/historychannellogo.png');
+  background-size: 100px;
+  background-color: #b55c40;
+
+  .agenda-item-name__text {
+    font-weight: bold;
+    background-image: linear-gradient(
+      to right,
+      hsla(206, 100%, 73.3%, 1),
+      #ffea80
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.nat-geo-wild-rbc-event {
+  background-image: url('../assets/images/natgeowildlogo.png');
+  background-color: black;
+  background-size: 130px;
+
+  .agenda-item-name__text {
+    color: gold;
+    font-size: medium;
+    font-weight: bold;
+    background-image: linear-gradient(to right, rgb(255, 119, 119), #ffea80);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
+}
+
+.bloomberg-rbc-event {
+  @extend .rbc-event;
+  background-color: black;
+  background-image: url('../assets/images/bloomberg-logo.png');
+  background-position: bottom left;
+
+  .agenda-item-name__text {
+    color: gold;
+    font-size: medium;
+  }
+
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
+}
+
+.fox-rbc-event {
+  background-color: #3e7398;
+  background-image: url('../assets/images/fox-news-logo-2.png');
+  background-size: 140px;
+
+  .agenda-item-name__text {
+    color: gold;
+    font-size: medium;
+  }
+
+  .agenda-item-number__text {
+    color: ghostwhite;
+  }
+}
+
+.stadium-rbc-event {
+  @extend .bloomberg-rbc-event;
+  background-image: url('../assets/images/stadium-logo.jpeg');
+}
+
+.vice-rbc-event {
+  @extend .bloomberg-rbc-event;
+  background-image: url('../assets/images/vice-og.png');
+}
+
+.comet-rbc-event {
+  @extend .fox-rbc-event;
+  background-color: #22d1f9;
+  background-image: url('../assets/images/comet-logo.png');
+  .agenda-item-name__text {
+    color: black !important;
+  }
+}
+
+.nbc-rbc-event {
+  @extend .fox-rbc-event;
+  background-image: url('../assets/images/nbc-logo.jpg');
+  background-color: black;
+}
+
+.shopping-block-event {
+  background-color: #e3a363;
+  .agenda-item-name__text {
+    color: #ef6262;
+  }
+}

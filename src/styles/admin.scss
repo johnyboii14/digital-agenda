@@ -1,0 +1,9 @@
+.quick-edit__form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.quick-edit__form .MuiFormControl-root {
+    flex: 40%;
+    margin: 1%;
+}

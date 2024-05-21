@@ -1,41 +1,71 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import Header from "../../components/Header";
+import AgendaCalendar from '../../components/AiringAgenda';
+import AiringTable from '../../components/AiringTable';
+import Header from '../../components/Header';
 
-import { useAppDispatch, useAppSelector } from "../../config/hooks";
-import { clearEvents } from "../../actions/events";
+import { useAppDispatch } from '../../config/hooks';
+import { clearEvents } from '../../actions/events';
+import { clearAirings } from '../../actions/airings';
+import { DEFAULT_VIEW_OPTION } from '../../constants';
 
-import ViewNav from "../../components/ViewNav";
+import { VIEW_OPTION } from '../../@types';
 
-import "./styles.scss";
-import AiringsTable from "../../components/AiringsTable.tsx";
+import './styles.scss';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-function Home() {
-  const backgroundImage = "url(../../assets/images/Thursday-Social.jpg)";
-  const backgroundStyle = {
-    backgroundImage,
-    backgroundSize: "cover",
-    backgrounPosition: "fill",
-    height: "100vg",
-    backgroundBlendMode: "multiply",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    opacity: "90%",
+function Home(): JSX.Element {
+  let defaultView = localStorage.getItem(DEFAULT_VIEW_OPTION);
+  if (defaultView === '' || defaultView === undefined || defaultView === null) {
+    defaultView = VIEW_OPTION.AGENDA;
+  }
+  const [viewOption, toggleViewOption] = useState<VIEW_OPTION>(
+    defaultView as VIEW_OPTION
+  );
+  const handleViewOptionClick = (opt: VIEW_OPTION): void => {
+    toggleViewOption(opt);
+    localStorage.setItem(DEFAULT_VIEW_OPTION, opt);
   };
-
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(clearEvents());
+    void dispatch(clearEvents());
+    void dispatch(clearAirings());
   }, [dispatch]);
 
-  const events = useAppSelector((state) => state.events.events);
-
   return (
-    <div style={backgroundStyle}>
-      <Header />
-      <ViewNav />
-      <main>
-        <AiringsTable events={events} />
+    <div className="main-page-style">
+      <Header
+        viewOption={viewOption}
+        handleViewOptionClick={handleViewOptionClick}
+      />
+      <main style={{ zIndex: 1, position: 'relative' }}>
+        <AnimatePresence>
+          {viewOption !== VIEW_OPTION.AGENDA ? (
+            <motion.div
+              key="table"
+              initial={{ opacity: 0, y: 50, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -50, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              <AiringTable isAdmin={false} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="calendar"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              {' '}
+              <AgendaCalendar />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
+      <div className="vignette" />
     </div>
   );
 }

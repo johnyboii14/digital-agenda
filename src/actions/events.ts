@@ -1,18 +1,18 @@
-import axios, { AxiosResponse } from "axios";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios, { type AxiosResponse } from 'axios';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import apiUrl from "../constants/apiUrl";
-import { EVENT, EVENT_REQUEST } from "../@types";
+import apiUrl from '../constants/apiUrl';
+import { type EVENT, type EVENT_REQUEST } from '../@types';
 
 const url = `${apiUrl}/events`;
 
-export const GET_EVENTS = "GET_EVENTS";
+export const GET_EVENTS = 'GET_EVENTS';
 export const getEvents = createAsyncThunk(GET_EVENTS, async () => {
   const res: AxiosResponse = await axios.get(url);
   return res.data;
 });
 
-export const CREATE_EVENT = "CREATE_EVENT";
+export const CREATE_EVENT = 'CREATE_EVENT';
 export const createEvents = createAsyncThunk(
   CREATE_EVENT,
   async (eventData: EVENT_REQUEST) => {
@@ -20,7 +20,7 @@ export const createEvents = createAsyncThunk(
     return res.data;
   }
 );
-export const DELETE_EVENT = "DELETE_EVENT";
+export const DELETE_EVENT = 'DELETE_EVENT';
 export const deleteEvent = createAsyncThunk(
   DELETE_EVENT,
   async (eventId: number | string) => {
@@ -33,9 +33,9 @@ export const deleteEvent = createAsyncThunk(
   }
 );
 
-export const clearEvents = createAsyncThunk("CLEAR_EVENTS", async () => null);
+export const clearEvents = createAsyncThunk('CLEAR_EVENTS', async () => null);
 
-export const GET_EVENT = "GET_EVENT";
+export const GET_EVENT = 'GET_EVENT';
 export const getEvent = createAsyncThunk(
   GET_EVENT,
   async (id: string | number) => {
@@ -44,7 +44,7 @@ export const getEvent = createAsyncThunk(
   }
 );
 
-export const EDIT_EVENT = "EDIT_EVENT";
+export const EDIT_EVENT = 'EDIT_EVENT';
 export const editEvent = createAsyncThunk(
   EDIT_EVENT,
   async (eventToEdit: EVENT) => {
@@ -57,3 +57,13 @@ export const editEvent = createAsyncThunk(
     }
   }
 );
+
+export const GET_LATEST_EVENT = 'GET_LATEST_EVENT';
+export const getLatestEvent = createAsyncThunk(GET_LATEST_EVENT, async () => {
+  try {
+    const res = await axios.get(`${url}/latest`);
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+});

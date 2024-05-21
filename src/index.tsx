@@ -1,23 +1,25 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import App from "./App";
+import App from './App';
 
-import store, { persistor } from "./store";
-import reportWebVitals from "./reportWebVitals";
+import store, { persistor } from './store';
+import reportWebVitals from './reportWebVitals';
 
-import "./index.scss";
+import './index.scss';
 
 globalThis.React = React;
 
-window.Buffer = window.Buffer || require("buffer").Buffer;
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/strict-boolean-expressions
+window.Buffer = window.Buffer || require('buffer').Buffer;
 
-const container: HTMLElement = document.getElementById("root")!;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const container: HTMLElement = document.getElementById('root')!;
 const root = createRoot(container);
 
-export const AppWrapper = () => (
+export const AppWrapper = (): JSX.Element => (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <App />
