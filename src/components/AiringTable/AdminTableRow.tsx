@@ -50,8 +50,16 @@ function AdminTableRow({
     show,
   } = data;
   const localePrice = price.toLocaleString();
-  const airingDay = new Date(airingTime).toLocaleDateString();
-  const airingFormattedTime = new Date(airingTime).toLocaleTimeString();
+  const airingDay = new Date(airingTime).toLocaleDateString('en-US', {
+    timeZone: 'UTC',
+  });
+  const airingFormattedTime = new Date(airingTime).toLocaleTimeString('en-US', {
+    timeZone: 'UTC',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  
   return (
     <TableRow
       sx={{

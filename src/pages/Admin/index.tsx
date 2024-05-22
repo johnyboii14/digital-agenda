@@ -75,6 +75,9 @@ function AdminPage(): JSX.Element {
           `Successfully deleted airing ${airingToDelete.airing_id}`
         );
         handleCloseDeleteModal();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000)
         return;
       }
 
@@ -120,7 +123,9 @@ function AdminPage(): JSX.Element {
     <div id="admin-page__container">
       <menu>
         <header>
+          <a href='/'>
           <img className="sidebar-logo" src={blackLogo} alt="RCTV Header" />
+          </a>
         </header>
         <ul>
           <li style={{ marginBottom: '10%' }}>
