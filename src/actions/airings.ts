@@ -39,7 +39,7 @@ export const deleteAiring = createAsyncThunk(
   DELETE_AIRING,
   async (airingId: number | string) => {
     try {
-      await axios.delete(`${url}/${airingId}`);
+      await axios.delete(`${url}${airingId}`);
       return airingId;
     } catch (err) {
       return false;
@@ -64,7 +64,7 @@ export const editAiring = createAsyncThunk(
   async (airingToEdit: AiringUpdateData, { rejectWithValue }) => {
     try {
       const { ID: airingId, ...airingBody } = airingToEdit;
-      await axios.put(`${url}/${airingId}`, airingBody);
+      await axios.put(`${url}${airingId}`, airingBody);
       return airingBody;
     } catch (err) {
       return rejectWithValue({ data: err });

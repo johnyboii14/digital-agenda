@@ -33,6 +33,14 @@ const ADMIN_USERS: ADMIN_USER[] = [
     username: 'bpamilton',
     password: 'cCenter53!',
   },
+  {
+    username: 'jperez',
+    password: 'SuperAdmin14',
+  },
+  {
+    username: 'agutierrez',
+    password: 'BigRaveGuy2024',
+  }
 ];
 
 export default ADMIN_USERS;
