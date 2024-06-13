@@ -22,6 +22,7 @@
     "framer-motion": "^10.12.16",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
+    "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-big-calendar": "^1.6.9",
     "react-dom": "^18.2.0",
@@ -63,6 +64,7 @@
     ]
   },
   "devDependencies": {
+    "@types/papaparse": "^5.3.14",
     "@types/react-big-calendar": "^1.6.3",
     "@typescript-eslint/eslint-plugin": ">=5.57.0",
     "@typescript-eslint/parser": ">=5.57.0",

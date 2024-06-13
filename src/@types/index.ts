@@ -89,6 +89,7 @@ export interface AiringCSVData {
   ItemNumber: string;
   Item: string;
   Price: string;
+  
 }
 
 export interface AgendaAiring extends Airing {
