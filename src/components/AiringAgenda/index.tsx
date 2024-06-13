@@ -83,28 +83,43 @@ function AgendaCalendar(): JSX.Element {
     };
   };
 
+  const majorStations = [
+    'bloomberg',
+    'fox',
+    'nbc',
+    'stadium',
+    'comet',
+    'vice',
+    'fx',
+    'history channel',
+    'nat geo wild',
+  ];
+
   const airings: AgendaAiring[] = useAppSelector(
     (state) => state.airings.agendaAirings
-  ).map((airing) => {
-    const timezoneRemovedVal = airing.airing_time.slice(
-      0,
-      airing.airing_time.length - 4
-    );
-    const airingDate = momentTz(timezoneRemovedVal)
-      .tz(DEFAULT_TIMEZONE)
-      .toDate();
-    const endDate = momentTz(timezoneRemovedVal).tz(DEFAULT_TIMEZONE).toDate();
-    const date = parseISO(timezoneRemovedVal);
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    const minutesToSet = hour === 23 && minute === 30 ? 29 : 30;
-    endDate.setMinutes(endDate.getMinutes() + minutesToSet);
-    return {
-      ...airing,
-      end_date: endDate,
-      airing_start_date: airingDate,
-    };
-  });
+  )
+    .map((airing) => {
+      const timezoneRemovedVal = airing.airing_time.slice(
+        0,
+        airing.airing_time.length - 4
+      );
+      const airingDate = momentTz(timezoneRemovedVal)
+        .tz(DEFAULT_TIMEZONE)
+        .toDate();
+      const endDate = momentTz(timezoneRemovedVal).tz(DEFAULT_TIMEZONE).toDate();
+      const date = parseISO(timezoneRemovedVal);
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      const minutesToSet = hour === 23 && minute === 30 ? 29 : 30;
+      endDate.setMinutes(endDate.getMinutes() + minutesToSet);
+      return {
+        ...airing,
+        end_date: endDate,
+        airing_start_date: airingDate,
+      };
+    })
+    .filter((airing) => majorStations.includes(airing.station.toLowerCase()));
+
   const handleNavigate = (date: Date): void => {
     dispatch(getDayAgendaAirings(formatSelectedDate(date)));
     setAgendaDate(date);
