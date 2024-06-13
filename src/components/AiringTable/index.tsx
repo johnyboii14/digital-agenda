@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
@@ -37,6 +37,7 @@ import addSubtractDay from '../../modules/addSubtractDay';
 import replaceDateInQueryString from '../../modules/replaceDateInQueryString';
 import formatRowHeaders from '../../modules/formatRowHeaders';
 import updateTableURL from '../../modules/updateTableURL';
+import ScrollToTop from '../ScrollToTop';
 
 const fontFamily = 'Neue Haas Grotesk';
 
@@ -65,6 +66,7 @@ function AiringTable({
   handleDeleteClick,
   handleEditClick,
 }: AiringTableProps): JSX.Element {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const airings = useAppSelector((state) => state.airings.tableAirings);
   const airingsStatus = useAppSelector((state) => state.airings.status);
@@ -299,6 +301,7 @@ function AiringTable({
   return (
     <section className="admin-data__container">
       <section className="airing-filters__container">{filtersToShow}</section>
+
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 750 }}>
           <table className="airing-table__container" aria-label="sticky table">
@@ -325,6 +328,7 @@ function AiringTable({
           </section>
         </div>
       </Paper>
+      <ScrollToTop containerRef={tableContainerRef} />
     </section>
   );
 }

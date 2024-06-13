@@ -4,6 +4,8 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 
+import Papa from 'papaparse';
+
 import FileDropbox from './FileDropbox';
 import RCTVSnackbar from '../Snackbar';
 
@@ -23,7 +25,10 @@ import {
   type ChunkCreateAiringBody,
   type ChunkCreateAiringConfirmBody,
 } from '../../@types';
+
+
 import cleanUpString from '../../helpers/cleanUpString';
+
 
 interface AiringUploadModalProps {
   isOpen: boolean;
@@ -53,9 +58,7 @@ function AiringUploadModal({
   const [csvFiles, setCSVFiles] = useState<AiringCSVData[]>([]);
   const [snackbarOpen, setSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<SNACKBAR_STATUSES>(
-    SNACKBAR_STATUSES.SUCCESS
-  );
+  const [snackbarSeverity, setSnackbarSeverity] = useState<SNACKBAR_STATUSES>(SNACKBAR_STATUSES.SUCCESS);
   const [loading, setLoading] = useState<boolean>(false);
   const resetState = (): void => {
     setCSVFiles([]);
@@ -64,13 +67,13 @@ function AiringUploadModal({
 
   const dispatch = useAppDispatch();
   const showSnackbar = (error: boolean, message: string): void => {
-    const severity = error
-      ? SNACKBAR_STATUSES.ERROR
-      : SNACKBAR_STATUSES.SUCCESS;
+    const severity = error ? SNACKBAR_STATUSES.ERROR : SNACKBAR_STATUSES.SUCCESS;
     setSnackbarSeverity(severity);
     setSnackbarMessage(message);
     setSnackbar(true);
   };
+
+  const removeCommas = (str: string): string => str.replace(/,/g, ' ');
 
   const handleUpload = async (): Promise<void> => {
     setLoading(true);
@@ -89,18 +92,27 @@ function AiringUploadModal({
       const csvData: AiringCSVData = csvFiles[i];
       Object.keys(csvData).forEach((key) => {
         const airingKey = hashmap[key as keyof AiringCSVData];
-        if (key === 'Date (PST)') {
-          obj.airing_time = `${csvData['Date (PST)']}T`;
-        } else if (key === 'TimePST') {
-          obj.airing_time = `${obj.airing_time}${csvData.TimePST}.000Z`;
+        if (key === 'Date (PST)' || key === 'TimePST') {
+          // Skip handling here; combine later
         } else {
-          const value = csvData[key as keyof AiringCSVData];
+          let value = csvData[key as keyof AiringCSVData];
+          if (key === 'SHOW' || key === 'Item') {
+            value = removeCommas(value);
+          }
           obj[airingKey] = value;
         }
       });
+  
+      // Combine the date and time into a single ISO string for airing_time
+      const datePart = csvData['Date (PST)'];
+      const timePart = csvData.TimePST;
+      if (datePart !== '' && timePart !== '') {
+        obj.airing_time = `${datePart}T${timePart}.000Z`;
+      }
+  
       data.push(obj as CreateAiringBody);
     }
-
+  
     // Do bulk upload
     let username = localStorage.getItem('username');
     if (username == null || username === undefined || username === '') {
@@ -108,7 +120,7 @@ function AiringUploadModal({
     } else {
       username = username.toString();
     }
-
+  
     const csvAiringData: BulkCreateAiringBody = {
       data,
       user: username,
@@ -121,7 +133,7 @@ function AiringUploadModal({
         const chunk = data.slice(i, i + chunkSize);
         chunkedData.push(chunk);
       }
-
+  
       try {
         const promises = chunkedData.map((chunk) => {
           const chunkedCSVAiringData: ChunkCreateAiringBody = {
@@ -129,22 +141,17 @@ function AiringUploadModal({
           };
           return dispatch(chunkCreateAirings(chunkedCSVAiringData));
         });
-
+  
         const responses = await Promise.all(promises);
-
-        if (
-          responses.some((res) => res.type !== 'CHUNK_CREATE_AIRINGS/fulfilled')
-        ) {
+  
+        if (responses.some((res) => res.type !== 'CHUNK_CREATE_AIRINGS/fulfilled')) {
           // Handle error
           showSnackbar(true, 'Unable to create airings');
           setLoading(false);
           return;
         }
         // All API calls succeeded
-        showSnackbar(
-          false,
-          `Successfully uploaded airings! The agenda now has ${data.length} airings`
-        );
+        showSnackbar(false, `Successfully uploaded airings! The agenda now has ${data.length} airings`);
         // Call get admin products
         const chunkConfirmBody: ChunkCreateAiringConfirmBody = {
           user: username,
@@ -166,7 +173,7 @@ function AiringUploadModal({
         showSnackbar(true, 'Unable to create airings');
         return;
       }
-
+  
       // Handle success
       const chunkConfirmBody: ChunkCreateAiringConfirmBody = {
         user: username,
@@ -178,61 +185,71 @@ function AiringUploadModal({
       resetState();
     }
   };
+  
+  
+  
+  
 
   const handleCSVDrop = useCallback((acceptedFile: File[]): void => {
     acceptedFile.forEach((file: File) => {
       const reader: FileReader = new FileReader();
-
+  
       reader.onload = (ev: ProgressEvent<FileReader>) => {
         if (ev.target != null) {
           const csv = ev.target.result as string;
-          const lines = csv.split('\n');
-          const headers = lines[0].split(',') as Array<keyof AiringCSVData>;
-          const data: AiringCSVData[] = [];
-          for (let i = 1; i < lines.length; i += 1) {
-            const values = lines[i].split(',');
-            if (values.length === headers.length) {
-              const obj: AiringCSVData = {
-                AiringID: '',
-                Type: '',
-                Station: '',
-                'Date (PST)': '',
-                TimePST: '',
-                SHOW: '',
-                ItemNumber: '',
-                Item: '',
-                Price: '',
-              };
-              for (let j = 0; j < values.length; j++) {
-                if (cleanUpString(headers[j]) === 'Date (PST)') {
-                  const [date] = values[j].split(' ');
+          Papa.parse(csv, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (result) => {
+              const data: AiringCSVData[] = result.data.map((row: any) => {
+                const cleanedRow: AiringCSVData = {
+                  AiringID: row.AiringID !== undefined && row.AiringID !== null ? row.AiringID : '',
+                  Type: row.Type !== undefined && row.Type !== null ? row.Type : '',
+                  Station: row.Station !== undefined && row.Station !== null ? row.Station : '',
+                  'Date (PST)': row['Date (PST)'] !== undefined && row['Date (PST)'] !== null ? cleanUpString(row['Date (PST)']) : '',
+                  TimePST: row.TimePST !== undefined && row.TimePST !== null ? cleanUpString(row.TimePST) : '',
+                  SHOW: row.SHOW !== undefined && row.SHOW !== null ? removeCommas(row.SHOW) : '',
+                  ItemNumber: row.ItemNumber !== undefined && row.ItemNumber !== null ? row.ItemNumber : '',
+                  Item: row.Item !== undefined && row.Item !== null ? removeCommas(row.Item) : '',
+                  Price: row.Price !== undefined && row.Price !== null ? row.Price : '',
+                };
+  
+                // Process 'Date (PST)' and 'TimePST' fields
+                if (cleanedRow['Date (PST)'] !== '') {
+                  const [date] = cleanedRow['Date (PST)'].split(' ');
                   const parts = date.split('/');
                   const year = parts[2];
                   const month = parts[0].padStart(2, '0');
                   const day = parts[1].padStart(2, '0');
-                  const isoDateStr = `${year}-${month}-${day}`;
-                  obj[cleanUpString(headers[j]) as keyof AiringCSVData] =
-                    isoDateStr;
-                } else if (cleanUpString(headers[j]) === 'TimePST') {
-                  const time = values[j].split(' ')[1];
-                  obj[cleanUpString(headers[j]) as keyof AiringCSVData] = time;
-                } else {
-                  obj[cleanUpString(headers[j]) as keyof AiringCSVData] =
-                    cleanUpString(values[j]);
+                  cleanedRow['Date (PST)'] = `${year}-${month}-${day}`;
                 }
-              }
-
-              data.push(obj);
-            }
-          }
-
-          setCSVFiles(data);
+  
+                if (cleanedRow.TimePST !== '') {
+                  const timeParts = cleanedRow.TimePST.split(' ');
+                  if (timeParts.length > 1) {
+                    cleanedRow.TimePST = timeParts[1];
+                  }
+                }
+  
+                return cleanedRow;
+              });
+  
+              setCSVFiles(data);
+            },
+          });
         }
       };
-
-      reader.readAsBinaryString(file);
+  
+      reader.readAsText(file);
     });
   }, []);
+  
+  
+  
+  
+  
+  
+  
 
   const clearCSV = (): void => {
     setCSVFiles([]);
