@@ -78,6 +78,9 @@ function AiringUploadModal({
   const handleUpload = async (): Promise<void> => {
     setLoading(true);
     const data: CreateAiringBody[] = [];
+    
+    console.log('Total CSV Files:', csvFiles.length);
+  
     for (let i = 0; i < csvFiles.length; i += 1) {
       const obj: Record<keyof CreateAiringBody, string | number> = {
         airing_time: '',
@@ -113,6 +116,8 @@ function AiringUploadModal({
       data.push(obj as CreateAiringBody);
     }
   
+    console.log('Total Airings Prepared for Upload:', data.length);
+  
     // Do bulk upload
     let username = localStorage.getItem('username');
     if (username == null || username === undefined || username === '') {
@@ -125,8 +130,9 @@ function AiringUploadModal({
       data,
       user: username,
     };
+  
     if (data.length > 700) {
-      // Chunk data here and make api calls here
+      // Chunk data here and make API calls here
       const chunkSize = 600;
       const chunkedData: CreateAiringBody[][] = [];
       for (let i = 0; i < data.length; i += chunkSize) {
@@ -134,8 +140,11 @@ function AiringUploadModal({
         chunkedData.push(chunk);
       }
   
+      console.log('Total Chunks Prepared for Upload:', chunkedData.length);
+  
       try {
-        const promises = chunkedData.map((chunk) => {
+        const promises = chunkedData.map((chunk, index) => {
+          console.log(`Uploading Chunk ${index + 1}/${chunkedData.length}`);
           const chunkedCSVAiringData: ChunkCreateAiringBody = {
             data: chunk,
           };
@@ -161,6 +170,7 @@ function AiringUploadModal({
         resetState();
       } catch (error) {
         // Handle error
+        console.error('Error while uploading chunks:', error);
         showSnackbar(true, 'Error while uploading airings');
         resetState();
       }
@@ -185,6 +195,7 @@ function AiringUploadModal({
       resetState();
     }
   };
+  
   
   
   
