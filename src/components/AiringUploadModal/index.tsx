@@ -1,21 +1,16 @@
 import { useState, useCallback } from 'react';
-
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-
 import Papa from 'papaparse';
-
 import FileDropbox from './FileDropbox';
 import RCTVSnackbar from '../Snackbar';
-
 import {
   bulkCreateAirings,
   chunkCreateAirings,
   confirmChunkCreateAirings,
   getAdminAirings,
 } from '../../actions/airings';
-
 import { useAppDispatch } from '../../config/hooks';
 import {
   type AiringCSVData,
@@ -25,10 +20,7 @@ import {
   type ChunkCreateAiringBody,
   type ChunkCreateAiringConfirmBody,
 } from '../../@types';
-
-
 import cleanUpString from '../../helpers/cleanUpString';
-
 
 interface AiringUploadModalProps {
   isOpen: boolean;
@@ -195,11 +187,6 @@ function AiringUploadModal({
       resetState();
     }
   };
-  
-  
-  
-  
-  
 
   const handleCSVDrop = useCallback((acceptedFile: File[]): void => {
     acceptedFile.forEach((file: File) => {
@@ -254,13 +241,6 @@ function AiringUploadModal({
       reader.readAsText(file);
     });
   }, []);
-  
-  
-  
-  
-  
-  
-  
 
   const clearCSV = (): void => {
     setCSVFiles([]);
