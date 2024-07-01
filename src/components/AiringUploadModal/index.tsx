@@ -77,7 +77,7 @@ function AiringUploadModal({
       const obj: Record<keyof CreateAiringBody, string | number> = {
         airing_time: '',
         airing_id: '',
-        type: 'Infomercial',
+        type: '',
         station: '',
         show: '',
         item_number: '',
@@ -125,7 +125,7 @@ function AiringUploadModal({
   
     if (data.length > 700) {
       // Chunk data here and make API calls here
-      const chunkSize = 500;
+      const chunkSize = 1000;
       const chunkedData: CreateAiringBody[][] = [];
       for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
