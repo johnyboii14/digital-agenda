@@ -125,7 +125,7 @@ function AiringUploadModal({
   
     if (data.length > 700) {
       // Chunk data here and make API calls here
-      const chunkSize = 524;
+      const chunkSize = 2094;
       const chunkedData: CreateAiringBody[][] = [];
       for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
