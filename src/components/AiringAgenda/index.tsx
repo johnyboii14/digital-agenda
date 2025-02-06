@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { parseISO } from 'date-fns';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
+import { parseISO } from 'date-fns';
 
 import AgendaEvent from './AgendaEvent';
 import AiringInfoModal from '../AiringInfoModal';
@@ -17,6 +17,7 @@ const localizer = momentLocalizer(moment);
 interface EventProps {
   event: AgendaAiring;
 }
+
 const MyAgendaEvent = ({ event }: EventProps): JSX.Element => {
   return <AgendaEvent key={event.ID} event={event} />;
 };
@@ -25,22 +26,21 @@ function AgendaCalendar(): JSX.Element {
   const [isAiringInfoModalOpen, toggleAiringInfoModal] =
     useState<boolean>(false);
   const [airingToPreview, setAiringToPreview] = useState<AgendaAiring>();
+
   const rawAiringDay: string | null = localStorage.getItem(AIRING_DAY);
   let initialAiringDay: Date = new Date();
   if (rawAiringDay !== null) {
     initialAiringDay = new Date(rawAiringDay);
   }
+
   const [agendaDate, setAgendaDate] = useState<Date | string>(initialAiringDay);
   const dispatch = useAppDispatch();
+
   const formatSelectedDate = (date: Date | string): string => {
-    // Format the date to "yyyy-mm-dd" in the target time zone
-    const formattedDate = momentTz(date)
-      .tz(DEFAULT_TIMEZONE)
-      .format('YYYY-MM-DD');
-    return formattedDate;
+    return momentTz(date).tz(DEFAULT_TIMEZONE).format('YYYY-MM-DD');
   };
+
   const eventStyleGetter = (event: AgendaAiring): any => {
-    // Your logic to conditionally determine the background color based on the airing details
     let className = '';
 
     if (event.airing_type === 'ShoppingBlock') {
@@ -95,36 +95,38 @@ function AgendaCalendar(): JSX.Element {
     'nat geo wild',
   ];
 
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   const airings: AgendaAiring[] = useAppSelector(
     (state) => state.airings.agendaAirings
   )
     .map((airing) => {
-      const timezoneRemovedVal = airing.airing_date_time.slice(
-        0,
-        airing.airing_date_time.length - 4
+      // ✅ Convert UTC date to the user's local time
+      const airingDate = new Date(airing.airing_date_time + 'Z'); // Ensure UTC interpretation
+      const localStartDate = new Date(
+        airingDate.toLocaleString('en-US', { timeZone: userTimeZone })
       );
-      const airingDate = momentTz(timezoneRemovedVal)
-        .tz(DEFAULT_TIMEZONE)
-        .toDate();
-      const endDate = momentTz(timezoneRemovedVal).tz(DEFAULT_TIMEZONE).toDate();
-      const date = parseISO(timezoneRemovedVal);
-      const hour = date.getHours();
-      const minute = date.getMinutes();
-      const minutesToSet = hour === 23 && minute === 30 ? 29 : 30;
-      endDate.setMinutes(endDate.getMinutes() + minutesToSet);
+
+      // ✅ Calculate end time (default to +30 minutes)
+      const localEndDate = new Date(localStartDate);
+      localEndDate.setMinutes(localEndDate.getMinutes() + 30);
+
       return {
         ...airing,
-        end_date: endDate,
-        airing_start_date: airingDate,
+        airing_start_date: localStartDate, // ✅ Converted to local time
+        end_date: localEndDate, // ✅ End date in local time
       };
     })
-    .filter((airing) => majorStations.includes(airing.airing_station.toLowerCase()));
+    .filter((airing) =>
+      majorStations.includes(airing.airing_station.toLowerCase())
+    );
 
   const handleNavigate = (date: Date): void => {
     dispatch(getDayAgendaAirings(formatSelectedDate(date)));
     setAgendaDate(date);
     localStorage.setItem(AIRING_DAY, date.toDateString());
   };
+
   const handleCloseInfoModal = (): void => {
     setAiringToPreview(undefined);
     toggleAiringInfoModal(false);
@@ -134,9 +136,11 @@ function AgendaCalendar(): JSX.Element {
     setAiringToPreview(airing);
     toggleAiringInfoModal(true);
   };
+
   useEffect(() => {
     dispatch(getDayAgendaAirings(formatSelectedDate(agendaDate)));
   }, []);
+
   return (
     <>
       <Calendar<AgendaAiring>
@@ -160,7 +164,9 @@ function AgendaCalendar(): JSX.Element {
         timeslots={1}
         step={30}
         onView={() => null}
-        tooltipAccessor={(airing: AgendaAiring) => airing.airing_item_description}
+        tooltipAccessor={(airing: AgendaAiring) =>
+          airing.airing_item_description
+        }
         views={['day']}
         style={{ height: 1000, padding: '0 3%' }}
       />
@@ -176,3 +182,4 @@ function AgendaCalendar(): JSX.Element {
 }
 
 export default AgendaCalendar;
+
