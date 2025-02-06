@@ -16,13 +16,13 @@ function AiringInfoModal({
   handleClose,
 }: AiringInfoModalProps): JSX.Element {
   const {
-    item_name: itemName,
-    item_number: itemNumber,
+    airing_item_description: itemName,
+    airing_item_number: itemNumber,
     airing_id: airingId,
-    price,
-    airing_time: airingTime,
-    station,
-    type,
+    airing_price: airingPrice,
+    airing_date_time: airingTime,
+    airing_station: airingStation,
+    airing_type: airingType,
   } = airingToPreview;
   return (
     <Modal onClose={handleClose} open={isOpen}>
@@ -43,7 +43,7 @@ function AiringInfoModal({
               </article>
               <article>
                 <header className="airing-info__header">Price</header>
-                {price}
+                {airingPrice}
               </article>
             </section>
             <section className="airing-info__row">
@@ -53,13 +53,13 @@ function AiringInfoModal({
               </article>
               <article>
                 <header className="airing-info__header">Station</header>
-                {station}
+                {airingStation}
               </article>
             </section>
             <section className="airing-info__row">
               <article>
                 <header className="airing-info__header">Type</header>
-                {type}
+                {airingType}
               </article>
             </section>
           </div>

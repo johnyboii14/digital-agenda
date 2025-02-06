@@ -1,303 +1,177 @@
 import { useState, useCallback } from 'react';
+import Papa from 'papaparse';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import Papa from 'papaparse';
 import FileDropbox from './FileDropbox';
 import RCTVSnackbar from '../Snackbar';
-import {
-  bulkCreateAirings,
-  chunkCreateAirings,
-  confirmChunkCreateAirings,
-  getAdminAirings,
-} from '../../actions/airings';
+import { bulkCreateAirings, getAdminAirings } from '../../actions/airings';
 import { useAppDispatch } from '../../config/hooks';
-import {
-  type AiringCSVData,
-  type BulkCreateAiringBody,
-  type CreateAiringBody,
-  SNACKBAR_STATUSES,
-  type ChunkCreateAiringBody,
-  type ChunkCreateAiringConfirmBody,
-} from '../../@types';
-import cleanUpString from '../../helpers/cleanUpString';
+import { SNACKBAR_STATUSES } from '../../@types';
+
+interface AiringData {
+  airing_id: string;
+  airing_type: string;
+  airing_station: string;
+  airing_date_time: string;
+  airing_show: string;
+  airing_item_number: string;
+  airing_item_description: string;
+  airing_price: number;
+}
 
 interface AiringUploadModalProps {
   isOpen: boolean;
   handleClose: () => void;
 }
 
-type Hashmap = {
-  [key in keyof AiringCSVData]: keyof CreateAiringBody;
-};
-
-const hashmap: Hashmap = {
-  AiringID: 'airing_id',
-  Type: 'type',
-  Station: 'station',
-  'Date (PST)': 'airing_time',
-  TimePST: 'airing_time',
-  SHOW: 'show',
-  ItemNumber: 'item_number',
-  Item: 'item_name',
-  Price: 'price',
-};
-
-function AiringUploadModal({
-  isOpen,
-  handleClose,
-}: AiringUploadModalProps): JSX.Element {
-  const [csvFiles, setCSVFiles] = useState<AiringCSVData[]>([]);
+function AiringUploadModal({ isOpen, handleClose }: AiringUploadModalProps): JSX.Element {
+  const [csvFile, setCSVFile] = useState<File | null>(null);
+  const [parsedData, setParsedData] = useState<AiringData[]>([]);
   const [snackbarOpen, setSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<SNACKBAR_STATUSES>(SNACKBAR_STATUSES.SUCCESS);
   const [loading, setLoading] = useState<boolean>(false);
-  const resetState = (): void => {
-    setCSVFiles([]);
-    setLoading(false);
-  };
 
   const dispatch = useAppDispatch();
+
   const showSnackbar = (error: boolean, message: string): void => {
-    const severity = error ? SNACKBAR_STATUSES.ERROR : SNACKBAR_STATUSES.SUCCESS;
-    setSnackbarSeverity(severity);
+    setSnackbarSeverity(error ? SNACKBAR_STATUSES.ERROR : SNACKBAR_STATUSES.SUCCESS);
     setSnackbarMessage(message);
     setSnackbar(true);
   };
 
-  const removeCommas = (str: string): string => str.replace(/,/g, ' ');
+const handleCSVDrop = useCallback((acceptedFiles: File[]) => {
+  if (acceptedFiles.length > 0) {
+    const file = acceptedFiles[0];
+    setCSVFile(file);
 
-  const handleUpload = async (): Promise<void> => {
-    setLoading(true);
-    const data: CreateAiringBody[] = [];
-    
-    console.log('Total CSV Files:', csvFiles.length);
-  
-    for (let i = 0; i < csvFiles.length; i += 1) {
-      const obj: Record<keyof CreateAiringBody, string | number> = {
-        airing_time: '',
-        airing_id: '',
-        type: '',
-        station: '',
-        show: '',
-        item_number: '',
-        item_name: '',
-        price: 0,
-      };
-      const csvData: AiringCSVData = csvFiles[i];
-      Object.keys(csvData).forEach((key) => {
-        const airingKey = hashmap[key as keyof AiringCSVData];
-        if (key === 'Date (PST)' || key === 'TimePST') {
-          // Skip handling here; combine later
-        } else {
-          let value = csvData[key as keyof AiringCSVData];
-          if (key === 'SHOW' || key === 'Item') {
-            value = removeCommas(value);
-          }
-          obj[airingKey] = value;
-        }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+
+      Papa.parse<Record<string, string | undefined>>(content, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          const cleanedData = (results.data as Record<string, string | undefined>[]).map(
+            (row): AiringData | null => {
+              if (!row["Date (PST)"] || !row["TimePST"]) {
+                console.warn("Skipping row due to missing date/time:", row);
+                return null;
+              }
+
+              // ✅ Extract the correct date (MM/DD/YYYY format)
+              const rawDate = row["Date (PST)"]?.trim().split(" ")[0] ?? "";
+              const rawTime = row["TimePST"]?.trim().split(" ")[1] ?? "";
+
+              if (!rawDate.match(/^\d{1,2}\/\d{1,2}\/\d{4}$/) || !rawTime.match(/^\d{1,2}:\d{2}:\d{2}$/)) {
+                console.warn("Invalid date/time format:", rawDate, rawTime);
+                return null;
+              }
+
+              // ✅ Convert date into YYYY-MM-DD
+              const [month, day, year] = rawDate.split("/");
+              if (!month || !day || !year) return null;
+              const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+
+              // ✅ Ensure time has leading zeros for HH:MM:SS format
+              const timeParts = rawTime.split(":");
+              const formattedTime = timeParts.map((part) => part.padStart(2, "0")).join(":");
+
+              // ✅ Combine into a single datetime string in ISO format
+              const localDateTimeStr = `${formattedDate}T${formattedTime}`;
+              
+              // ✅ Convert local time to UTC before sending
+              const localDate = new Date(localDateTimeStr);
+              const utcDateTimeStr = localDate.toISOString().slice(0, 19); // Remove milliseconds
+
+              return {
+                airing_id: row["AiringID"]?.trim() ?? "",
+                airing_type: row["Type"]?.trim() ?? "Infomercial",
+                airing_station: row["Station"]?.trim() ?? "",
+                airing_date_time: utcDateTimeStr, // ✅ Sending UTC to backend
+                airing_show: row["SHOW"]?.trim() ?? "",
+                airing_item_number: row["ItemNumber"]?.trim() ?? "",
+                airing_item_description: row["Item"]?.trim() ?? "",
+                airing_price: parseFloat(row["Price"] ?? "0.00"),
+              };
+            }
+          ).filter(Boolean) as AiringData[];
+
+          setParsedData(cleanedData);
+          console.log("✅ Cleaned & Converted Data (UTC):", cleanedData);
+        },
       });
-  
-      // Combine the date and time into a single ISO string for airing_time
-      const datePart = csvData['Date (PST)'];
-      const timePart = csvData.TimePST;
-      if (datePart !== '' && timePart !== '') {
-        obj.airing_time = `${datePart}T${timePart}.000Z`;
-      }
-  
-      data.push(obj as CreateAiringBody);
-    }
-  
-    console.log('Total Airings Prepared for Upload:', data.length);
-  
-    // Do bulk upload
-    let username = localStorage.getItem('username');
-    if (username == null || username === undefined || username === '') {
-      username = 'default';
-    } else {
-      username = username.toString();
-    }
-  
-    const csvAiringData: BulkCreateAiringBody = {
-      data,
-      user: username,
     };
-  
-    if (data.length > 700) {
-      // Chunk data here and make API calls here
-      const chunkSize = 2094;
-      const chunkedData: CreateAiringBody[][] = [];
-      for (let i = 0; i < data.length; i += chunkSize) {
-        const chunk = data.slice(i, i + chunkSize);
-        chunkedData.push(chunk);
-      }
-  
-      console.log('Total Chunks Prepared for Upload:', chunkedData.length);
-  
-      try {
-        const promises = chunkedData.map((chunk, index) => {
-          console.log(`Uploading Chunk ${index + 1}/${chunkedData.length}`);
-          const chunkedCSVAiringData: ChunkCreateAiringBody = {
-            data: chunk,
-          };
-          return dispatch(chunkCreateAirings(chunkedCSVAiringData));
-        });
-  
-        const responses = await Promise.all(promises);
-  
-        if (responses.some((res) => res.type !== 'CHUNK_CREATE_AIRINGS/fulfilled')) {
-          // Handle error
-          showSnackbar(true, 'Unable to create airings');
-          setLoading(false);
-          return;
-        }
-        // All API calls succeeded
-        showSnackbar(false, `Successfully uploaded airings! The agenda now has ${data.length} airings`);
-        // Call get admin products
-        const chunkConfirmBody: ChunkCreateAiringConfirmBody = {
-          user: username,
-        };
-        void dispatch(confirmChunkCreateAirings(chunkConfirmBody));
-        void dispatch(getAdminAirings());
-        resetState();
-      } catch (error) {
-        // Handle error
-        console.error('Error while uploading chunks:', error);
-        showSnackbar(true, 'Error while uploading airings');
-        resetState();
-      }
-    } else {
-      const res = await dispatch(bulkCreateAirings(csvAiringData));
-      // Get response
-      setLoading(false);
-      if (res.type !== 'BULK_CREATE_AIRINGS/fulfilled') {
-        // Handle error
-        showSnackbar(true, 'Unable to create airings');
-        return;
-      }
-  
-      // Handle success
-      const chunkConfirmBody: ChunkCreateAiringConfirmBody = {
-        user: username,
-      };
-      void dispatch(confirmChunkCreateAirings(chunkConfirmBody));
-      showSnackbar(false, 'Successfully uploaded airings!');
-      // Call get admin products
-      void dispatch(getAdminAirings());
-      resetState();
-    }
-  };
 
-  const handleCSVDrop = useCallback((acceptedFile: File[]): void => {
-    acceptedFile.forEach((file: File) => {
-      const reader: FileReader = new FileReader();
-  
-      reader.onload = (ev: ProgressEvent<FileReader>) => {
-        if (ev.target != null) {
-          const csv = ev.target.result as string;
-          Papa.parse(csv, {
-            header: true,
-            skipEmptyLines: true,
-            complete: (result) => {
-              const data: AiringCSVData[] = result.data.map((row: any) => {
-                const cleanedRow: AiringCSVData = {
-                  AiringID: row.AiringID !== undefined && row.AiringID !== null ? row.AiringID : '',
-                  Type: row.Type !== undefined && row.Type !== null ? row.Type : '',
-                  Station: row.Station !== undefined && row.Station !== null ? row.Station : '',
-                  'Date (PST)': row['Date (PST)'] !== undefined && row['Date (PST)'] !== null ? cleanUpString(row['Date (PST)']) : '',
-                  TimePST: row.TimePST !== undefined && row.TimePST !== null ? cleanUpString(row.TimePST) : '',
-                  SHOW: row.SHOW !== undefined && row.SHOW !== null ? removeCommas(row.SHOW) : '',
-                  ItemNumber: row.ItemNumber !== undefined && row.ItemNumber !== null ? row.ItemNumber : '',
-                  Item: row.Item !== undefined && row.Item !== null ? removeCommas(row.Item) : '',
-                  Price: row.Price !== undefined && row.Price !== null ? row.Price : '',
-                };
-  
-                // Process 'Date (PST)' and 'TimePST' fields
-                if (cleanedRow['Date (PST)'] !== '') {
-                  const [date] = cleanedRow['Date (PST)'].split(' ');
-                  const parts = date.split('/');
-                  const year = parts[2];
-                  const month = parts[0].padStart(2, '0');
-                  const day = parts[1].padStart(2, '0');
-                  cleanedRow['Date (PST)'] = `${year}-${month}-${day}`;
-                }
-  
-                if (cleanedRow.TimePST !== '') {
-                  const timeParts = cleanedRow.TimePST.split(' ');
-                  if (timeParts.length > 1) {
-                    cleanedRow.TimePST = timeParts[1];
-                  }
-                }
-  
-                return cleanedRow;
-              });
-  
-              setCSVFiles(data);
-            },
-          });
-        }
-      };
-  
-      reader.readAsText(file);
-    });
-  }, []);
+    reader.readAsText(file);
+  }
+}, []);
+
 
   const clearCSV = (): void => {
-    setCSVFiles([]);
+    setCSVFile(null);
+    setParsedData([]);
   };
 
-  const handleUploadClick = (): void => {
-    void handleUpload();
+  const handleUpload = async (): Promise<void> => {
+    if (parsedData.length === 0) {
+      showSnackbar(true, 'No valid data to upload');
+      return;
+    }
+
+    setLoading(true);
+    const res = await dispatch(bulkCreateAirings(parsedData));
+    setLoading(false);
+
+    if (res.type !== 'BULK_CREATE_AIRINGS/fulfilled') {
+      showSnackbar(true, 'Unable to create airings');
+      return;
+    }
+
+    showSnackbar(false, 'Successfully uploaded airings!');
+    void dispatch(getAdminAirings());
+    clearCSV();
   };
 
-  const hasUploadedFiles = csvFiles.length > 1;
   return (
     <Modal open={isOpen}>
-      <Box>
-        <div className="modal__container">
-          <header className="modal__header">Airing Upload</header>
-          <section>
-            <article className="modal-instructions__container">
-              <h4 className="modal-instructions__text">
-                Here you can drag and drop your airing files. Data will either
-                be created or updated based on if the airing id already exists
-                in the database
-              </h4>
-            </article>
-            <FileDropbox onDrop={handleCSVDrop} />
-            {hasUploadedFiles && (
-              <article className="bulk-upload-btn__container">
-                <header className="bulk-upload-btn__header">
-                  Uploaded {csvFiles.length - 1} Airings
-                </header>
-                <article className="bulk-upload-btn__clear">
-                  <Button
-                    variant="text"
-                    sx={{ color: '#f0ad4e' }}
-                    onClick={clearCSV}
-                  >
-                    Clear X
-                  </Button>
-                </article>
+      <Box className="modal__container">
+        <header className="modal__header">Airing Upload</header>
+        <section>
+          <FileDropbox onDrop={handleCSVDrop} />
+
+          {csvFile !== null && (
+            <article className="bulk-upload-btn__container">
+              <header className="bulk-upload-btn__header">
+                Uploaded <strong>{parsedData.length}</strong> Airings
+              </header>
+              <article className="bulk-upload-btn__clear">
+                <Button
+                  variant="text"
+                  sx={{ color: '#f0ad4e' }}
+                  onClick={clearCSV}
+                >
+                  Clear X
+                </Button>
               </article>
-            )}
-          </section>
-          <footer>
-            <Button variant="text" onClick={handleClose}>
-              Close
+            </article>
+          )}
+        </section>
+        <footer>
+          <Button variant="text" onClick={handleClose}>Close</Button>
+          {parsedData.length > 0 && (
+            <Button
+              color="success"
+              disabled={loading}
+              onClick={handleUpload}
+              variant="contained"
+            >
+              Upload Airings
             </Button>
-            {hasUploadedFiles && (
-              <Button
-                color="success"
-                disabled={loading}
-                onClick={handleUploadClick}
-                variant="contained"
-              >
-                Upload Airings
-              </Button>
-            )}
-          </footer>
-        </div>
+          )}
+        </footer>
         <RCTVSnackbar
           isOpen={snackbarOpen}
           severity={snackbarSeverity}

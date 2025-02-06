@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
@@ -16,8 +16,6 @@ import Logo from '../../assets/images/RctvLogo.png';
 import { VIEW_OPTION } from '../../@types';
 
 import './styles.scss';
-import { useAppDispatch } from '../../config/hooks';
-import { GET_LATEST_EVENT, getLatestEvent } from '../../actions/events';
 
 interface HeaderProps {
   viewOption: VIEW_OPTION;
@@ -37,18 +35,7 @@ const Header = ({
   handleViewOptionClick,
 }: HeaderProps): JSX.Element => {
   const [showMenu, toggleMenu] = useState<boolean>(false);
-  const [latestImport, setLatestImport] = useState<string>('');
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const handleLatestEvent = async (): Promise<void> => {
-    const res = await dispatch(getLatestEvent());
-    if (res.type === `${GET_LATEST_EVENT}/fulfilled`) {
-      setLatestImport(res.payload.message);
-    }
-  };
-  useEffect(() => {
-    void handleLatestEvent();
-  }, []);
   const handleClick = (): void => {
     navigate('/admin');
   };
@@ -121,7 +108,6 @@ const Header = ({
             </IconButton>
           </section>
         </section>
-        <section className="latest-import__container">{latestImport}</section>
       </section>
       <AnimatePresence>
         {showMenu && <TableFilterMenu handleClose={handleMenuCloseClick} />}
