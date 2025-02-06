@@ -37,13 +37,13 @@ function EditAiringModal({
   const dispatch = useAppDispatch();
   const {
     airing_id: initialAiringId,
-    type,
-    station,
-    airing_time: initialAiringTime,
-    show,
-    item_number: initialItemNumber,
-    item_name: initialItemName,
-    price,
+    airing_type: airingType,
+    airing_station: airingStation,
+    airing_date_time: initialAiringTime,
+    airing_show: airingShow,
+    airing_item_number: initialItemNumber,
+    airing_item_description: initialItemName,
+    airing_price: airingPrice,
   } = airingToEdit;
 
   // Parse the initial airing time as a Date object in UTC
@@ -62,13 +62,13 @@ function EditAiringModal({
 
   const initialAiringForm: AiringFormData = {
     airing_id: initialAiringId ?? '',
-    type: type ?? '',
-    station: station ?? '',
-    airing_time: initialAiringTimeFormatted ?? '',
-    show: show ?? '',
-    item_number: initialItemNumber ?? '',
-    item_name: initialItemName ?? '',
-    price: price ?? 0,
+    airing_type: airingType ?? '',
+    airing_station: airingStation ?? '',
+    airing_date_time: initialAiringTimeFormatted ?? '',
+    airing_show: airingShow ?? '',
+    airing_item_number: initialItemNumber ?? '',
+    airing_item_description: initialItemName ?? '',
+    airing_price: airingPrice ?? 0,
   };
 
   const [airingToUpdate, updateAiringForm] = useState<AiringFormData>(initialAiringForm);
@@ -82,45 +82,45 @@ function EditAiringModal({
     },
     {
       label: 'Type',
-      key: 'type',
-      value: airingToUpdate.type ?? '',
-      initialValue: initialAiringForm.type,
+      key: 'airing_type',
+      value: airingToUpdate.airing_type ?? '',
+      initialValue: initialAiringForm.airing_type,
     },
     {
       label: 'Station',
-      key: 'station',
-      value: airingToUpdate.station ?? '',
-      initialValue: initialAiringForm.station,
+      key: 'airing_station',
+      value: airingToUpdate.airing_station ?? '',
+      initialValue: initialAiringForm.airing_station,
     },
     {
       label: 'Airing Time',
-      key: 'airing_time',
-      value: airingToUpdate.airing_time ?? '',
-      initialValue: initialAiringForm.airing_time,
+      key: 'airing_date_time',
+      value: airingToUpdate.airing_date_time ?? '',
+      initialValue: initialAiringForm.airing_date_time,
     },
     {
       label: 'Show',
-      key: 'show',
-      value: airingToUpdate.show ?? '',
-      initialValue: initialAiringForm.show,
+      key: 'airing_show',
+      value: airingToUpdate.airing_show ?? '',
+      initialValue: initialAiringForm.airing_show,
     },
     {
       label: 'Item Number',
-      key: 'item_number',
-      value: airingToUpdate.item_number ?? '',
-      initialValue: initialAiringForm.item_number,
+      key: 'airing_item_number',
+      value: airingToUpdate.airing_item_number ?? '',
+      initialValue: initialAiringForm.airing_item_number,
     },
     {
       label: 'Item Name',
-      key: 'item_name',
-      value: airingToUpdate.item_name ?? '',
-      initialValue: initialAiringForm.item_name,
+      key: 'airing_item_description',
+      value: airingToUpdate.airing_item_description ?? '',
+      initialValue: initialAiringForm.airing_item_description,
     },
     {
       label: 'Price',
-      key: 'price',
-      value: airingToUpdate.price ?? 0,
-      initialValue: initialAiringForm.price,
+      key: 'airing_price',
+      value: airingToUpdate.airing_price ?? 0,
+      initialValue: initialAiringForm.airing_price,
       type: 'number',
     },
   ];
@@ -152,7 +152,7 @@ function EditAiringModal({
     // Show snackbar
     if (res.meta.requestStatus === 'fulfilled') {
       void dispatch(getAdminAirings());
-      showSnackbar(false, `Successfully updated ${airingToUpdate.item_name}`);
+      showSnackbar(false, `Successfully updated ${airingToUpdate.airing_item_description}`);
       handleClose();
       setTimeout(() => {
         window.location.reload();
@@ -162,13 +162,13 @@ function EditAiringModal({
 
     showSnackbar(
       true,
-      `Failed to update ${airingToEdit.item_name}, please contact Mike or Jonathan`
+      `Failed to update ${airingToEdit.airing_item_description}, please contact Mike or Jonathan`
     );
   };
 
   const handleEditConfirm = (): void => {
     // Convert the displayed airing time back to a Date object in UTC
-    const [datePart, timePart] = airingToUpdate.airing_time.split(', ');
+    const [datePart, timePart] = airingToUpdate.airing_date_time.split(', ');
     const [month, day, year] = datePart.split('/');
     const [hourMinute, period] = timePart.split(' ');
     const [hour, minute] = hourMinute.split(':');
@@ -179,7 +179,7 @@ function EditAiringModal({
     // Create airing obj
     const dataObj: AiringUpdateData = {
       ...airingToUpdate,
-      airing_time: formattedAiringTime,
+      airing_date_time: formattedAiringTime,
       ID: airingToEdit.ID,
     };
 
@@ -192,7 +192,7 @@ function EditAiringModal({
       <Box>
         <div className="modal__container" id="edit-modal">
           <header className="modal__header">
-            Edit {airingToEdit.item_name}
+            Edit {airingToEdit.airing_item_description}
           </header>
           <section className="quick-edit__form__wrapper">
             <form className="quick-edit__form">{dataFields}</form>

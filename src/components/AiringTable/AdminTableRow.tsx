@@ -1,12 +1,10 @@
 import { useState } from 'react';
-
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 
 import { StyledTableCell } from './';
-
 import { type Airing } from '../../@types';
 
 interface AdminTableRowProps {
@@ -20,6 +18,8 @@ function AdminTableRow({
   handleDeleteClick,
   handleEditClick,
 }: AdminTableRowProps): JSX.Element {
+  console.log('AdminTableRow Data:', data);
+
   const [anchorEl, setMenuEl] = useState<undefined | HTMLElement>(undefined);
   const open = Boolean(anchorEl);
   const handleClose = (): void => {
@@ -41,25 +41,34 @@ function AdminTableRow({
   };
 
   const {
-    item_name: itemName,
-    item_number: itemNum,
-    station,
-    airing_time: airingTime,
-    price,
+    airing_item_description: itemName,
+    airing_item_number: itemNum,
+    airing_station: airingStation,
+    airing_date_time: airingTime,
+    airing_price: airingPrice,
     airing_id: airingId,
-    show,
+    airing_show: airingShow,
   } = data;
-  const localePrice = price.toLocaleString();
-  const airingDay = new Date(airingTime).toLocaleDateString('en-US', {
-    timeZone: 'UTC',
-  });
-  const airingFormattedTime = new Date(airingTime).toLocaleTimeString('en-US', {
-    timeZone: 'UTC',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  });
-  
+
+  const localePrice = airingPrice.toLocaleString();
+
+const airingDate = new Date(airingTime + 'Z'); // ✅ Ensure UTC interpretation
+
+const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+const airingDay = airingDate.toLocaleDateString('en-US', {
+  timeZone: userTimeZone, // ✅ Auto-detect user's timezone
+});
+
+const airingFormattedTime = airingDate.toLocaleTimeString('en-US', {
+  timeZone: userTimeZone, // ✅ Auto-detect user's timezone
+  hour: 'numeric',
+  minute: 'numeric',
+  hour12: true,
+});
+
+
+
   return (
     <TableRow
       sx={{
@@ -75,8 +84,8 @@ function AdminTableRow({
       <StyledTableCell>{itemNum}</StyledTableCell>
       <StyledTableCell sx={{ width: 15 }}>{itemName}</StyledTableCell>
       <StyledTableCell>{airingId}</StyledTableCell>
-      <StyledTableCell>{show}</StyledTableCell>
-      <StyledTableCell>{station}</StyledTableCell>
+      <StyledTableCell>{airingShow}</StyledTableCell>
+      <StyledTableCell>{airingStation}</StyledTableCell>
       <StyledTableCell>${localePrice}</StyledTableCell>
       <StyledTableCell sx={{ width: 3 }}>
         <Button

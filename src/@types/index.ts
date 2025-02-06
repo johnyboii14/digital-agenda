@@ -35,18 +35,17 @@ export enum SNACKBAR_STATUSES {
 }
 
 export interface Airing {
-  ID: string;
+  ID?: string;
   airing_id: string;
-  type: AiringType;
-  station: string;
-  airing_time: string;
-  show: string;
-  item_number: string;
-  item_name: string;
-  price: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-  DeletedAt: string;
+  airing_type: AiringType;
+  airing_station: string;
+  airing_date_time: string;
+  airing_show: string;
+  airing_item_number: string;
+  airing_item_description: string;
+  airing_price: number;
+  CreatedAt?: string;
+  UpdatedAt?: string;
 }
 
 export type CreateAiringBody = Omit<

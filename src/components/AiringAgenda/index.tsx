@@ -43,38 +43,38 @@ function AgendaCalendar(): JSX.Element {
     // Your logic to conditionally determine the background color based on the airing details
     let className = '';
 
-    if (event.type === 'ShoppingBlock') {
+    if (event.airing_type === 'ShoppingBlock') {
       className += 'shopping-block-event ';
     }
 
-    if (event.station.toLowerCase().includes('bloomberg')) {
+    if (event.airing_station.toLowerCase().includes('bloomberg')) {
       className += 'bloomberg-rbc-event';
     }
-    if (event.station.toLowerCase().includes('fox')) {
+    if (event.airing_station.toLowerCase().includes('fox')) {
       className += 'fox-rbc-event';
     }
-    if (event.station.toLowerCase().includes('nbc')) {
+    if (event.airing_station.toLowerCase().includes('nbc')) {
       className += 'nbc-rbc-event';
     }
-    if (event.station.toLowerCase().includes('stadium')) {
+    if (event.airing_station.toLowerCase().includes('stadium')) {
       className += 'stadium-rbc-event';
     }
-    if (event.station.toLowerCase().includes('comet')) {
+    if (event.airing_station.toLowerCase().includes('comet')) {
       className += 'comet-rbc-event';
     }
-    if (event.station.toLowerCase().includes('vice')) {
+    if (event.airing_station.toLowerCase().includes('vice')) {
       className += 'vice-rbc-event';
     }
 
-    if (event.station.toLowerCase() === 'fx') {
+    if (event.airing_station.toLowerCase() === 'fx') {
       className += 'fx-rbc-event';
     }
 
-    if (event.station.toLowerCase() === 'history channel') {
+    if (event.airing_station.toLowerCase() === 'history channel') {
       className += 'history-channel-rbc-event';
     }
 
-    if (event.station.toLowerCase() === 'nat geo wild') {
+    if (event.airing_station.toLowerCase() === 'nat geo wild') {
       className += 'nat-geo-wild-rbc-event';
     }
 
@@ -99,9 +99,9 @@ function AgendaCalendar(): JSX.Element {
     (state) => state.airings.agendaAirings
   )
     .map((airing) => {
-      const timezoneRemovedVal = airing.airing_time.slice(
+      const timezoneRemovedVal = airing.airing_date_time.slice(
         0,
-        airing.airing_time.length - 4
+        airing.airing_date_time.length - 4
       );
       const airingDate = momentTz(timezoneRemovedVal)
         .tz(DEFAULT_TIMEZONE)
@@ -118,7 +118,7 @@ function AgendaCalendar(): JSX.Element {
         airing_start_date: airingDate,
       };
     })
-    .filter((airing) => majorStations.includes(airing.station.toLowerCase()));
+    .filter((airing) => majorStations.includes(airing.airing_station.toLowerCase()));
 
   const handleNavigate = (date: Date): void => {
     dispatch(getDayAgendaAirings(formatSelectedDate(date)));
@@ -160,7 +160,7 @@ function AgendaCalendar(): JSX.Element {
         timeslots={1}
         step={30}
         onView={() => null}
-        tooltipAccessor={(airing: AgendaAiring) => airing.item_name}
+        tooltipAccessor={(airing: AgendaAiring) => airing.airing_item_description}
         views={['day']}
         style={{ height: 1000, padding: '0 3%' }}
       />
