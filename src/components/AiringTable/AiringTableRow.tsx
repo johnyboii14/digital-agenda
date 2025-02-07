@@ -15,8 +15,10 @@ function AiringTableRow({ data }: AiringTableRowProps): JSX.Element {
     airing_show: airingShow,
   } = data;
 
-  const localePrice = airingPrice.toLocaleString();
-
+  // ✅ Check if airingPrice is defined and a number
+  const localePrice = airingPrice !== undefined && !isNaN(airingPrice)
+    ? airingPrice.toLocaleString()
+    : '0.00';  // Fallback value if undefined
 
   const airingDate = new Date(airingTime + 'Z'); // ✅ Ensure UTC interpretation
 

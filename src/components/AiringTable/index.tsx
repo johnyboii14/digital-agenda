@@ -303,6 +303,19 @@ function AiringTable({
       <section className="airing-filters__container">{filtersToShow}</section>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+          <div className="flex flex-col justify-center bg-blue-200">
+          <h6>
+            {currentDate}
+          </h6>
+          <section>
+            <IconButton onClick={handleGoBackClick}>
+              <ArrowBackIosIcon />
+            </IconButton>
+            <IconButton onClick={handleGoForwardClick}>
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </section>
+        </div>
         <TableContainer sx={{ maxHeight: 750 }}>
           <table className="airing-table__container" aria-label="sticky table">
             <thead>
@@ -316,7 +329,7 @@ function AiringTable({
         </TableContainer>
         <div className="airing-table__pagination">
           <h6>
-            page:
+            {currentDate}
           </h6>
           <section>
             <IconButton onClick={handleGoBackClick}>
