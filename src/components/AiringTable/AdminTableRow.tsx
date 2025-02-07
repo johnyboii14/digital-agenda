@@ -18,8 +18,6 @@ function AdminTableRow({
   handleDeleteClick,
   handleEditClick,
 }: AdminTableRowProps): JSX.Element {
-  console.log('AdminTableRow Data:', data);
-
   const [anchorEl, setMenuEl] = useState<undefined | HTMLElement>(undefined);
   const open = Boolean(anchorEl);
   const handleClose = (): void => {
@@ -50,24 +48,25 @@ function AdminTableRow({
     airing_show: airingShow,
   } = data;
 
-  const localePrice = airingPrice.toLocaleString();
+  // ✅ Ensure airingPrice is defined and is a number before calling toLocaleString
+  const localePrice = airingPrice !== undefined && !isNaN(airingPrice)
+    ? airingPrice.toLocaleString()
+    : '0.00'; // Fallback value if undefined
 
-const airingDate = new Date(airingTime + 'Z'); // ✅ Ensure UTC interpretation
+  const airingDate = new Date(airingTime + 'Z'); // ✅ Ensure UTC interpretation
 
-const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-const airingDay = airingDate.toLocaleDateString('en-US', {
-  timeZone: userTimeZone, // ✅ Auto-detect user's timezone
-});
+  const airingDay = airingDate.toLocaleDateString('en-US', {
+    timeZone: userTimeZone, // ✅ Auto-detect user's timezone
+  });
 
-const airingFormattedTime = airingDate.toLocaleTimeString('en-US', {
-  timeZone: userTimeZone, // ✅ Auto-detect user's timezone
-  hour: 'numeric',
-  minute: 'numeric',
-  hour12: true,
-});
-
-
+  const airingFormattedTime = airingDate.toLocaleTimeString('en-US', {
+    timeZone: userTimeZone, // ✅ Auto-detect user's timezone
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
 
   return (
     <TableRow
