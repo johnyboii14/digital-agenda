@@ -70,21 +70,26 @@ const airingsSlice = createSlice({
       airings: action.payload.data,
       error: null,
     }));
+
     builder.addCase(getDayAgendaAirings.pending, (state) => {
       state.agendaStatus = 'pending';
     });
+
     builder.addCase(getDayAgendaAirings.fulfilled, (state, action) => {
       state.agendaStatus = 'succeeded';
       state.agendaAirings = action.payload.airings;
       state.agendaCount = action.payload.airing_count;
     });
+
     builder.addCase(getAdminAirings.pending, (state) => {
       state.status = 'pending';
     });
-    builder.addCase(getAdminAirings.rejected, (state) => {
-      state = initialState;
-      state.status = 'failed';
-    });
+
+    builder.addCase(getAdminAirings.rejected, () => ({
+      ...initialState,
+      status: 'failed',
+    }));
+
     builder.addCase(getAdminAirings.fulfilled, (state, action) => {
       state.status = 'succeeded';
       localStorage.setItem(
@@ -95,18 +100,20 @@ const airingsSlice = createSlice({
       state.airingTotal = action.payload.data.totalCount;
       state.numOfAiringsToday = action.payload.data.numOfAiringsToday;
       state.numOfInfomericalsToday = action.payload.data.numOfInfomercialsToday;
-      state.numOfShoppingBlocksToday =
-        action.payload.data.numOfShoppingBlocksToday;
+      state.numOfShoppingBlocksToday = action.payload.data.numOfShoppingBlocksToday;
       state.error = null;
     });
+
     builder.addCase(getTotalAirings.fulfilled, (state, action) => {
       state.airingTotal = action.payload.total;
     });
+
     builder.addCase(getTableAirings.fulfilled, (state, action) => {
       state.status = 'succeeded';
       state.pageTotal = action.payload.pageTotal;
       state.tableAirings = action.payload.airings;
     });
+
     builder.addCase(filterTableAirings.fulfilled, (state, action) => {
       state.status = 'succeeded';
       localStorage.setItem(
@@ -116,32 +123,26 @@ const airingsSlice = createSlice({
       state.airingTotal = action.payload.totalCount;
       state.tableAirings = action.payload.airings;
     });
+
     builder.addCase(createAirings.fulfilled, (state, action) => {
       const { airing } = action.payload;
-      const newArr = JSON.parse(JSON.stringify(state.airings));
-      newArr.push(airing);
-      state.airings = newArr;
+      state.airings = [...state.airings, airing]; // ✅ Immutable update
     });
+
     builder.addCase(deleteAiring.fulfilled, (state, action) => {
       const airingId = action.payload;
-      const newArr = JSON.parse(JSON.stringify(state.airings));
-      const airingIdx = state.airings.find((p) => p.ID === airingId);
-      newArr.splice(airingIdx, 1);
-      state.airings = newArr;
+      state.airings = state.airings.filter((airing) => airing.ID !== airingId); // ✅ Filter for immutability
     });
-    builder.addCase(clearAirings.fulfilled, (state) => {
-      state = initialState;
-    });
+
+    builder.addCase(clearAirings.fulfilled, () => ({
+      ...initialState,
+    }));
+
     builder.addCase(editAiring.fulfilled, (state, action) => {
-      const airingToEdit: Airing = action.payload as unknown as Airing;
-      const newArr = JSON.parse(
-        JSON.stringify(state.airings)
-      ) as unknown as Airing[];
-      const airingIdx = state.airings.findIndex(
-        (p) => p.ID === airingToEdit.ID
-      );
-      newArr[airingIdx] = airingToEdit;
-      state.airings = newArr;
+      const updatedAiring = action.payload as Airing;
+      state.airings = state.airings.map((airing) =>
+        airing.ID === updatedAiring.ID ? { ...airing, ...updatedAiring } : airing
+      ); // ✅ Immutable update using map
     });
   },
 });

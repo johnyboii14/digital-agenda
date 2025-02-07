@@ -84,8 +84,8 @@ export const getAdminAirings = createAsyncThunk(
         pageSize = DEFAULT_PER_PAGE;
       }
 
-      // const adminUrl = `${url}admin?cursor=${cursor}&pageSize=${pageSize}`;
-      const res: AxiosResponse = await axios.get(apiUrl);
+      
+      const res: AxiosResponse = await axios.get(url);
       return {
         data: res.data,
         cursor,
