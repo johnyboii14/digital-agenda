@@ -6,24 +6,35 @@ interface AiringTableRowProps {
 
 function AiringTableRow({ data }: AiringTableRowProps): JSX.Element {
   const {
-    item_name: itemName,
-    item_number: itemNum,
-    station,
-    airing_time: airingTime,
-    price,
+    airing_item_description: itemName,
+    airing_item_number: itemNum,
+    airing_station: airingStation,
+    airing_date_time: airingTime,
+    airing_price: airingPrice,
     airing_id: airingId,
-    show,
+    airing_show: airingShow,
   } = data;
-  const localePrice = price.toLocaleString();
-  const airingDay = new Date(airingTime).toLocaleDateString('en-US', {
-    timeZone: 'UTC',
+
+  // ✅ Check if airingPrice is defined and a number
+  const localePrice = airingPrice !== undefined && !isNaN(airingPrice)
+    ? airingPrice.toLocaleString()
+    : '0.00';  // Fallback value if undefined
+
+  const airingDate = new Date(airingTime + 'Z'); // ✅ Ensure UTC interpretation
+
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const airingDay = airingDate.toLocaleDateString('en-US', {
+    timeZone: userTimeZone, // ✅ Auto-detect user's timezone
   });
-  const airingFormattedTime = new Date(airingTime).toLocaleTimeString('en-US', {
-    timeZone: 'UTC',
+
+  const airingFormattedTime = airingDate.toLocaleTimeString('en-US', {
+    timeZone: userTimeZone, // ✅ Auto-detect user's timezone
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,
   });
+
   return (
     <tr className="airing-table-row__container">
       <td style={{ width: '100px' }}>
@@ -32,8 +43,8 @@ function AiringTableRow({ data }: AiringTableRowProps): JSX.Element {
       <td>{itemNum}</td>
       <td style={{ width: '300px' }}>{itemName}</td>
       <td>{airingId}</td>
-      <td>{show}</td>
-      <td>{station}</td>
+      <td>{airingShow}</td>
+      <td>{airingStation}</td>
       <td>${localePrice}</td>
     </tr>
   );

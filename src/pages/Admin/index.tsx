@@ -66,28 +66,28 @@ function AdminPage(): JSX.Element {
     setAiringToDelete(airing);
   };
 
-  const confirmDeleteAiring = async (): Promise<void> => {
-    if (airingToDelete !== undefined) {
-      const res = await dispatch(deleteAiring(airingToDelete.ID));
-      if (res.type === 'DELETE_AIRING/fulfilled') {
-        showSnackbar(
-          false,
-          `Successfully deleted airing ${airingToDelete.airing_id}`
-        );
-        handleCloseDeleteModal();
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000)
-        return;
-      }
+  // const confirmDeleteAiring = async (): Promise<void> => {
+  //   if (airingToDelete !== undefined) {
+  //     const res = await dispatch(deleteAiring(airingToDelete.ID));
+  //     if (res.type === 'DELETE_AIRING/fulfilled') {
+  //       showSnackbar(
+  //         false,
+  //         `Successfully deleted airing ${airingToDelete.airing_id}`
+  //       );
+  //       handleCloseDeleteModal();
+  //       setTimeout(() => {
+  //         window.location.reload();
+  //       }, 2000)
+  //       return;
+  //     }
 
-      showSnackbar(true, 'Unable to delete airing, please contact mike');
-    }
-  };
+  //     showSnackbar(true, 'Unable to delete airing, please contact mike');
+  //   }
+  // };
 
-  const handleConfirmDelete = (): void => {
-    void confirmDeleteAiring();
-  };
+  // const handleConfirmDelete = (): void => {
+  //   void confirmDeleteAiring();
+  // };
 
   const airingStatus = useAppSelector(
     (state: { airings: { status: any } }) => state.airings.status
@@ -171,12 +171,12 @@ function AdminPage(): JSX.Element {
         isOpen={isUploadModalOpen}
         handleClose={handleCloseUploadModal}
       />
-      <DeleteConfirmModal
+      {/* <DeleteConfirmModal
         isOpen={isDeleteModalOpen}
         handleClose={handleCloseDeleteModal}
         deleteMessage="Are you sure you want to delete this airing?"
         handleDelete={handleConfirmDelete}
-      />
+      /> */}
       {airingToUpdate !== undefined && (
         <EditAiringModal
           isOpen={isUpdateModalOpen}

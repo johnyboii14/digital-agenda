@@ -10,6 +10,10 @@ import reportWebVitals from './reportWebVitals';
 
 import './index.scss';
 
+import './indexagain.css'
+
+// import './App.css'
+
 globalThis.React = React;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/strict-boolean-expressions

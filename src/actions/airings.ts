@@ -3,11 +3,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import apiUrl from '../constants/apiUrl';
 import type {
-  ChunkCreateAiringBody,
   AiringUpdateData,
-  BulkCreateAiringBody,
   CreateAiringBody,
-  ChunkCreateAiringConfirmBody,
 } from '../@types';
 import {
   ADMIN_ROWS_PER_PAGE_KEY,
@@ -87,8 +84,8 @@ export const getAdminAirings = createAsyncThunk(
         pageSize = DEFAULT_PER_PAGE;
       }
 
-      const adminUrl = `${url}admin?cursor=${cursor}&pageSize=${pageSize}`;
-      const res: AxiosResponse = await axios.get(adminUrl);
+      
+      const res: AxiosResponse = await axios.get(url);
       return {
         data: res.data,
         cursor,
@@ -100,12 +97,12 @@ export const getAdminAirings = createAsyncThunk(
   }
 );
 
-export const GET_DAY_AGENDA_DAY_AIRING = 'GET_AGENDA_DAY_AIRING ';
+export const GET_DAY_AGENDA_DAY_AIRING = 'GET_AGENDA_DAY_AIRING';
 export const getDayAgendaAirings = createAsyncThunk(
   GET_DAY_AGENDA_DAY_AIRING,
   async (dayToQuery: string, { rejectWithValue }) => {
     try {
-      const dayUrl = `${url}agenda?day=${dayToQuery}`;
+      const dayUrl = `${url}today/?day=${dayToQuery}`;
       const res: AxiosResponse = await axios.get(dayUrl);
       return res.data;
     } catch (err) {
@@ -127,12 +124,18 @@ export const updateCursor = createAsyncThunk(
   async (cursor: number) => cursor
 );
 
+
+
 export const BULK_CREATE_AIRINGS = 'BULK_CREATE_AIRINGS';
 export const bulkCreateAirings = createAsyncThunk(
   BULK_CREATE_AIRINGS,
-  async (airings: BulkCreateAiringBody, { rejectWithValue }) => {
+  async (parsedData: any[], { rejectWithValue }) => {
     try {
-      const res: AxiosResponse = await axios.post(`${url}bulk`, airings);
+      const res: AxiosResponse = await axios.post(`${url}upload/`, parsedData, {
+        headers: {
+          'Content-Type': 'application/json', // Ensure it's sent as JSON
+        },
+      });
       return res.data;
     } catch (err) {
       return rejectWithValue({ data: err });
@@ -140,32 +143,7 @@ export const bulkCreateAirings = createAsyncThunk(
   }
 );
 
-export const CHUNK_CREATE_AIRINGS = 'CHUNK_CREATE_AIRINGS';
-export const chunkCreateAirings = createAsyncThunk(
-  CHUNK_CREATE_AIRINGS,
-  async (airings: ChunkCreateAiringBody, { rejectWithValue }) => {
-    try {
-      const res: AxiosResponse = await axios.post(`${url}chunk`, airings);
-      return res.data;
-    } catch (err) {
-      return rejectWithValue({ data: err });
-    }
-  }
-);
 
-export const CHUNK_CREATE_AIRINGS_CONFIRM = 'CHUNK_CREATE_AIRINGS_CONFIRM';
-export const confirmChunkCreateAirings = createAsyncThunk(
-  CHUNK_CREATE_AIRINGS_CONFIRM,
-  async (data: ChunkCreateAiringConfirmBody, { rejectWithValue }) => {
-    try {
-      const res: AxiosResponse = await axios.post(`${url}chunk/confirm`, data);
-      return res.data;
-    } catch (err) {
-      const error = err as AxiosError;
-      return rejectWithValue({ data: error });
-    }
-  }
-);
 
 export const FILTER_TABLE_AIRINGS = 'FILTER_TABLE_AIRINGS';
 export const filterTableAirings = createAsyncThunk(
@@ -192,12 +170,15 @@ export const filterTableAirings = createAsyncThunk(
   }
 );
 
+
+
+
 export const GET_TABLE_AIRINGS = 'GET_TABLE_AIRINGS';
 export const getTableAirings = createAsyncThunk(
   GET_TABLE_AIRINGS,
   async (searchParams: string, { rejectWithValue }) => {
     try {
-      const res: AxiosResponse = await axios.get(`${url}table${searchParams}`);
+      const res: AxiosResponse = await axios.get(`${url}today/${searchParams}`);
       return res.data;
     } catch (err) {
       return rejectWithValue({ data: err });
@@ -210,7 +191,7 @@ export const getTotalAirings = createAsyncThunk(
   GET_TOTAL_AIRINGS,
   async (_, { rejectWithValue }) => {
     try {
-      const res: AxiosResponse = await axios.get(`${url}total`);
+      const res: AxiosResponse = await axios.get(`${url}`);
       return res.data;
     } catch (err) {
       return rejectWithValue({ data: err });

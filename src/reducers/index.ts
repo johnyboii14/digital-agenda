@@ -1,11 +1,10 @@
 import { combineReducers } from 'redux';
 
 import airings from './airings';
-import events from './events';
+import auth from './auth';
 
 const rootReducer = combineReducers({
-	airings,
-	events,
+	airings, auth,
 });
 
 export default rootReducer;

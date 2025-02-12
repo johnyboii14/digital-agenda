@@ -66,18 +66,18 @@ function AiringTable({
   handleDeleteClick,
   handleEditClick,
 }: AiringTableProps): JSX.Element {
+  
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const airings = useAppSelector((state) => state.airings.tableAirings);
   const airingsStatus = useAppSelector((state) => state.airings.status);
-  const airingTotal = useAppSelector((state) => state.airings.airingTotal);
-  const pageTotal = useAppSelector((state) => state.airings.pageTotal);
   const priceFilter = localStorage.getItem(AIRING_TABLE_PRICE_FILTER);
   const stationFilter = localStorage.getItem(AIRING_TABLE_STATION_FILTER);
   const showFilter = localStorage.getItem(AIRING_TABLE_SHOW_FILTER);
   const initialDate = localStorage.getItem(AIRING_TABLE_DATE_KEY);
   const initialSortKey = localStorage.getItem(AIRING_TABLE_SORT_KEY);
   const initialIsDesc = localStorage.getItem(AIRING_TABLE_SORT_DIR_KEY);
+
   const itemNumberFilter = localStorage.getItem(
     AIRING_TABLE_ITEM_NUMBER_FILTER
   );
@@ -87,7 +87,7 @@ function AiringTable({
   const airingIdFilter = localStorage.getItem(AIRING_TABLE_AIRING_ID_FILTER);
   const itemNameFilter = localStorage.getItem(AIRING_TABLE_ITEM_NAME_FILTER);
   const [sortKey, setSortKey] = useState<string>(
-    initialSortKey !== null ? initialSortKey : 'airing_time'
+  initialSortKey !== null ? initialSortKey : 'airing_date_time'
   );
   const [isDesc, setDesc] = useState<boolean>(
     initialIsDesc !== null ? Boolean(initialIsDesc) : false
@@ -303,6 +303,19 @@ function AiringTable({
       <section className="airing-filters__container">{filtersToShow}</section>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+          <div className="flex flex-col justify-center bg-blue-200">
+          <h6>
+            {currentDate}
+          </h6>
+          <section>
+            <IconButton onClick={handleGoBackClick}>
+              <ArrowBackIosIcon />
+            </IconButton>
+            <IconButton onClick={handleGoForwardClick}>
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </section>
+        </div>
         <TableContainer sx={{ maxHeight: 750 }}>
           <table className="airing-table__container" aria-label="sticky table">
             <thead>
@@ -316,7 +329,7 @@ function AiringTable({
         </TableContainer>
         <div className="airing-table__pagination">
           <h6>
-            {pageTotal} airings out of {airingTotal}
+            {currentDate}
           </h6>
           <section>
             <IconButton onClick={handleGoBackClick}>

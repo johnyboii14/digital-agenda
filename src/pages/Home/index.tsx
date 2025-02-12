@@ -6,7 +6,6 @@ import AiringTable from '../../components/AiringTable';
 import Header from '../../components/Header';
 
 import { useAppDispatch } from '../../config/hooks';
-import { clearEvents } from '../../actions/events';
 import { clearAirings } from '../../actions/airings';
 import { DEFAULT_VIEW_OPTION } from '../../constants';
 
@@ -29,7 +28,6 @@ function Home(): JSX.Element {
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
-    void dispatch(clearEvents());
     void dispatch(clearAirings());
   }, [dispatch]);
 
