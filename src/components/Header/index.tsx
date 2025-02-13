@@ -76,9 +76,9 @@ const Header = ({
           Sign In
         </Button>
       </section>
-      <section className="header-options__container">
-        <section className="filter-airing__container">
-          {viewOption === VIEW_OPTION.TABLE && (
+      <section className="flex flex-col ">
+        <section className="flex justify-start mt-12">
+          {/* {viewOption === VIEW_OPTION.TABLE && (
             <Button
               sx={{ backgroundColor: '#cb6c4d' }}
               variant="contained"
@@ -87,11 +87,11 @@ const Header = ({
             >
               Filter Airings
             </Button>
-          )}
+          )} */}
         </section>
-        <section className="view-option__container">
-          <header className="table-option__header">View</header>
-          <section className="view-icon__container">
+        <section className="flex justify-center items-center flex-col">
+          <header className="flex text-white text-3xl font-bold mb-12 ">View</header>
+          <section className="flex flex-row gap-6">
             <IconButton
               data-cy="image-view-btn"
               sx={{ backgroundColor: agendaIconColor }}
