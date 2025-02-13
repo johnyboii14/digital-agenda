@@ -64,12 +64,13 @@ const Header = ({
   };
   return (
     <nav className="home-header">
-      <section className="nav-top-row__container">
+      <section className="flex flex-row justify-between items-center mt-4">
         <img src={Logo} className="logo" alt="Rare Collectibles logo" />
         <h1 className="title__text">Digital Agenda</h1>
         <Button
           sx={signInStyles}
           variant="contained"
+          className='w-32'
           endIcon={<LogoutIcon />}
           onClick={handleClick}
         >
