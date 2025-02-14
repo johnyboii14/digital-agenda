@@ -356,7 +356,7 @@ function AiringTable({
       </div>
     </div>
 
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      {/* <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 750 }}>
           <table className="airing-table__container" aria-label="sticky table">
             <thead>
@@ -368,57 +368,23 @@ function AiringTable({
             <TableBody sx={{ border: 'none' }}>{rows}</TableBody>
           </table>
         </TableContainer>
-      </Paper>
-    <div className="max-w-lg container flex justify-center mx-auto mb-6 ">
-      <div className="flex flex-row gap-4 mx-auto">
-        <button
-          type="button"
-          onClick={handleGoBackClick}
-          className="bg-gray-800 text-white rounded-l-md border-r border-gray-100 py-2 hover:bg-red-700 hover:text-white px-3"
-        >
-          <div className="flex flex-row items-center">
-            <svg
-              className="w-5 mr-2"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <p className="ml-2">Prev</p>
-          </div>
-        </button>
-        <div className='flex justify-center items-center font-bold'>
-            {new Date(currentDate + "T00:00:00").toDateString()}
-        </div>
+      </Paper> */}
+<Paper className="flex justify-center !bg-[var(--page-bg-color)]">
+  <div className="w-[90%] overflow-hidden">
+    <TableContainer className="max-h-[750px]">
+      <table className="airing-table__container w-full mx-auto" aria-label="sticky table">
+        <thead>
+          <tr className="bg-gray-100">
+            {columns()}
+            {isAdmin && <StyledTableCellHeader />}
+          </tr>
+        </thead>
+        <TableBody>{rows}</TableBody>
+      </table>
+    </TableContainer>
+  </div>
+</Paper>
 
-        <button
-          type="button"
-          onClick={handleGoForwardClick}
-          className="bg-gray-800 text-white rounded-r-md py-2 border-l border-gray-200 hover:bg-red-700 hover:text-white px-3"
-        >
-          <div className="flex flex-row items-center">
-            <span className="mr-2">Next</span>
-            <svg
-              className="w-5 ml-2"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        </button>
-      </div>
-    </div>
     </section>
   );
 }
