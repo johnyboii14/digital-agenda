@@ -92,9 +92,13 @@ function AiringTable({
   const [isDesc, setDesc] = useState<boolean>(
     initialIsDesc !== null ? Boolean(initialIsDesc) : false
   );
+
   const [currentDate, setCurrentDate] = useState<string>(
     initialDate !== null ? initialDate : formatDate(new Date())
   );
+
+
+
   interface RawFilter {
     key: string;
     value: string | null;
@@ -301,21 +305,58 @@ function AiringTable({
   return (
     <section className="admin-data__container">
       <section className="airing-filters__container">{filtersToShow}</section>
+    <div className="max-w-lg container flex justify-center mx-auto mb-6 ">
+      <div className="flex flex-row gap-4 mx-auto">
+        <button
+          type="button"
+          onClick={handleGoBackClick}
+          className="bg-gray-800 text-white rounded-l-md border-r border-gray-100 py-2 hover:bg-red-700 hover:text-white px-3"
+        >
+          <div className="flex flex-row items-center">
+            <svg
+              className="w-5 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="ml-2">Prev</p>
+          </div>
+        </button>
+        <div className='flex justify-center items-center font-bold'>
+           {new Date(currentDate + "T00:00:00").toDateString()} 
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoForwardClick}
+          className="bg-gray-800 text-white rounded-r-md py-2 border-l border-gray-200 hover:bg-red-700 hover:text-white px-3"
+        >
+          <div className="flex flex-row items-center">
+            <span className="mr-2">Next</span>
+            <svg
+              className="w-5 ml-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        </button>
+      </div>
+    </div>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-          <div className="flex flex-col justify-center bg-blue-200">
-          <h6>
-            {currentDate}
-          </h6>
-          <section>
-            <IconButton onClick={handleGoBackClick}>
-              <ArrowBackIosIcon />
-            </IconButton>
-            <IconButton onClick={handleGoForwardClick}>
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </section>
-        </div>
         <TableContainer sx={{ maxHeight: 750 }}>
           <table className="airing-table__container" aria-label="sticky table">
             <thead>
@@ -327,23 +368,60 @@ function AiringTable({
             <TableBody sx={{ border: 'none' }}>{rows}</TableBody>
           </table>
         </TableContainer>
-        <div className="airing-table__pagination">
-          <h6>
-            {currentDate}
-          </h6>
-          <section>
-            <IconButton onClick={handleGoBackClick}>
-              <ArrowBackIosIcon />
-            </IconButton>
-            <IconButton onClick={handleGoForwardClick}>
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </section>
-        </div>
       </Paper>
-      <ScrollToTop containerRef={tableContainerRef} />
+    <div className="max-w-lg container flex justify-center mx-auto mb-6 ">
+      <div className="flex flex-row gap-4 mx-auto">
+        <button
+          type="button"
+          onClick={handleGoBackClick}
+          className="bg-gray-800 text-white rounded-l-md border-r border-gray-100 py-2 hover:bg-red-700 hover:text-white px-3"
+        >
+          <div className="flex flex-row items-center">
+            <svg
+              className="w-5 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="ml-2">Prev</p>
+          </div>
+        </button>
+        <div className='flex justify-center items-center font-bold'>
+            {new Date(currentDate + "T00:00:00").toDateString()}
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoForwardClick}
+          className="bg-gray-800 text-white rounded-r-md py-2 border-l border-gray-200 hover:bg-red-700 hover:text-white px-3"
+        >
+          <div className="flex flex-row items-center">
+            <span className="mr-2">Next</span>
+            <svg
+              className="w-5 ml-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        </button>
+      </div>
+    </div>
     </section>
   );
 }
 
 export default AiringTable;
+
