@@ -65,31 +65,9 @@ function AgendaCalendar(): JSX.Element {
     if (event.airing_station.toLowerCase().includes('fox')) {
       className += 'fox-rbc-event';
     }
-    if (event.airing_station.toLowerCase().includes('nbc')) {
+    if (event.airing_station.toLowerCase().includes('cnbc')) {
       className += 'nbc-rbc-event';
     }
-    if (event.airing_station.toLowerCase().includes('stadium')) {
-      className += 'stadium-rbc-event';
-    }
-    if (event.airing_station.toLowerCase().includes('comet')) {
-      className += 'comet-rbc-event';
-    }
-    if (event.airing_station.toLowerCase().includes('vice')) {
-      className += 'vice-rbc-event';
-    }
-
-    if (event.airing_station.toLowerCase() === 'fx') {
-      className += 'fx-rbc-event';
-    }
-
-    if (event.airing_station.toLowerCase() === 'history channel') {
-      className += 'history-channel-rbc-event';
-    }
-
-    if (event.airing_station.toLowerCase() === 'nat geo wild') {
-      className += 'nat-geo-wild-rbc-event';
-    }
-
     return {
       className,
     };
@@ -98,13 +76,7 @@ function AgendaCalendar(): JSX.Element {
   const majorStations = [
     'bloomberg',
     'fox',
-    'nbc',
-    'stadium',
-    'comet',
-    'vice',
-    'fx',
-    'history channel',
-    'nat geo wild',
+    'cnbc',
   ];
 
   
