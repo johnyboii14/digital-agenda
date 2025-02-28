@@ -1,21 +1,16 @@
 import { useEffect, useState } from 'react';
-// import {  Calendar, momentLocalizer } from 'react-big-calendar';
-// import { Calendar, CalendarProps } from 'react-big-calendar';
 import Calendar from './CalendarWrapper';
 import {  momentLocalizer } from 'react-big-calendar';
 
-
-
 import moment from 'moment';
-import 'moment-timezone'; // ✅ Ensures moment-timezone extends moment
+import 'moment-timezone'; 
 
 import AgendaEvent from './AgendaEvent';
-import AiringInfoModal from '../AiringInfoModal';
 
 import { useAppDispatch, useAppSelector } from '../../config/hooks';
 import { getDayAgendaAirings } from '../../actions/airings';
 import { type AgendaAiring } from '../../@types';
-import { AIRING_DAY, DEFAULT_TIMEZONE } from '../../constants';
+import { AIRING_DAY} from '../../constants';
 
 import { CalendarProps } from 'react-big-calendar';
 
@@ -90,21 +85,29 @@ function AgendaCalendar(): JSX.Element {
     (state) => state.airings.agendaAirings
   )
     .map((airing) => {
-      // 🟢 Always interpret airing_date_time as UTC
-      const airingUTC = moment.utc(airing.airing_date_time);
-      const airingLocal = airingUTC.clone().tz(userTimeZone); // ✅ Fixed: tz() now works!
-      const endLocal = airingLocal.clone().add(30, 'minutes');
+      const airingUTC = moment.utc(airing.airing_date_time)
+      const airingLocal = airingUTC.clone().tz(userTimeZone)
+      let endLocal = airingLocal.clone().add(30, 'minutes')
 
-      return {
+      if(endLocal.isAfter(airingLocal.clone().endOf('day'))){
+        endLocal = airingLocal.clone().endOf('day')
+      }
+
+      return{
         ...airing,
-        airing_start_date: airingLocal.toDate(), // Display time converted to local
-        end_date: endLocal.toDate(), // Display end time converted to local
-        airing_utc_date: airingUTC.format('YYYY-MM-DD'), // Store UTC date for filtering
-      };
+        airing_start_date: airingLocal.isValid() ? airingLocal.toDate() : new Date(),
+        end_date: endLocal.isValid() ? endLocal.toDate() : airingLocal.toDate(),
+        airing_utc_date: airingUTC.format('YYY=MM-DD')
+      }
     })
-    .filter(
-      (airing) => airing.airing_utc_date === selectedUTCDate.format('YYYY-MM-DD')
-    ) // ✅ Only show airings for the selected UTC date
+    .filter((airing) => {
+      const airingLocal = moment.utc(airing.airing_date_time).tz(userTimeZone)
+
+      const startOfDay = moment(agendaDate).tz(userTimeZone).startOf('day')
+      const endOfDay = moment(agendaDate).tz(userTimeZone).endOf('day')
+
+      return airingLocal.isBetween(startOfDay, endOfDay, null, '[]')
+    })
     .filter((airing) =>
       majorStations.includes(airing.airing_station.toLowerCase())
     );
@@ -125,10 +128,6 @@ function AgendaCalendar(): JSX.Element {
     setAiringToPreview(airing);
     toggleAiringInfoModal(true);
   };
-
-  // useEffect(() => {
-  //   dispatch(getDayAgendaAirings(formatSelectedDate(agendaDate)));
-  // }, []);
 
   useEffect(() => {
   dispatch(getDayAgendaAirings(formatSelectedDate(agendaDate)));
@@ -164,42 +163,6 @@ const calendarProps = {
 
 
   return (
-    // <>
-    //   <Calendar
-    //     localizer={localizer}
-    //     startAccessor="airing_start_date"
-    //     date={agendaDate}
-    //     endAccessor="end_date"
-    //     onNavigate={handleNavigate}
-    //     events={airings}
-    //     eventPropGetter={eventStyleGetter}
-    //     onSelectEvent={(s: any): void => {
-    //       handleOpenInfoModal(s);
-    //     }}
-    //     selectable
-    //     components={{
-    //       day: {
-    //         event: MyAgendaEvent,
-    //       },
-    //     }}
-    //     view="day"
-    //     timeslots={1}
-    //     step={30}
-    //     onView={() => null}
-    //     tooltipAccessor={(airing: AgendaAiring) =>
-    //       airing.airing_item_description
-    //     }
-    //     views={['day']}
-    //     style={{ height: 1000, padding: '0 3%' }}
-    //   />
-    //   {airingToPreview != null && (
-    //     <AiringInfoModal
-    //       handleClose={handleCloseInfoModal}
-    //       isOpen={isAiringInfoModalOpen}
-    //       airingToPreview={airingToPreview}
-    //     />
-    //   )}
-    // </>
     <Calendar {...calendarProps} />
   );
 }
