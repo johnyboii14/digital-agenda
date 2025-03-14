@@ -5,7 +5,7 @@ export const DIGITAL_AGENDA_TABLE_HEADERS = [
   'item_no',
   'item_name',
   'airing_id',
-  'show',
+  'airing_show',
   'station',
   'price',
 ];
