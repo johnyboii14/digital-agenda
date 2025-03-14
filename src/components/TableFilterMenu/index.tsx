@@ -114,7 +114,7 @@ function TableFilterMenu({ handleClose }: TableFilterMenuProps): JSX.Element {
     }
     if (showFilter.length > 0) {
       localStorage.setItem(AIRING_TABLE_SHOW_FILTER, showFilter);
-      searchParams += '&show=' + showFilter;
+      searchParams += '&airing_show=' + showFilter;
     } else {
       localStorage.removeItem(AIRING_TABLE_SHOW_FILTER);
     }

@@ -1,5 +1,5 @@
 import axios, { type AxiosError, type AxiosResponse } from 'axios';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import apiUrl from '../constants/apiUrl';
 import type {
@@ -198,3 +198,21 @@ export const getTotalAirings = createAsyncThunk(
     }
   }
 );
+
+export const SEARCH_AIRINGS = 'SEARCH_AIRINGS';
+
+export const searchAirings = createAsyncThunk(
+  SEARCH_AIRINGS,
+  async (query: string, { rejectWithValue }) => {
+    try {
+      const res: AxiosResponse = await axios.get(`${url}search/?query=${encodeURIComponent(query)}`);
+      return res.data.results;
+    } catch (err) {
+      const error = err as AxiosError;
+      return rejectWithValue({ data: error });
+    }
+  }
+);
+
+export const clearSearchResults = createAction('CLEAR_SEARCH_RESULTS');
+
