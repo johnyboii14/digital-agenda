@@ -8,8 +8,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 
 import CloseIcon from '@mui/icons-material/Close';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import AiringTableRow from './AiringTableRow';
 import AdminTableRow from './AdminTableRow';
@@ -37,8 +35,6 @@ import addSubtractDay from '../../modules/addSubtractDay';
 import replaceDateInQueryString from '../../modules/replaceDateInQueryString';
 import formatRowHeaders from '../../modules/formatRowHeaders';
 import updateTableURL from '../../modules/updateTableURL';
-import ScrollToTop from '../ScrollToTop';
-
 const fontFamily = 'Neue Haas Grotesk';
 
 const StyledTableCellHeader = styled(TableCell)(() => ({
@@ -67,7 +63,6 @@ function AiringTable({
   handleEditClick,
 }: AiringTableProps): JSX.Element {
   
-  const tableContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const airings = useAppSelector((state) => state.airings.tableAirings);
   const airingsStatus = useAppSelector((state) => state.airings.status);
@@ -355,20 +350,6 @@ function AiringTable({
         </button>
       </div>
     </div>
-
-      {/* <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 750 }}>
-          <table className="airing-table__container" aria-label="sticky table">
-            <thead>
-              <tr style={{ backgroundColor: '#F5f5f5' }}>
-                {columns()}
-                {isAdmin && <StyledTableCellHeader />}
-              </tr>
-            </thead>
-            <TableBody sx={{ border: 'none' }}>{rows}</TableBody>
-          </table>
-        </TableContainer>
-      </Paper> */}
 <Paper className="flex justify-center !bg-[var(--page-bg-color)]">
   <div className="w-[90%] overflow-hidden">
     <TableContainer className="max-h-[750px]">
